@@ -1,0 +1,36 @@
+OBJECT Table 71000 WNP Text
+{
+  OBJECT-PROPERTIES
+  {
+    Date=27/01/16;
+    Time=22:20:29;
+    Modified=Yes;
+    Version List=WaldoNAVPad;
+  }
+  PROPERTIES
+  {
+  }
+  FIELDS
+  {
+    { 1   ;   ;Entry No.           ;Integer        }
+    { 10  ;   ;Record ID           ;RecordID       }
+    { 20  ;   ;Line No.            ;Integer        }
+    { 30  ;   ;Textline            ;Text250        }
+    { 40  ;   ;Separator           ;Option        ;OptionString=[ ,Space,Carriage Return] }
+    { 100 ;   ;TableNo             ;Integer        }
+  }
+  KEYS
+  {
+    {    ;Entry No.                               ;Clustered=Yes }
+  }
+  FIELDGROUPS
+  {
+  }
+  CODE
+  {
+
+    BEGIN
+    END.
+  }
+}
+

@@ -1,0 +1,44 @@
+OBJECT Page 56100 WNP Textbox
+{
+  OBJECT-PROPERTIES
+  {
+    Date=27/01/16;
+    Time=16:29:21;
+    Modified=Yes;
+    Version List=WaldoNAVPad;
+  }
+  PROPERTIES
+  {
+    PageType=StandardDialog;
+  }
+  CONTROLS
+  {
+    { 1100084000;;Container;
+                ContainerType=ContentArea }
+
+    { 1100084001;1;Field  ;
+                SourceExpr=FullText;
+                MultiLine=Yes;
+                ShowCaption=No }
+
+  }
+  CODE
+  {
+    VAR
+      FullText@1100084000 : Text;
+
+    PROCEDURE SetText@1100084000(Value@1100084000 : Text);
+    BEGIN
+      FullText := Value;
+    END;
+
+    PROCEDURE GetText@1100084001() : Text;
+    BEGIN
+      EXIT(FullText);
+    END;
+
+    BEGIN
+    END.
+  }
+}
+

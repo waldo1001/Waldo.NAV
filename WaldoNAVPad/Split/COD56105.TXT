@@ -1,0 +1,52 @@
+OBJECT Codeunit 56105 WNP WaldoNAVPad Init Meth
+{
+  OBJECT-PROPERTIES
+  {
+    Date=27/01/16;
+    Time=22:34:20;
+    Modified=Yes;
+    Version List=WaldoNAVPad;
+  }
+  PROPERTIES
+  {
+    OnRun=BEGIN
+          END;
+
+  }
+  CODE
+  {
+
+    PROCEDURE Initialize@1100084001(VAR Text@1100084000 : Text);
+    VAR
+      Handled@1100084001 : Boolean;
+    BEGIN
+      OnBeforeInitialize(Text,Handled);
+      DoInitialize(Text,Handled);
+      OnAfterInitialize(Text);
+    END;
+
+    LOCAL PROCEDURE DoInitialize@1100084003(VAR Text@1100084001 : Text;VAR Handled@1100084000 : Boolean);
+    BEGIN
+      IF Handled THEN EXIT;
+
+    END;
+
+    LOCAL PROCEDURE "--- Event Wrapper ---"@1100084011();
+    BEGIN
+    END;
+
+    [Integration]
+    LOCAL PROCEDURE OnBeforeInitialize@1100084004(VAR Text@1100084000 : Text;VAR Handled@1100084001 : Boolean);
+    BEGIN
+    END;
+
+    [Integration]
+    LOCAL PROCEDURE OnAfterInitialize@1100084005(VAR Text@1100084000 : Text);
+    BEGIN
+    END;
+
+    BEGIN
+    END.
+  }
+}
+

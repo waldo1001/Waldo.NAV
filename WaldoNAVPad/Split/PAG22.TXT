@@ -1,0 +1,1104 @@
+OBJECT Page 22 Customer List
+{
+  OBJECT-PROPERTIES
+  {
+    Date=27/01/16;
+    Time=21:57:42;
+    Modified=Yes;
+    Version List=NAVW19.00,WaldoNAVPad;
+  }
+  PROPERTIES
+  {
+    Editable=No;
+    CaptionML=[ENU=Customer List;
+               FRB=Liste des clients;
+               NLB=Klantenoverzicht];
+    SourceTable=Table18;
+    PageType=List;
+    CardPageID=Customer Card;
+    PromotedActionCategoriesML=[ENU=New,Process,Report,Approve;
+                                FRB=Nouveau,Traitement,êtat,Approuver;
+                                NLB=Nieuw,Verwerken,Rapporteren,Goedkeuren];
+    OnOpenPage=VAR
+                 CRMIntegrationManagement@1000 : Codeunit 5330;
+               BEGIN
+                 CRMIntegrationEnabled := CRMIntegrationManagement.IsCRMIntegrationEnabled;
+               END;
+
+    OnAfterGetRecord=BEGIN
+                       SetSocialListeningFactboxVisibility;
+                     END;
+
+    OnAfterGetCurrRecord=VAR
+                           CRMCouplingManagement@1001 : Codeunit 5331;
+                         BEGIN
+                           SetSocialListeningFactboxVisibility;
+
+                           CRMIsCoupledToRecord :=
+                             CRMCouplingManagement.IsRecordCoupledToCRM(RECORDID) AND CRMIntegrationEnabled;
+                           OpenApprovalEntriesExist := ApprovalsMgmt.HasOpenApprovalEntries(RECORDID);
+                         END;
+
+    ActionList=ACTIONS
+    {
+      { 1900000003;0 ;ActionContainer;
+                      ActionContainerType=RelatedInformation }
+      { 16      ;1   ;ActionGroup;
+                      CaptionML=[ENU=&Customer;
+                                 FRB=&Client;
+                                 NLB=&Klant];
+                      Image=Customer }
+      { 20      ;2   ;Action    ;
+                      CaptionML=[ENU=Co&mments;
+                                 FRB=Commentaire&s;
+                                 NLB=Op&merkingen];
+                      RunObject=Page 124;
+                      RunPageLink=Table Name=CONST(Customer),
+                                  No.=FIELD(No.);
+                      Image=ViewComments }
+      { 66      ;2   ;ActionGroup;
+                      CaptionML=[ENU=Dimensions;
+                                 FRB=Axes analytiques;
+                                 NLB=Dimensies];
+                      Image=Dimensions }
+      { 84      ;3   ;Action    ;
+                      ShortCutKey=Shift+Ctrl+D;
+                      CaptionML=[ENU=Dimensions-Single;
+                                 FRB=Affectations - Simples;
+                                 NLB=Dimensies - Enkel];
+                      RunObject=Page 540;
+                      RunPageLink=Table ID=CONST(18),
+                                  No.=FIELD(No.);
+                      Image=Dimensions }
+      { 42      ;3   ;Action    ;
+                      AccessByPermission=TableData 348=R;
+                      CaptionML=[ENU=Dimensions-&Multiple;
+                                 FRB=Affectations - &Multiples;
+                                 NLB=Dimensies - &Multi];
+                      Image=DimensionSets;
+                      OnAction=VAR
+                                 Cust@1001 : Record 18;
+                                 DefaultDimMultiple@1002 : Page 542;
+                               BEGIN
+                                 CurrPage.SETSELECTIONFILTER(Cust);
+                                 DefaultDimMultiple.SetMultiCust(Cust);
+                                 DefaultDimMultiple.RUNMODAL;
+                               END;
+                                }
+      { 58      ;2   ;Action    ;
+                      CaptionML=[ENU=Bank Accounts;
+                                 FRB=Comptes bancaires;
+                                 NLB=Bankrekeningen];
+                      RunObject=Page 424;
+                      RunPageLink=Customer No.=FIELD(No.);
+                      Image=BankAccount }
+      { 29      ;2   ;Action    ;
+                      CaptionML=[ENU=Direct Debit Mandates;
+                                 FRB=Mandats de domiciliation europÇenne;
+                                 NLB=Mandaten voor Europese domiciliâring];
+                      RunObject=Page 1230;
+                      RunPageLink=Customer No.=FIELD(No.);
+                      Image=MakeAgreement }
+      { 23      ;2   ;Action    ;
+                      CaptionML=[ENU=Ship-&to Addresses;
+                                 FRB=&Adresses destinataire;
+                                 NLB=Ver&zendadressen];
+                      RunObject=Page 301;
+                      RunPageLink=Customer No.=FIELD(No.);
+                      Image=ShipAddress }
+      { 60      ;2   ;Action    ;
+                      AccessByPermission=TableData 5050=R;
+                      CaptionML=[ENU=C&ontact;
+                                 FRB=C&ontact;
+                                 NLB=&Contact];
+                      Image=ContactPerson;
+                      OnAction=BEGIN
+                                 ShowContact;
+                               END;
+                                }
+      { 45      ;2   ;Action    ;
+                      CaptionML=[ENU=Cross Re&ferences;
+                                 FRB=&RÇfÇrences externes;
+                                 NLB=Kruisver&wijzingen];
+                      RunObject=Page 5723;
+                      RunPageView=SORTING(Cross-Reference Type,Cross-Reference Type No.);
+                      RunPageLink=Cross-Reference Type=CONST(Customer),
+                                  Cross-Reference Type No.=FIELD(No.);
+                      Image=Change }
+      { 67      ;2   ;Action    ;
+                      Name=ApprovalEntries;
+                      CaptionML=[ENU=Approvals;
+                                 FRB=Approbations;
+                                 NLB=Goedkeuringen];
+                      Image=Approvals;
+                      OnAction=BEGIN
+                                 ApprovalsMgmt.OpenApprovalEntriesPage(RECORDID);
+                               END;
+                                }
+      { 44      ;1   ;ActionGroup;
+                      Name=ActionGroupCRM;
+                      CaptionML=[ENU=Dynamics CRM;
+                                 FRB=Dynamics CRM;
+                                 NLB=Dynamics CRM];
+                      Visible=CRMIntegrationEnabled }
+      { 41      ;2   ;Action    ;
+                      Name=CRMGotoAccount;
+                      CaptionML=[ENU=Account;
+                                 FRB=Compte;
+                                 NLB=Account];
+                      ToolTipML=[ENU=Open the coupled Microsoft Dynamics CRM account.;
+                                 FRB=Ouvrez le compte Microsoft Dynamics CRM couplÇ.;
+                                 NLB=Open de gekoppelde Microsoft Dynamics CRM-account.];
+                      Image=CoupledCustomer;
+                      OnAction=VAR
+                                 CRMIntegrationManagement@1000 : Codeunit 5330;
+                               BEGIN
+                                 CRMIntegrationManagement.ShowCRMEntityFromRecordID(RECORDID);
+                               END;
+                                }
+      { 37      ;2   ;Action    ;
+                      Name=CRMSynchronizeNow;
+                      AccessByPermission=TableData 5331=IM;
+                      CaptionML=[ENU=Synchronize Now;
+                                 FRB=Synchroniser maintenant;
+                                 NLB=Nu synchroniseren];
+                      ToolTipML=[ENU=Send or get updated data to or from Microsoft Dynamics CRM.;
+                                 FRB=Envoyez/recevez des donnÇes mises Ö jour Ö/de Microsoft Dynamics CRM.;
+                                 NLB=Bijgewerkte gegevens verzenden naar of ophalen uit Microsoft Dynamics CRM.];
+                      Image=Refresh;
+                      OnAction=VAR
+                                 Customer@1000 : Record 18;
+                                 CRMIntegrationManagement@1001 : Codeunit 5330;
+                                 CustomerRecordRef@1003 : RecordRef;
+                               BEGIN
+                                 CurrPage.SETSELECTIONFILTER(Customer);
+                                 Customer.NEXT;
+
+                                 IF Customer.COUNT = 1 THEN
+                                   CRMIntegrationManagement.UpdateOneNow(Customer.RECORDID)
+                                 ELSE BEGIN
+                                   CustomerRecordRef.GETTABLE(Customer);
+                                   CRMIntegrationManagement.UpdateMultipleNow(CustomerRecordRef);
+                                 END
+                               END;
+                                }
+      { 97      ;2   ;Action    ;
+                      Name=UpdateStatisticsInCRM;
+                      CaptionML=[ENU=Update Account Statistics;
+                                 FRB=Mettre Ö jour les statistiques compte;
+                                 NLB=Rekeningstatistiek bijwerken];
+                      ToolTipML=[ENU=Send Customer Statistics data to Microsoft Dynamics CRM to update the Account Statistics factbox;
+                                 FRB=Envoyer les donnÇes Statistiques client Ö Microsoft Dynamics CRM pour mettre Ö jour le rÇcapitulatif Statistiques compte;
+                                 NLB=Verzend gegevens van Klantstatistiek naar Microsoft Dynamics CRM om het Infoblok rekeningstatistiek bij te werken];
+                      Enabled=CRMIsCoupledToRecord;
+                      Image=UpdateXML;
+                      OnAction=VAR
+                                 CRMIntegrationManagement@1000 : Codeunit 5330;
+                               BEGIN
+                                 CRMIntegrationManagement.CreateOrUpdateCRMAccountStatistics(Rec);
+                               END;
+                                }
+      { 31      ;2   ;ActionGroup;
+                      Name=Coupling;
+                      CaptionML=[@@@=Coupling is a noun;
+                                 ENU=Coupling;
+                                 FRB=Couplage;
+                                 NLB=Koppeling];
+                      ToolTipML=[ENU=Create, change, or delete a coupling between the Microsoft Dynamics NAV record and a Microsoft Dynamics CRM record.;
+                                 FRB=CrÇez, modifiez ou supprimez un couplage entre l'enregistrement Microsoft Dynamics NAV et un enregistrement Microsoft Dynamics CRM.;
+                                 NLB=Een koppeling tussen de Microsoft Dynamics NAV-record en een Dynamics CRM-record maken, wijzigen of verwijderen.];
+                      Image=LinkAccount }
+      { 49      ;3   ;Action    ;
+                      Name=ManageCRMCoupling;
+                      AccessByPermission=TableData 5331=IM;
+                      CaptionML=[ENU=Set Up Coupling;
+                                 FRB=Configurer le couplage;
+                                 NLB=Koppeling instellen];
+                      ToolTipML=[ENU=Create or modify the coupling to a Microsoft Dynamics CRM account.;
+                                 FRB=CrÇez ou modifiez le couplage avec un compte Microsoft Dynamics CRM.;
+                                 NLB=Maak of wijzig de koppeling met een Microsoft Dynamics CRM-account.];
+                      Image=LinkAccount;
+                      OnAction=VAR
+                                 CRMIntegrationManagement@1000 : Codeunit 5330;
+                               BEGIN
+                                 CRMIntegrationManagement.CreateOrUpdateCoupling(RECORDID);
+                               END;
+                                }
+      { 47      ;3   ;Action    ;
+                      Name=DeleteCRMCoupling;
+                      AccessByPermission=TableData 5331=IM;
+                      CaptionML=[ENU=Delete Coupling;
+                                 FRB=Supprimer le couplage;
+                                 NLB=Koppeling verwijderen];
+                      ToolTipML=[ENU=Delete the coupling to a Microsoft Dynamics CRM account.;
+                                 FRB=Supprimez le couplage avec un compte Microsoft Dynamics CRM.;
+                                 NLB=Verwijder de koppeling met een Microsoft Dynamics CRM-account.];
+                      Enabled=CRMIsCoupledToRecord;
+                      Image=UnLinkAccount;
+                      OnAction=VAR
+                                 CRMCouplingManagement@1000 : Codeunit 5331;
+                               BEGIN
+                                 CRMCouplingManagement.RemoveCoupling(RECORDID);
+                               END;
+                                }
+      { 53      ;2   ;ActionGroup;
+                      Name=Create;
+                      CaptionML=[ENU=Create;
+                                 FRB=CrÇer;
+                                 NLB=Maken];
+                      Image=NewCustomer }
+      { 57      ;3   ;Action    ;
+                      Name=CreateInCRM;
+                      CaptionML=[ENU=Create Account in Dynamics CRM;
+                                 FRB=CrÇer un compte dans Dynamics CRM;
+                                 NLB=Account maken in Dynamics CRM];
+                      Image=NewCustomer;
+                      OnAction=VAR
+                                 Customer@1001 : Record 18;
+                                 CRMIntegrationManagement@1000 : Codeunit 5330;
+                                 CustomerRecordRef@1002 : RecordRef;
+                               BEGIN
+                                 CurrPage.SETSELECTIONFILTER(Customer);
+                                 Customer.NEXT;
+
+                                 IF Customer.COUNT = 1 THEN
+                                   CRMIntegrationManagement.CreateNewRecordInCRM(RECORDID,FALSE)
+                                 ELSE BEGIN
+                                   CustomerRecordRef.GETTABLE(Customer);
+                                   CRMIntegrationManagement.CreateNewRecordsInCRM(CustomerRecordRef);
+                                 END
+                               END;
+                                }
+      { 17      ;3   ;Action    ;
+                      Name=CreateFromCRM;
+                      CaptionML=[ENU=Create Customer in Dynamics NAV;
+                                 FRB=CrÇer un client dans Dynamics NAV;
+                                 NLB=Klant maken in Dynamics NAV];
+                      Image=NewCustomer;
+                      OnAction=VAR
+                                 CRMIntegrationManagement@1000 : Codeunit 5330;
+                               BEGIN
+                                 CRMIntegrationManagement.ManageCreateNewRecordFromCRM(DATABASE::Customer);
+                               END;
+                                }
+      { 9       ;1   ;ActionGroup;
+                      CaptionML=[ENU=History;
+                                 FRB=Historique;
+                                 NLB=Geschiedenis];
+                      Image=History }
+      { 22      ;2   ;Action    ;
+                      ShortCutKey=Ctrl+F7;
+                      CaptionML=[ENU=Ledger E&ntries;
+                                 FRB=ê&critures comptables;
+                                 NLB=Poste&n];
+                      RunObject=Page 25;
+                      RunPageView=SORTING(Customer No.);
+                      RunPageLink=Customer No.=FIELD(No.);
+                      Promoted=Yes;
+                      Image=CustomerLedger;
+                      PromotedCategory=Process }
+      { 18      ;2   ;Action    ;
+                      ShortCutKey=F7;
+                      CaptionML=[ENU=Statistics;
+                                 FRB=Statistiques;
+                                 NLB=Statistiek];
+                      RunObject=Page 151;
+                      RunPageLink=No.=FIELD(No.),
+                                  Date Filter=FIELD(Date Filter),
+                                  Global Dimension 1 Filter=FIELD(Global Dimension 1 Filter),
+                                  Global Dimension 2 Filter=FIELD(Global Dimension 2 Filter);
+                      Promoted=Yes;
+                      Image=Statistics;
+                      PromotedCategory=Process }
+      { 21      ;2   ;Action    ;
+                      CaptionML=[ENU=S&ales;
+                                 FRB=&Ventes;
+                                 NLB=V&erkoop];
+                      RunObject=Page 155;
+                      RunPageLink=No.=FIELD(No.),
+                                  Global Dimension 1 Filter=FIELD(Global Dimension 1 Filter),
+                                  Global Dimension 2 Filter=FIELD(Global Dimension 2 Filter);
+                      Image=Sales }
+      { 19      ;2   ;Action    ;
+                      CaptionML=[ENU=Entry Statistics;
+                                 FRB=Statistiques Çcritures;
+                                 NLB=Boekingsstatistiek];
+                      RunObject=Page 302;
+                      RunPageLink=No.=FIELD(No.),
+                                  Date Filter=FIELD(Date Filter),
+                                  Global Dimension 1 Filter=FIELD(Global Dimension 1 Filter),
+                                  Global Dimension 2 Filter=FIELD(Global Dimension 2 Filter);
+                      Image=EntryStatistics }
+      { 63      ;2   ;Action    ;
+                      CaptionML=[ENU=Statistics by C&urrencies;
+                                 FRB=Statistiques par &devise;
+                                 NLB=Statistiek per &valuta];
+                      RunObject=Page 486;
+                      RunPageLink=Customer Filter=FIELD(No.),
+                                  Global Dimension 1 Filter=FIELD(Global Dimension 1 Filter),
+                                  Global Dimension 2 Filter=FIELD(Global Dimension 2 Filter),
+                                  Date Filter=FIELD(Date Filter);
+                      Image=Currencies }
+      { 6500    ;2   ;Action    ;
+                      CaptionML=[ENU=Item &Tracking Entries;
+                                 FRB=&Ecritures traáabilitÇ;
+                                 NLB=Ar&tikeltraceringsposten];
+                      Image=ItemTrackingLedger;
+                      OnAction=VAR
+                                 ItemTrackingDocMgt@1001 : Codeunit 6503;
+                               BEGIN
+                                 ItemTrackingDocMgt.ShowItemTrackingForMasterData(1,"No.",'','','','','');
+                               END;
+                                }
+      { 24      ;1   ;ActionGroup;
+                      CaptionML=[ENU=S&ales;
+                                 FRB=&Ventes;
+                                 NLB=V&erkoop];
+                      Image=Sales }
+      { 25      ;2   ;Action    ;
+                      CaptionML=[ENU=Invoice &Discounts;
+                                 FRB=Remises &facture;
+                                 NLB=&Factuurkorting];
+                      RunObject=Page 23;
+                      RunPageLink=Code=FIELD(Invoice Disc. Code);
+                      Image=CalculateInvoiceDiscount }
+      { 26      ;2   ;Action    ;
+                      CaptionML=[ENU=Prices;
+                                 FRB=Prix;
+                                 NLB=Prijzen];
+                      RunObject=Page 7002;
+                      RunPageView=SORTING(Sales Type,Sales Code);
+                      RunPageLink=Sales Type=CONST(Customer),
+                                  Sales Code=FIELD(No.);
+                      Image=Price }
+      { 71      ;2   ;Action    ;
+                      CaptionML=[ENU=Line Discounts;
+                                 FRB=Remises ligne;
+                                 NLB=Regelkortingen];
+                      RunObject=Page 7004;
+                      RunPageView=SORTING(Sales Type,Sales Code);
+                      RunPageLink=Sales Type=CONST(Customer),
+                                  Sales Code=FIELD(No.);
+                      Image=LineDiscount }
+      { 82      ;2   ;Action    ;
+                      CaptionML=[ENU=Prepa&yment Percentages;
+                                 FRB=Pourcentages acom&pte;
+                                 NLB=&Vooruitbetalingspercentages];
+                      RunObject=Page 664;
+                      RunPageView=SORTING(Sales Type,Sales Code);
+                      RunPageLink=Sales Type=CONST(Customer),
+                                  Sales Code=FIELD(No.);
+                      Image=PrepaymentPercentages }
+      { 75      ;2   ;Action    ;
+                      CaptionML=[ENU=S&td. Cust. Sales Codes;
+                                 FRB=Codes &vente std client;
+                                 NLB=St&d. klantenverkoopcodes];
+                      RunObject=Page 173;
+                      RunPageLink=Customer No.=FIELD(No.);
+                      Image=CodesList }
+      { 11      ;1   ;ActionGroup;
+                      CaptionML=[ENU=Documents;
+                                 FRB=Documents;
+                                 NLB=Documenten];
+                      Image=Documents }
+      { 27      ;2   ;Action    ;
+                      CaptionML=[ENU=Quotes;
+                                 FRB=Devis;
+                                 NLB=Offertes];
+                      RunObject=Page 9300;
+                      RunPageView=SORTING(Sell-to Customer No.);
+                      RunPageLink=Sell-to Customer No.=FIELD(No.);
+                      Image=Quote }
+      { 28      ;2   ;Action    ;
+                      CaptionML=[ENU=Orders;
+                                 FRB=Commandes;
+                                 NLB=Orders];
+                      RunObject=Page 9305;
+                      RunPageView=SORTING(Sell-to Customer No.);
+                      RunPageLink=Sell-to Customer No.=FIELD(No.);
+                      Image=Document }
+      { 70      ;2   ;Action    ;
+                      CaptionML=[ENU=Return Orders;
+                                 FRB=Retours;
+                                 NLB=Retourorders];
+                      RunObject=Page 9304;
+                      RunPageView=SORTING(Sell-to Customer No.);
+                      RunPageLink=Sell-to Customer No.=FIELD(No.);
+                      Image=ReturnOrder }
+      { 76      ;2   ;ActionGroup;
+                      CaptionML=[ENU=Issued Documents;
+                                 FRB=Documents Çmis;
+                                 NLB=Verzonden documenten];
+                      Image=Documents }
+      { 77      ;3   ;Action    ;
+                      CaptionML=[ENU=Issued &Reminders;
+                                 FRB=&Relances Çmises;
+                                 NLB=Verzonden &aanmaningen];
+                      RunObject=Page 440;
+                      RunPageView=SORTING(Customer No.,Posting Date);
+                      RunPageLink=Customer No.=FIELD(No.);
+                      Image=OrderReminder }
+      { 78      ;3   ;Action    ;
+                      CaptionML=[ENU=Issued &Finance Charge Memos;
+                                 FRB=Fact&ures d'intÇràts Çmises;
+                                 NLB=Verzonden &rentefacturen];
+                      RunObject=Page 452;
+                      RunPageView=SORTING(Customer No.,Posting Date);
+                      RunPageLink=Customer No.=FIELD(No.);
+                      Image=FinChargeMemo }
+      { 65      ;2   ;Action    ;
+                      CaptionML=[ENU=Blanket Orders;
+                                 FRB=Commandes ouvertes;
+                                 NLB=Raamcontracten];
+                      RunObject=Page 9303;
+                      RunPageView=SORTING(Document Type,Sell-to Customer No.);
+                      RunPageLink=Sell-to Customer No.=FIELD(No.);
+                      Image=BlanketOrder }
+      { 13      ;1   ;ActionGroup;
+                      CaptionML=[ENU=Credit Card;
+                                 FRB=Carte de crÇdit;
+                                 NLB=Creditcard];
+                      Image=CreditCard }
+      { 15      ;2   ;ActionGroup;
+                      CaptionML=[ENU=Credit Cards;
+                                 FRB=Cartes de crÇdit;
+                                 NLB=Creditcards];
+                      Image=CreditCard }
+      { 85      ;3   ;Action    ;
+                      CaptionML=[ENU=C&redit Cards;
+                                 FRB=Cartes de c&rÇdit;
+                                 NLB=C&reditcards];
+                      RunObject=Page 828;
+                      RunPageLink=Customer No.=FIELD(No.);
+                      Image=CreditCard }
+      { 86      ;3   ;Action    ;
+                      CaptionML=[ENU=Credit Cards Transaction Lo&g Entries;
+                                 FRB=êcritures du re&gistre des transactions des cartes de crÇdit;
+                                 NLB=Vermeldingen in transactielog&boek voor creditcards];
+                      RunObject=Page 829;
+                      RunPageLink=Customer No.=FIELD(No.);
+                      Image=CreditCardLog }
+      { 14      ;1   ;ActionGroup;
+                      CaptionML=[ENU=Service;
+                                 FRB=Service;
+                                 NLB=Service];
+                      Image=ServiceItem }
+      { 81      ;2   ;Action    ;
+                      CaptionML=[ENU=Service Orders;
+                                 FRB=Commandes service;
+                                 NLB=Serviceorders];
+                      RunObject=Page 9318;
+                      RunPageView=SORTING(Document Type,Customer No.);
+                      RunPageLink=Customer No.=FIELD(No.);
+                      Image=Document }
+      { 68      ;2   ;Action    ;
+                      CaptionML=[ENU=Ser&vice Contracts;
+                                 FRB=&Contrats de service;
+                                 NLB=Servicec&ontracten];
+                      RunObject=Page 6065;
+                      RunPageView=SORTING(Customer No.,Ship-to Code);
+                      RunPageLink=Customer No.=FIELD(No.);
+                      Image=ServiceAgreement }
+      { 69      ;2   ;Action    ;
+                      CaptionML=[ENU=Service &Items;
+                                 FRB=Ar&ticles de service;
+                                 NLB=Serviceart&ikelen];
+                      RunObject=Page 5988;
+                      RunPageView=SORTING(Customer No.,Ship-to Code,Item No.,Serial No.);
+                      RunPageLink=Customer No.=FIELD(No.);
+                      Image=ServiceItem }
+      { 1900000005;0 ;ActionContainer;
+                      ActionContainerType=NewDocumentItems }
+      { 1902575205;1 ;Action    ;
+                      CaptionML=[ENU=Blanket Sales Order;
+                                 FRB=Commande ouverte vente;
+                                 NLB=Verkoopraamcontract];
+                      RunObject=Page 507;
+                      RunPageLink=Sell-to Customer No.=FIELD(No.);
+                      Promoted=No;
+                      Image=BlanketOrder;
+                      PromotedCategory=New;
+                      RunPageMode=Create }
+      { 1900246505;1 ;Action    ;
+                      CaptionML=[ENU=Sales Quote;
+                                 FRB=Devis;
+                                 NLB=Verk.-offerte];
+                      RunObject=Page 41;
+                      RunPageLink=Sell-to Customer No.=FIELD(No.);
+                      Promoted=Yes;
+                      Image=Quote;
+                      PromotedCategory=New;
+                      RunPageMode=Create }
+      { 1906384905;1 ;Action    ;
+                      CaptionML=[ENU=Sales Invoice;
+                                 FRB=Facture vente;
+                                 NLB=Verk.-factuur];
+                      RunObject=Page 43;
+                      RunPageLink=Sell-to Customer No.=FIELD(No.);
+                      Promoted=Yes;
+                      Image=Invoice;
+                      PromotedCategory=New;
+                      RunPageMode=Create }
+      { 1904747105;1 ;Action    ;
+                      CaptionML=[ENU=Sales Order;
+                                 FRB=Commande vente;
+                                 NLB=Verkooporder];
+                      RunObject=Page 42;
+                      RunPageLink=Sell-to Customer No.=FIELD(No.);
+                      Promoted=Yes;
+                      Image=Document;
+                      PromotedCategory=New;
+                      RunPageMode=Create }
+      { 1902583505;1 ;Action    ;
+                      CaptionML=[ENU=Sales Credit Memo;
+                                 FRB=Avoir vente;
+                                 NLB=Verk.-creditnota];
+                      RunObject=Page 44;
+                      RunPageLink=Sell-to Customer No.=FIELD(No.);
+                      Promoted=No;
+                      Image=CreditMemo;
+                      PromotedCategory=New;
+                      RunPageMode=Create }
+      { 1905163705;1 ;Action    ;
+                      CaptionML=[ENU=Sales Return Order;
+                                 FRB=Retour vente;
+                                 NLB=Verkoopretourorder];
+                      RunObject=Page 6630;
+                      RunPageLink=Sell-to Customer No.=FIELD(No.);
+                      Promoted=No;
+                      Image=ReturnOrder;
+                      PromotedCategory=New;
+                      RunPageMode=Create }
+      { 1905185205;1 ;Action    ;
+                      CaptionML=[ENU=Service Quote;
+                                 FRB=Devis service;
+                                 NLB=Serviceofferte];
+                      RunObject=Page 5964;
+                      RunPageLink=Customer No.=FIELD(No.);
+                      Promoted=No;
+                      Image=Quote;
+                      PromotedCategory=New;
+                      RunPageMode=Create }
+      { 1902079405;1 ;Action    ;
+                      CaptionML=[ENU=Service Invoice;
+                                 FRB=Facture service;
+                                 NLB=Servicefactuur];
+                      RunObject=Page 5933;
+                      RunPageLink=Customer No.=FIELD(No.);
+                      Promoted=No;
+                      Image=Invoice;
+                      PromotedCategory=New;
+                      RunPageMode=Create }
+      { 1907102005;1 ;Action    ;
+                      CaptionML=[ENU=Service Order;
+                                 FRB=Commande service;
+                                 NLB=Serviceorder];
+                      RunObject=Page 5900;
+                      RunPageLink=Customer No.=FIELD(No.);
+                      Promoted=No;
+                      Image=Document;
+                      PromotedCategory=New;
+                      RunPageMode=Create }
+      { 1901662105;1 ;Action    ;
+                      CaptionML=[ENU=Service Credit Memo;
+                                 FRB=Avoir service;
+                                 NLB=Servicecreditnota];
+                      RunObject=Page 5935;
+                      RunPageLink=Customer No.=FIELD(No.);
+                      Promoted=No;
+                      Image=CreditMemo;
+                      PromotedCategory=New;
+                      RunPageMode=Create }
+      { 1903839805;1 ;Action    ;
+                      CaptionML=[ENU=Reminder;
+                                 FRB=Relance;
+                                 NLB=Aanmaning];
+                      RunObject=Page 434;
+                      RunPageLink=Customer No.=FIELD(No.);
+                      Promoted=Yes;
+                      Image=Reminder;
+                      PromotedCategory=New;
+                      RunPageMode=Create }
+      { 1901102005;1 ;Action    ;
+                      CaptionML=[ENU=Finance Charge Memo;
+                                 FRB=Facture d'intÇràts;
+                                 NLB=Rentefactuur];
+                      RunObject=Page 446;
+                      RunPageLink=Customer No.=FIELD(No.);
+                      Promoted=No;
+                      Image=FinChargeMemo;
+                      PromotedCategory=New;
+                      RunPageMode=Create }
+      { 1900000004;0 ;ActionContainer;
+                      ActionContainerType=ActionItems }
+      { 55      ;1   ;ActionGroup;
+                      CaptionML=[ENU=Request Approval;
+                                 FRB=Approbation demande achat;
+                                 NLB=Goedkeuring aanvragen];
+                      Image=SendApprovalRequest }
+      { 51      ;2   ;Action    ;
+                      Name=SendApprovalRequest;
+                      CaptionML=[ENU=Send A&pproval Request;
+                                 FRB=Envoyer demande d'a&pprobation;
+                                 NLB=G&oedkeuringsaanvraag verzenden];
+                      Enabled=NOT OpenApprovalEntriesExist;
+                      Image=SendApprovalRequest;
+                      OnAction=VAR
+                                 ApprovalsMgmt@1001 : Codeunit 1535;
+                               BEGIN
+                                 IF ApprovalsMgmt.CheckCustomerApprovalsWorkflowEnabled(Rec) THEN
+                                   ApprovalsMgmt.OnSendCustomerForApproval(Rec);
+                               END;
+                                }
+      { 39      ;2   ;Action    ;
+                      Name=CancelApprovalRequest;
+                      CaptionML=[ENU=Cancel Approval Re&quest;
+                                 FRB=Annuler demande d'appro&bation;
+                                 NLB=&Goedkeuringsaanvraag annuleren];
+                      Enabled=OpenApprovalEntriesExist;
+                      Image=Cancel;
+                      OnAction=VAR
+                                 ApprovalsMgmt@1001 : Codeunit 1535;
+                               BEGIN
+                                 ApprovalsMgmt.OnCancelCustomerApprovalRequest(Rec);
+                               END;
+                                }
+      { 1900839804;1 ;Action    ;
+                      CaptionML=[ENU=Cash Receipt Journal;
+                                 FRB=Feuille räglement;
+                                 NLB=Ontvangstendagboek];
+                      RunObject=Page 255;
+                      Promoted=Yes;
+                      Image=CashReceiptJournal;
+                      PromotedCategory=Process }
+      { 1905171704;1 ;Action    ;
+                      CaptionML=[ENU=Sales Journal;
+                                 FRB=Feuille vente;
+                                 NLB=Verkoopdagboek];
+                      RunObject=Page 253;
+                      Promoted=Yes;
+                      Image=Journals;
+                      PromotedCategory=Process }
+      { 1900000006;0 ;ActionContainer;
+                      ActionContainerType=Reports }
+      { 3       ;1   ;ActionGroup;
+                      CaptionML=[ENU=General;
+                                 FRB=GÇnÇral;
+                                 NLB=Algemeen] }
+      { 1100084000;2 ;Action    ;
+                      Name=OpenWNPText;
+                      CaptionML=ENU=Open WaldoNAVPad Text;
+                      OnAction=BEGIN
+                                 ThisOpenWNPText;
+                               END;
+                                }
+      { 1905562606;2 ;Action    ;
+                      CaptionML=[ENU=Customer List;
+                                 FRB=Liste des clients;
+                                 NLB=Klantenoverzicht];
+                      RunObject=Report 101;
+                      Promoted=No;
+                      Image=Report;
+                      PromotedCategory=Report }
+      { 1901007206;2 ;Action    ;
+                      CaptionML=[ENU=Customer Register;
+                                 FRB=Historique des transactions client;
+                                 NLB=Klant - Journaal];
+                      RunObject=Report 103;
+                      Promoted=No;
+                      Image=Report;
+                      PromotedCategory=Report }
+      { 1907152806;2 ;Action    ;
+                      CaptionML=[ENU=Customer - Top 10 List;
+                                 FRB=Clients : Palmaräs;
+                                 NLB=Klant - Top 10];
+                      RunObject=Report 111;
+                      Promoted=Yes;
+                      Image=Report;
+                      PromotedCategory=Report }
+      { 5       ;1   ;ActionGroup;
+                      CaptionML=[ENU=Sales;
+                                 FRB=Ventes;
+                                 NLB=Verkoop];
+                      Image=Sales }
+      { 1905727106;2 ;Action    ;
+                      CaptionML=[ENU=Customer - Order Summary;
+                                 FRB=Clients : Liste des commandes;
+                                 NLB=Klant - Samenvatting orders];
+                      RunObject=Report 107;
+                      Promoted=Yes;
+                      Image=Report;
+                      PromotedCategory=Report }
+      { 1900172506;2 ;Action    ;
+                      CaptionML=[ENU=Customer - Order Detail;
+                                 FRB=Clients : DÇtail des commandes;
+                                 NLB=Klant - Details orders];
+                      RunObject=Report 108;
+                      Promoted=No;
+                      Image=Report;
+                      PromotedCategory=Report }
+      { 1906073506;2 ;Action    ;
+                      CaptionML=[ENU=Customer - Sales List;
+                                 FRB=Clients : Liste des ventes;
+                                 NLB=Klant - Verkoopoverzicht];
+                      RunObject=Report 119;
+                      Promoted=Yes;
+                      Image=Report;
+                      PromotedCategory=Report }
+      { 1904190506;2 ;Action    ;
+                      CaptionML=[ENU=Sales Statistics;
+                                 FRB=Statistiques vente;
+                                 NLB=Verkoopstatistiek];
+                      RunObject=Report 112;
+                      Promoted=No;
+                      Image=Report;
+                      PromotedCategory=Report }
+      { 1900760706;2 ;Action    ;
+                      CaptionML=[ENU=Customer/Item Sales;
+                                 FRB=Ventes d'articles par client;
+                                 NLB=Verkoop klant/artikel];
+                      RunObject=Report 113;
+                      Promoted=No;
+                      Image=Report;
+                      PromotedCategory=Report }
+      { 7       ;1   ;ActionGroup;
+                      CaptionML=[ENU=Financial Management;
+                                 FRB=Gestion financiäre;
+                                 NLB=Financieel beheer];
+                      Image=Report }
+      { 1906871306;2 ;Action    ;
+                      CaptionML=[ENU=Customer - Detail Trial Bal.;
+                                 FRB=Clients : Grand livre client;
+                                 NLB=Klant - Historiek];
+                      RunObject=Report 104;
+                      Promoted=No;
+                      Image=Report;
+                      PromotedCategory=Report }
+      { 1907944606;2 ;Action    ;
+                      CaptionML=[ENU=Customer - Summary Aging;
+                                 FRB=Clients : êchÇancier;
+                                 NLB=Klant - Open posten];
+                      RunObject=Report 105;
+                      Promoted=No;
+                      Image=Report;
+                      PromotedCategory=Report }
+      { 1906813206;2 ;Action    ;
+                      CaptionML=[ENU=Customer Detailed Aging;
+                                 FRB=êcritures client ouvertes;
+                                 NLB=Klant - Vervallen posten];
+                      RunObject=Report 106;
+                      Promoted=No;
+                      Image=Report;
+                      PromotedCategory=Report }
+      { 1055    ;2   ;Action    ;
+                      Name=Statement;
+                      CaptionML=[ENU=Statement;
+                                 FRB=RelevÇ;
+                                 NLB=Rekeningoverzicht];
+                      RunObject=Codeunit 8810;
+                      Promoted=Yes;
+                      Image=Report;
+                      PromotedCategory=Report }
+      { 1903839806;2 ;Action    ;
+                      CaptionML=[ENU=Reminder;
+                                 FRB=Relance;
+                                 NLB=Aanmaning];
+                      RunObject=Report 117;
+                      Promoted=No;
+                      Image=Reminder;
+                      PromotedCategory=Report }
+      { 1900711606;2 ;Action    ;
+                      CaptionML=[ENU=Aged Accounts Receivable;
+                                 FRB=ComptabilitÇ client ÉgÇe;
+                                 NLB=Vervallen vorderingen];
+                      RunObject=Report 120;
+                      Promoted=Yes;
+                      Image=Report;
+                      PromotedCategory=Report }
+      { 1902299006;2 ;Action    ;
+                      CaptionML=[ENU=Customer - Balance to Date;
+                                 FRB=Clients : êcritures ouvertes;
+                                 NLB=Klant - Saldo t/m datum];
+                      RunObject=Report 121;
+                      Promoted=Yes;
+                      Image=Report;
+                      PromotedCategory=Report }
+      { 1906359306;2 ;Action    ;
+                      CaptionML=[ENU=Customer - Trial Balance;
+                                 FRB=Clients : Balance;
+                                 NLB=Klant - Proefbalans];
+                      RunObject=Report 129;
+                      Promoted=No;
+                      Image=Report;
+                      PromotedCategory=Report }
+      { 1904039606;2 ;Action    ;
+                      CaptionML=[ENU=Customer - Payment Receipt;
+                                 FRB=Reáu paiement client;
+                                 NLB=Klant - Betalingsontvangst];
+                      RunObject=Report 211;
+                      Promoted=Yes;
+                      Image=Report;
+                      PromotedCategory=Report }
+    }
+  }
+  CONTROLS
+  {
+    { 1900000001;0;Container;
+                ContainerType=ContentArea }
+
+    { 1   ;1   ;Group     ;
+                GroupType=Repeater }
+
+    { 2   ;2   ;Field     ;
+                SourceExpr="No." }
+
+    { 4   ;2   ;Field     ;
+                SourceExpr=Name }
+
+    { 40  ;2   ;Field     ;
+                SourceExpr="Responsibility Center" }
+
+    { 43  ;2   ;Field     ;
+                SourceExpr="Location Code" }
+
+    { 54  ;2   ;Field     ;
+                SourceExpr="Post Code";
+                Visible=FALSE }
+
+    { 30  ;2   ;Field     ;
+                SourceExpr="Country/Region Code";
+                Visible=FALSE }
+
+    { 6   ;2   ;Field     ;
+                SourceExpr="Phone No." }
+
+    { 32  ;2   ;Field     ;
+                SourceExpr="Fax No.";
+                Visible=FALSE }
+
+    { 79  ;2   ;Field     ;
+                SourceExpr="IC Partner Code";
+                Visible=FALSE }
+
+    { 34  ;2   ;Field     ;
+                SourceExpr=Contact }
+
+    { 36  ;2   ;Field     ;
+                SourceExpr="Salesperson Code";
+                Visible=FALSE }
+
+    { 38  ;2   ;Field     ;
+                SourceExpr="Customer Posting Group";
+                Visible=FALSE }
+
+    { 56  ;2   ;Field     ;
+                SourceExpr="Gen. Bus. Posting Group";
+                Visible=FALSE }
+
+    { 52  ;2   ;Field     ;
+                SourceExpr="VAT Bus. Posting Group";
+                Visible=FALSE }
+
+    { 46  ;2   ;Field     ;
+                SourceExpr="Customer Price Group";
+                Visible=FALSE }
+
+    { 72  ;2   ;Field     ;
+                SourceExpr="Customer Disc. Group";
+                Visible=FALSE }
+
+    { 8   ;2   ;Field     ;
+                SourceExpr="Payment Terms Code";
+                Visible=FALSE }
+
+    { 61  ;2   ;Field     ;
+                SourceExpr="Reminder Terms Code";
+                Visible=FALSE }
+
+    { 48  ;2   ;Field     ;
+                SourceExpr="Fin. Charge Terms Code";
+                Visible=FALSE }
+
+    { 10  ;2   ;Field     ;
+                SourceExpr="Currency Code";
+                Visible=FALSE }
+
+    { 50  ;2   ;Field     ;
+                SourceExpr="Language Code";
+                Visible=FALSE }
+
+    { 12  ;2   ;Field     ;
+                SourceExpr="Search Name" }
+
+    { 1102601000;2;Field  ;
+                SourceExpr="Credit Limit (LCY)";
+                Visible=FALSE }
+
+    { 1102601002;2;Field  ;
+                SourceExpr=Blocked;
+                Visible=FALSE }
+
+    { 1102601004;2;Field  ;
+                SourceExpr="Last Date Modified";
+                Visible=FALSE }
+
+    { 1102601006;2;Field  ;
+                SourceExpr="Application Method";
+                Visible=FALSE }
+
+    { 1102601008;2;Field  ;
+                SourceExpr="Combine Shipments";
+                Visible=FALSE }
+
+    { 1102601010;2;Field  ;
+                SourceExpr=Reserve;
+                Visible=FALSE }
+
+    { 1102601012;2;Field  ;
+                SourceExpr="Shipping Advice";
+                Visible=FALSE }
+
+    { 1102601014;2;Field  ;
+                SourceExpr="Shipping Agent Code";
+                Visible=FALSE }
+
+    { 1102601016;2;Field  ;
+                SourceExpr="Base Calendar Code";
+                Visible=FALSE }
+
+    { 1900000007;0;Container;
+                ContainerType=FactBoxArea }
+
+    { 99  ;1   ;Part      ;
+                SubPageLink=No.=FIELD(No.);
+                PagePartID=Page5360;
+                Visible=CRMIsCoupledToRecord;
+                PartType=Page }
+
+    { 35  ;1   ;Part      ;
+                SubPageLink=Source Type=CONST(Customer),
+                            Source No.=FIELD(No.);
+                PagePartID=Page875;
+                Visible=SocialListeningVisible;
+                PartType=Page }
+
+    { 33  ;1   ;Part      ;
+                SubPageLink=Source Type=CONST(Customer),
+                            Source No.=FIELD(No.);
+                PagePartID=Page876;
+                Visible=SocialListeningSetupVisible;
+                PartType=Page;
+                UpdatePropagation=Both }
+
+    { 1903720907;1;Part   ;
+                SubPageLink=No.=FIELD(No.),
+                            Currency Filter=FIELD(Currency Filter),
+                            Date Filter=FIELD(Date Filter),
+                            Global Dimension 1 Filter=FIELD(Global Dimension 1 Filter),
+                            Global Dimension 2 Filter=FIELD(Global Dimension 2 Filter);
+                PagePartID=Page9080;
+                Visible=TRUE;
+                PartType=Page }
+
+    { 1907234507;1;Part   ;
+                SubPageLink=No.=FIELD(No.),
+                            Currency Filter=FIELD(Currency Filter),
+                            Date Filter=FIELD(Date Filter),
+                            Global Dimension 1 Filter=FIELD(Global Dimension 1 Filter),
+                            Global Dimension 2 Filter=FIELD(Global Dimension 2 Filter);
+                PagePartID=Page9081;
+                Visible=FALSE;
+                PartType=Page }
+
+    { 1902018507;1;Part   ;
+                SubPageLink=No.=FIELD(No.),
+                            Currency Filter=FIELD(Currency Filter),
+                            Date Filter=FIELD(Date Filter),
+                            Global Dimension 1 Filter=FIELD(Global Dimension 1 Filter),
+                            Global Dimension 2 Filter=FIELD(Global Dimension 2 Filter);
+                PagePartID=Page9082;
+                Visible=TRUE;
+                PartType=Page }
+
+    { 1900316107;1;Part   ;
+                SubPageLink=No.=FIELD(No.),
+                            Currency Filter=FIELD(Currency Filter),
+                            Date Filter=FIELD(Date Filter),
+                            Global Dimension 1 Filter=FIELD(Global Dimension 1 Filter),
+                            Global Dimension 2 Filter=FIELD(Global Dimension 2 Filter);
+                PagePartID=Page9084;
+                Visible=FALSE;
+                PartType=Page }
+
+    { 1907829707;1;Part   ;
+                SubPageLink=No.=FIELD(No.),
+                            Currency Filter=FIELD(Currency Filter),
+                            Date Filter=FIELD(Date Filter),
+                            Global Dimension 1 Filter=FIELD(Global Dimension 1 Filter),
+                            Global Dimension 2 Filter=FIELD(Global Dimension 2 Filter);
+                PagePartID=Page9085;
+                Visible=FALSE;
+                PartType=Page }
+
+    { 1902613707;1;Part   ;
+                SubPageLink=No.=FIELD(No.),
+                            Currency Filter=FIELD(Currency Filter),
+                            Date Filter=FIELD(Date Filter),
+                            Global Dimension 1 Filter=FIELD(Global Dimension 1 Filter),
+                            Global Dimension 2 Filter=FIELD(Global Dimension 2 Filter);
+                PagePartID=Page9086;
+                Visible=FALSE;
+                PartType=Page }
+
+    { 1900383207;1;Part   ;
+                Visible=TRUE;
+                PartType=System;
+                SystemPartID=RecordLinks }
+
+    { 1905767507;1;Part   ;
+                Visible=TRUE;
+                PartType=System;
+                SystemPartID=Notes }
+
+  }
+  CODE
+  {
+    VAR
+      ApprovalsMgmt@1005 : Codeunit 1535;
+      SocialListeningSetupVisible@1000 : Boolean;
+      SocialListeningVisible@1001 : Boolean;
+      CRMIntegrationEnabled@1003 : Boolean;
+      CRMIsCoupledToRecord@1002 : Boolean;
+      OpenApprovalEntriesExist@1004 : Boolean;
+
+    PROCEDURE GetSelectionFilter@2() : Text;
+    VAR
+      Cust@1001 : Record 18;
+      SelectionFilterManagement@1002 : Codeunit 46;
+    BEGIN
+      CurrPage.SETSELECTIONFILTER(Cust);
+      EXIT(SelectionFilterManagement.GetSelectionFilterForCustomer(Cust));
+    END;
+
+    PROCEDURE SetSelection@1(VAR Cust@1000 : Record 18);
+    BEGIN
+      CurrPage.SETSELECTIONFILTER(Cust);
+    END;
+
+    LOCAL PROCEDURE SetSocialListeningFactboxVisibility@3();
+    VAR
+      SocialListeningMgt@1000 : Codeunit 871;
+    BEGIN
+      SocialListeningMgt.GetCustFactboxVisibility(Rec,SocialListeningSetupVisible,SocialListeningVisible);
+    END;
+
+    LOCAL PROCEDURE ThisOpenWNPText@1100084000();
+    BEGIN
+      ShowWNPTexts(TRUE);
+    END;
+
+    BEGIN
+    END.
+  }
+}
+

@@ -1,0 +1,35 @@
+OBJECT Codeunit 56109 WNP Subscribers
+{
+  OBJECT-PROPERTIES
+  {
+    Date=27/01/16;
+    Time=17:43:25;
+    Modified=Yes;
+    Version List=WaldoNAVPad;
+  }
+  PROPERTIES
+  {
+    OnRun=BEGIN
+          END;
+
+  }
+  CODE
+  {
+
+    [EventSubscriber(Codeunit,1,OnAfterGetDatabaseTableTriggerSetup,"",Error,Error)]
+    LOCAL PROCEDURE SetUpWaldoNAVPad_OnAfterGetDatabaseTableTriggerSetup@1100084000(TableId@1100084000 : Integer;VAR OnDatabaseInsert@1100084001 : Boolean;VAR OnDatabaseModify@1100084002 : Boolean;VAR OnDatabaseDelete@1100084003 : Boolean;VAR OnDatabaseRename@1100084004 : Boolean);
+    BEGIN
+      MESSAGE('TODO: SetUpWaldoNAVPad_OnAfterGetDatabaseTableTriggerSetup');
+    END;
+
+    [EventSubscriber(Codeunit,1,OnAfterOnDatabaseRename)]
+    LOCAL PROCEDURE HandleWaldoNAVPadTexts_OnAfterOnDatabaseRename@1100084003(RecRef@1100084000 : RecordRef;xRecRef@1100084001 : RecordRef);
+    BEGIN
+      MESSAGE('TODO: HandleWaldoNAVPadTexts_OnAfterOnDatabaseRename');
+    END;
+
+    BEGIN
+    END.
+  }
+}
+

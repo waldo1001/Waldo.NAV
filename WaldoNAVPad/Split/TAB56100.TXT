@@ -1,0 +1,33 @@
+OBJECT Table 56100 WNP Blob
+{
+  OBJECT-PROPERTIES
+  {
+    Date=27/01/16;
+    Time=23:13:52;
+    Modified=Yes;
+    Version List=WaldoNAVPad;
+  }
+  PROPERTIES
+  {
+  }
+  FIELDS
+  {
+    { 1   ;   ;Entry No.           ;Integer        }
+    { 2   ;   ;Record ID           ;RecordID       }
+    { 3   ;   ;Blog                ;BLOB           }
+  }
+  KEYS
+  {
+    {    ;Entry No.                               ;Clustered=Yes }
+  }
+  FIELDGROUPS
+  {
+  }
+  CODE
+  {
+
+    BEGIN
+    END.
+  }
+}
+
