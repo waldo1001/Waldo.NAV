@@ -1,0 +1,40 @@
+OBJECT Modification Customer(Table 18)
+{
+  OBJECT-PROPERTIES
+  {
+    Date=27/01/16;
+    Time=21:57:28;
+    Modified=Yes;
+    Version List=NAVW19.00.00.43897,NAVBE9.00.00.43897,WaldoNAVPad;
+  }
+  PROPERTIES
+  {
+    Target=Customer(Table 18);
+  }
+  CHANGES
+  {
+    { Insertion         ;InsertAfter=GetBillToCustomerNo(PROCEDURE 27);
+                         ChangedElements=PROCEDURECollection
+                         {
+                           PROCEDURE ShowWNPTexts@1100084000(Editable@1100084000 : Boolean);
+                           VAR
+                             WNPShowTextsMeth@1100084001 : Codeunit 56100;
+                           BEGIN
+                             WNPShowTextsMeth.ShowTexts(Editable, Rec);
+                           END;
+
+                         }
+                          }
+    { PropertyModification;
+                         Property=Version List;
+                         OriginalValue=NAVW19.00.00.43897,NAVBE9.00.00.43897;
+                         ModifiedValue=NAVW19.00.00.43897,NAVBE9.00.00.43897,WaldoNAVPad }
+  }
+  CODE
+  {
+
+    BEGIN
+    END.
+  }
+}
+

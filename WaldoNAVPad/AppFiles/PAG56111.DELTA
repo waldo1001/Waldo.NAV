@@ -1,0 +1,48 @@
+OBJECT Page 56111 WNP Texts
+{
+  OBJECT-PROPERTIES
+  {
+    Date=28/01/16;
+    Time=17:39:51;
+    Modified=Yes;
+    Version List=WaldoNAVPad;
+  }
+  PROPERTIES
+  {
+    SourceTable=Table56101;
+    PageType=List;
+  }
+  CONTROLS
+  {
+    { 1100084000;0;Container;
+                ContainerType=ContentArea }
+
+    { 1100084001;1;Group  ;
+                Name=Group;
+                GroupType=Repeater }
+
+    { 1100084002;2;Field  ;
+                SourceExpr="Entry No" }
+
+    { 1100084003;2;Field  ;
+                Name=RecordID;
+                SourceExpr=FORMAT("Record ID") }
+
+    { 1100084004;2;Field  ;
+                SourceExpr=Textline }
+
+    { 1100084005;2;Field  ;
+                SourceExpr=Separator }
+
+    { 1100084006;2;Field  ;
+                SourceExpr=TableNo }
+
+  }
+  CODE
+  {
+
+    BEGIN
+    END.
+  }
+}
+

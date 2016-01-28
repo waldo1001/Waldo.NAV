@@ -1,0 +1,42 @@
+OBJECT Page 56110 WNP Blobs
+{
+  OBJECT-PROPERTIES
+  {
+    Date=28/01/16;
+    Time=17:39:56;
+    Modified=Yes;
+    Version List=WaldoNAVPad;
+  }
+  PROPERTIES
+  {
+    SourceTable=Table56100;
+    PageType=List;
+  }
+  CONTROLS
+  {
+    { 1100084000;0;Container;
+                ContainerType=ContentArea }
+
+    { 1100084001;1;Group  ;
+                Name=Group;
+                GroupType=Repeater }
+
+    { 1100084002;2;Field  ;
+                SourceExpr="Entry No." }
+
+    { 1100084003;2;Field  ;
+                Name=RecordID;
+                SourceExpr=FORMAT("Record ID") }
+
+    { 1100084004;2;Field  ;
+                SourceExpr=Blob }
+
+  }
+  CODE
+  {
+
+    BEGIN
+    END.
+  }
+}
+

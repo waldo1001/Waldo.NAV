@@ -1,0 +1,73 @@
+OBJECT Codeunit 71000 WNP WaldoNAVPad Class
+{
+  OBJECT-PROPERTIES
+  {
+    Date=28/01/16;
+    Time=17:38:57;
+    Modified=Yes;
+    Version List=WaldoNAVPad;
+  }
+  PROPERTIES
+  {
+    OnRun=BEGIN
+          END;
+
+  }
+  CODE
+  {
+    VAR
+      WNPWaldoNAVPadBuffer@1100084000 : TEMPORARY Record 71000;
+      MaxLenght@1100084003 : Integer;
+      CurrentObjectNr@1100084001 : Integer;
+      CurrentObject@1100084002 : DotNet "'mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089'.System.Object";
+
+    PROCEDURE Initialize@1100084000(VAR Text@1100084000 : Text;pMaxLength@1100084001 : Integer);
+    BEGIN
+      SetMaxLenght(pMaxLength);
+      ParseText(Text);
+
+      FINDFIRST;
+    END;
+
+    PROCEDURE SetMaxLenght@1100084007(pMaxLenght@1100084000 : Integer);
+    BEGIN
+      MaxLenght := pMaxLenght;
+    END;
+
+    PROCEDURE GetMaxLength@1100084009() : Integer;
+    BEGIN
+      EXIT(MaxLenght);
+    END;
+
+    PROCEDURE GetCurrentTextLine@1100084005() : Text;
+    BEGIN
+      EXIT(WNPWaldoNAVPadBuffer.Textline);
+    END;
+
+    PROCEDURE FINDFIRST@1100084004() : Boolean;
+    BEGIN
+      EXIT(WNPWaldoNAVPadBuffer.FINDSET);
+    END;
+
+    PROCEDURE COUNT@1100084003() : Integer;
+    BEGIN
+      EXIT(WNPWaldoNAVPadBuffer.COUNT);
+    END;
+
+    PROCEDURE NEXT@1100084001() : Integer;
+    BEGIN
+      EXIT(WNPWaldoNAVPadBuffer.NEXT);
+    END;
+
+    LOCAL PROCEDURE ParseText@1100084002(VAR Text@1100084000 : Text);
+    VAR
+      WNPWaldoNAVPadParseTextMeth@1100084001 : Codeunit 71001;
+    BEGIN
+      WNPWaldoNAVPadParseTextMeth.ParseText(Text,GetMaxLength,WNPWaldoNAVPadBuffer);
+    END;
+
+    BEGIN
+    END.
+  }
+}
+

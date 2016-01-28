@@ -1,0 +1,64 @@
+OBJECT Codeunit 56110 WNP Test
+{
+  OBJECT-PROPERTIES
+  {
+    Date=27/01/16;
+    Time=17:38:29;
+    Modified=Yes;
+    Version List=WaldoNAVPad;
+  }
+  PROPERTIES
+  {
+    Subtype=Test;
+    OnRun=BEGIN
+          END;
+
+  }
+  CODE
+  {
+
+    [Test]
+    [HandlerFunctions(DialogHandlerChangeToWaldo)]
+    PROCEDURE TestShowDialogChange@1100084001();
+    VAR
+      WNPShowDialogMeth@1100084000 : Codeunit 56103;
+      MyText@1100084001 : Text;
+    BEGIN
+      MyText := 'TestText';
+      WNPShowDialogMeth.ShowDialog(MyText);
+      IF MyText <> 'waldo' THEN ERROR('Text Should have changed to waldo');
+    END;
+
+    [Test]
+    [HandlerFunctions(DialogHandlerCancel)]
+    PROCEDURE TestShowDialogCancel@1100084007();
+    VAR
+      WNPShowDialogMeth@1100084000 : Codeunit 56103;
+      MyText@1100084001 : Text;
+    BEGIN
+      MyText := 'TestText';
+      WNPShowDialogMeth.ShowDialog(MyText);
+      IF MyText <> 'TestText' THEN ERROR('Text should not have changed!');
+    END;
+
+    [ModalPageHandler]
+    PROCEDURE DialogHandlerChangeToWaldo@1100084003(VAR WNPTextbox@1100084000 : TestPage 56100);
+    BEGIN
+      WNPTextbox.FullText.VALUE := 'waldo';
+
+      //Response := WNPTextbox.OK;
+    END;
+
+    [ModalPageHandler]
+    PROCEDURE DialogHandlerCancel@1100084006(VAR WNPTextbox@1100084000 : TestPage 56100);
+    VAR
+      Response@1100084001 : Action;
+    BEGIN
+      //WNPTextbox.Cancel;
+    END;
+
+    BEGIN
+    END.
+  }
+}
+
