@@ -2,8 +2,8 @@ OBJECT Codeunit 56110 WNP Test
 {
   OBJECT-PROPERTIES
   {
-    Date=27/01/16;
-    Time=17:38:29;
+    Date=29/01/16;
+    Time=15:04:27;
     Modified=Yes;
     Version List=WaldoNAVPad;
   }
@@ -21,11 +21,11 @@ OBJECT Codeunit 56110 WNP Test
     [HandlerFunctions(DialogHandlerChangeToWaldo)]
     PROCEDURE TestShowDialogChange@1100084001();
     VAR
-      WNPShowDialogMeth@1100084000 : Codeunit 56103;
+      WNPShowDialogMeth@1100084000 : Codeunit 56100;
       MyText@1100084001 : Text;
     BEGIN
       MyText := 'TestText';
-      WNPShowDialogMeth.ShowDialog(MyText);
+      WNPShowDialogMeth.ShowTexts(TRUE,MyText);
       IF MyText <> 'waldo' THEN ERROR('Text Should have changed to waldo');
     END;
 
@@ -33,11 +33,11 @@ OBJECT Codeunit 56110 WNP Test
     [HandlerFunctions(DialogHandlerCancel)]
     PROCEDURE TestShowDialogCancel@1100084007();
     VAR
-      WNPShowDialogMeth@1100084000 : Codeunit 56103;
+      WNPShowDialogMeth@1100084000 : Codeunit 56100;
       MyText@1100084001 : Text;
     BEGIN
       MyText := 'TestText';
-      WNPShowDialogMeth.ShowDialog(MyText);
+      WNPShowDialogMeth.ShowTexts(TRUE,MyText);
       IF MyText <> 'TestText' THEN ERROR('Text should not have changed!');
     END;
 
@@ -46,7 +46,6 @@ OBJECT Codeunit 56110 WNP Test
     BEGIN
       WNPTextbox.FullText.VALUE := 'waldo';
 
-      //Response := WNPTextbox.OK;
     END;
 
     [ModalPageHandler]

@@ -2,13 +2,14 @@ OBJECT Page 56100 WNP Textbox
 {
   OBJECT-PROPERTIES
   {
-    Date=28/01/16;
-    Time=17:09:06;
+    Date=29/01/16;
+    Time=15:22:14;
     Modified=Yes;
     Version List=WaldoNAVPad;
   }
   PROPERTIES
   {
+    CaptionML=ENU=waldoNAVPad;
     PageType=Card;
     ActionList=ACTIONS
     {
@@ -27,10 +28,12 @@ OBJECT Page 56100 WNP Textbox
     { 1100084000;;Container;
                 ContainerType=ContentArea }
 
-    { 1100084001;1;Field  ;
+    { 1100084005;1;Group  ;
+                GroupType=GridLayout }
+
+    { 1100084001;2;Field  ;
                 SourceExpr=FullText;
-                MultiLine=Yes;
-                ShowCaption=No }
+                MultiLine=Yes }
 
   }
   CODE
