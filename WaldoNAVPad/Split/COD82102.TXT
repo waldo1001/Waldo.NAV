@@ -1,9 +1,9 @@
-OBJECT Codeunit 56109 WNP Subscribers
+OBJECT Codeunit 82102 WaldoNAVPad Subscribers
 {
   OBJECT-PROPERTIES
   {
-    Date=27/01/16;
-    Time=17:43:25;
+    Date=23/02/16;
+    Time=16:20:14;
     Modified=Yes;
     Version List=WaldoNAVPad;
   }

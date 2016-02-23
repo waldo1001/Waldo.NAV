@@ -1,0 +1,55 @@
+OBJECT Codeunit 82103 WaldoNAVPad TableHasText Meth
+{
+  OBJECT-PROPERTIES
+  {
+    Date=23/02/16;
+    Time=16:46:27;
+    Modified=Yes;
+    Version List=WaldoNAVPad;
+  }
+  PROPERTIES
+  {
+    OnRun=BEGIN
+          END;
+
+  }
+  CODE
+  {
+
+    PROCEDURE TableHasTexts@1100084000(VAR RecRef@1100084002 : RecordRef) ResultHasTexts : Boolean;
+    VAR
+      Handled@1100084003 : Boolean;
+    BEGIN
+      OnBeforeTableHasTexts(RecRef,ResultHasTexts,Handled);
+      ResultHasTexts := DoTableHasTexts(RecRef,Handled);
+      OnAfterTableHasTexts(RecRef);
+    END;
+
+    LOCAL PROCEDURE DoTableHasTexts@1100084002(VAR RecRef@1100084001 : RecordRef;Handled@1100084003 : Boolean) : Boolean;
+    VAR
+      WaldoNAVPadTextstore@1100084002 : Record 82101;
+      Text@1100084004 : Text;
+      UpdatedText@1100084005 : Text;
+    BEGIN
+      IF Handled THEN EXIT;
+    END;
+
+    LOCAL PROCEDURE "--- Event Wrapper"@1100084015();
+    BEGIN
+    END;
+
+    [Integration]
+    LOCAL PROCEDURE OnBeforeTableHasTexts@1100084004(VAR RecRef@1100084002 : RecordRef;VAR ResultHasTexts@1100084001 : Boolean;VAR Handled@1100084000 : Boolean);
+    BEGIN
+    END;
+
+    [Integration]
+    LOCAL PROCEDURE OnAfterTableHasTexts@1100084008(VAR RecRef@1100084001 : RecordRef);
+    BEGIN
+    END;
+
+    BEGIN
+    END.
+  }
+}
+

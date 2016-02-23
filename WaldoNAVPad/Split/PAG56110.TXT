@@ -2,14 +2,14 @@ OBJECT Page 56110 WNP Blobs
 {
   OBJECT-PROPERTIES
   {
-    Date=28/01/16;
-    Time=17:39:56;
+    Date=23/02/16;
+    Time=16:31:10;
     Modified=Yes;
     Version List=WaldoNAVPad;
   }
   PROPERTIES
   {
-    SourceTable=Table56100;
+    SourceTable=Table82100;
     PageType=List;
   }
   CONTROLS

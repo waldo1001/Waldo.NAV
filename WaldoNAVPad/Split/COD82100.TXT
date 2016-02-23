@@ -1,0 +1,42 @@
+OBJECT Codeunit 82100 WaldoNAVPad Class
+{
+  OBJECT-PROPERTIES
+  {
+    Date=23/02/16;
+    Time=13:00:26;
+    Modified=Yes;
+    Version List=WaldoNAVPad;
+  }
+  PROPERTIES
+  {
+    OnRun=BEGIN
+          END;
+
+  }
+  CODE
+  {
+    VAR
+      CurrentRecRef@1100084000 : RecordRef;
+      IsInitialized@1100084001 : Boolean;
+
+    PROCEDURE Initialize@1100084000(RecVariant@1100084000 : Variant);
+    VAR
+      DataTypeManagement@1100084001 : Codeunit 701;
+    BEGIN
+      IsInitialized := DataTypeManagement.GetRecordRef(RecVariant, CurrentRecRef);
+    END;
+
+    PROCEDURE ShowTexts@1100084004(Editable@1100084000 : Boolean);
+    VAR
+      WaldoNAVPadShowTextsMeth@1100084001 : Codeunit 82101;
+      NotInitialized@1100084002 : TextConst 'ENU=Record not initialized.  Please review your code!';
+    BEGIN
+      IF NOT IsInitialized THEN ERROR(NotInitialized);
+      WaldoNAVPadShowTextsMeth.ShowTexts(Editable,CurrentRecRef);
+    END;
+
+    BEGIN
+    END.
+  }
+}
+

@@ -1,35 +1,31 @@
-OBJECT Codeunit 71001 WNP WaldoNAVPad ParseText Meth
+OBJECT Codeunit 82111 WaldoNAVPad Text Parse Meth
 {
   OBJECT-PROPERTIES
   {
-    Date=28/01/16;
-    Time=17:32:55;
+    Date=23/02/16;
+    Time=16:30:17;
     Modified=Yes;
     Version List=WaldoNAVPad;
   }
   PROPERTIES
   {
-    OnRun=VAR
-            WNPWaldoNAVPadBuffer@1100084000 : Record 71000;
-            MyText@1100084002 : DotNet "'mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089'.System.String";
-            SystemEnvironment@1100084001 : DotNet "'mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089'.System.Environment";
-          BEGIN
+    OnRun=BEGIN
           END;
 
   }
   CODE
   {
 
-    PROCEDURE ParseText@1100084001(VAR Text@1100084000 : Text;MaxLength@1100084003 : Integer;VAR ResultWNPWaldoNAVPadBuffer@1100084002 : Record 71000);
+    PROCEDURE ParseText@1100084001(VAR Text@1100084000 : Text;MaxLength@1100084003 : Integer;VAR ResultWaldoNAVPadTextBuffer@1100084002 : Record 82110);
     VAR
       Handled@1100084001 : Boolean;
     BEGIN
       OnBeforeParseText(Text,Handled);
-      DoParseText(Text,MaxLength,ResultWNPWaldoNAVPadBuffer,Handled);
+      DoParseText(Text,MaxLength,ResultWaldoNAVPadTextBuffer,Handled);
       OnAfterParseText(Text);
     END;
 
-    LOCAL PROCEDURE DoParseText@1100084003(VAR Text@1100084001 : Text;MaxLength@1100084007 : Integer;VAR ResultWNPWaldoNAVPadBuffer@1100084002 : Record 71000;VAR Handled@1100084000 : Boolean);
+    LOCAL PROCEDURE DoParseText@1100084003(VAR Text@1100084001 : Text;MaxLength@1100084007 : Integer;VAR ResultWaldoNAVPadTextBuffer@1100084009 : Record 82110;VAR Handled@1100084000 : Boolean);
     VAR
       SystemString@1100084003 : DotNet "'mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089'.System.String";
       LineArray@1100084004 : DotNet "'mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089'.System.Array";
@@ -44,13 +40,13 @@ OBJECT Codeunit 71001 WNP WaldoNAVPad ParseText Meth
       SystemIOStringReader := SystemIOStringReader.StringReader(Text);
       Line := SystemIOStringReader.ReadLine;
       WHILE NOT ISNULL(Line) DO BEGIN
-        ProcessLine(LineNo,Line,MaxLength,ResultWNPWaldoNAVPadBuffer);
+        ProcessLine(LineNo,Line,MaxLength,ResultWaldoNAVPadTextBuffer);
 
         Line := SystemIOStringReader.ReadLine;
       END;
     END;
 
-    LOCAL PROCEDURE ProcessLine@1100084031(VAR LineNo@1100084006 : Integer;VAR Line@1100084000 : DotNet "'mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089'.System.String";MaxLength@1100084002 : Integer;VAR ResultWNPWaldoNAVPadBuffer@1100084005 : Record 71000);
+    LOCAL PROCEDURE ProcessLine@1100084031(VAR LineNo@1100084006 : Integer;VAR Line@1100084000 : DotNet "'mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089'.System.String";MaxLength@1100084002 : Integer;VAR ResultWaldoNAVPadTextBuffer@1100084007 : Record 82110);
     VAR
       SubString@1100084003 : DotNet "'mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089'.System.String";
       SpaceIndex@1100084001 : Integer;
@@ -64,22 +60,22 @@ OBJECT Codeunit 71001 WNP WaldoNAVPad ParseText Meth
         ResultString := SubString;
         IF SpaceIndex < SubString.Length THEN BEGIN
           ResultString := SubString.Substring(0,SpaceIndex);
-          AddToBuffer(LineNo,ResultString,ResultWNPWaldoNAVPadBuffer.Separator::" ", ResultWNPWaldoNAVPadBuffer);
+          AddToBuffer(LineNo,ResultString,ResultWaldoNAVPadTextBuffer.Separator::" ", ResultWaldoNAVPadTextBuffer);
         END ELSE BEGIN
-          AddToBuffer(LineNo,ResultString,ResultWNPWaldoNAVPadBuffer.Separator::Space, ResultWNPWaldoNAVPadBuffer);
+          AddToBuffer(LineNo,ResultString,ResultWaldoNAVPadTextBuffer.Separator::Space, ResultWaldoNAVPadTextBuffer);
         END;
 
         Line := Line.Remove(0,ResultString.Length);
       END;
 
-      AddToBuffer(LineNo,Line,ResultWNPWaldoNAVPadBuffer.Separator::"Carriage Return",ResultWNPWaldoNAVPadBuffer);
+      AddToBuffer(LineNo,Line,ResultWaldoNAVPadTextBuffer.Separator::"Carriage Return",ResultWaldoNAVPadTextBuffer);
     END;
 
-    LOCAL PROCEDURE AddToBuffer@1100084041(VAR LineNo@1100084003 : Integer;VAR Line@1100084000 : DotNet "'mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089'.System.String";Separator@1100084002 : Integer;VAR ResultWNPWaldoNAVPadBuffer@1100084001 : Record 71000);
+    LOCAL PROCEDURE AddToBuffer@1100084041(VAR LineNo@1100084003 : Integer;VAR Line@1100084000 : DotNet "'mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089'.System.String";Separator@1100084002 : Integer;VAR ResultWaldoNAVPadTextBuffer@1100084004 : Record 82110);
     BEGIN
       LineNo += 1;
 
-      WITH ResultWNPWaldoNAVPadBuffer DO BEGIN
+      WITH ResultWaldoNAVPadTextBuffer DO BEGIN
         INIT;
         "Line No." := LineNo;
         Textline := Line;

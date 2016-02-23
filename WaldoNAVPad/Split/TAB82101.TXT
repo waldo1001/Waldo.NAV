@@ -1,9 +1,9 @@
-OBJECT Table 56101 WNP Text
+OBJECT Table 82101 WaldoNAVPad Textstore
 {
   OBJECT-PROPERTIES
   {
-    Date=28/01/16;
-    Time=16:10:57;
+    Date=23/02/16;
+    Time=16:15:27;
     Modified=Yes;
     Version List=WaldoNAVPad;
   }

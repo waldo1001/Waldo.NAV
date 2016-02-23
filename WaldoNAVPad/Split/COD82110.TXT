@@ -1,9 +1,9 @@
-OBJECT Codeunit 71000 WNP WaldoNAVPad Class
+OBJECT Codeunit 82110 WaldoNAVPad Text Class
 {
   OBJECT-PROPERTIES
   {
-    Date=28/01/16;
-    Time=17:38:57;
+    Date=23/02/16;
+    Time=16:28:54;
     Modified=Yes;
     Version List=WaldoNAVPad;
   }
@@ -16,7 +16,7 @@ OBJECT Codeunit 71000 WNP WaldoNAVPad Class
   CODE
   {
     VAR
-      WNPWaldoNAVPadBuffer@1100084000 : TEMPORARY Record 71000;
+      WaldoNAVPadTextBuffer@1100084000 : TEMPORARY Record 82110;
       MaxLenght@1100084003 : Integer;
       CurrentObjectNr@1100084001 : Integer;
       CurrentObject@1100084002 : DotNet "'mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089'.System.Object";
@@ -41,29 +41,29 @@ OBJECT Codeunit 71000 WNP WaldoNAVPad Class
 
     PROCEDURE GetCurrentTextLine@1100084005() : Text;
     BEGIN
-      EXIT(WNPWaldoNAVPadBuffer.Textline);
+      EXIT(WaldoNAVPadTextBuffer.Textline);
     END;
 
     PROCEDURE FINDFIRST@1100084004() : Boolean;
     BEGIN
-      EXIT(WNPWaldoNAVPadBuffer.FINDSET);
+      EXIT(WaldoNAVPadTextBuffer.FINDSET);
     END;
 
     PROCEDURE COUNT@1100084003() : Integer;
     BEGIN
-      EXIT(WNPWaldoNAVPadBuffer.COUNT);
+      EXIT(WaldoNAVPadTextBuffer.COUNT);
     END;
 
     PROCEDURE NEXT@1100084001() : Integer;
     BEGIN
-      EXIT(WNPWaldoNAVPadBuffer.NEXT);
+      EXIT(WaldoNAVPadTextBuffer.NEXT);
     END;
 
     LOCAL PROCEDURE ParseText@1100084002(VAR Text@1100084000 : Text);
     VAR
-      WNPWaldoNAVPadParseTextMeth@1100084001 : Codeunit 71001;
+      WaldoNAVPadTextParseMeth@1100084001 : Codeunit 82111;
     BEGIN
-      WNPWaldoNAVPadParseTextMeth.ParseText(Text,GetMaxLength,WNPWaldoNAVPadBuffer);
+      WaldoNAVPadTextParseMeth.ParseText(Text,GetMaxLength,WaldoNAVPadTextBuffer);
     END;
 
     BEGIN

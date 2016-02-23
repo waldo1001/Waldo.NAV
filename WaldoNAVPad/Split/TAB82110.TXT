@@ -1,9 +1,9 @@
-OBJECT Table 71000 WNP WaldoNAVPad Buffer
+OBJECT Table 82110 WaldoNAVPad Text Buffer
 {
   OBJECT-PROPERTIES
   {
-    Date=28/01/16;
-    Time=17:27:18;
+    Date=23/02/16;
+    Time=16:21:50;
     Modified=Yes;
     Version List=WaldoNAVPad;
   }
