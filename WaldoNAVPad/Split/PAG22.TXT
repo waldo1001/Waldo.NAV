@@ -5,7 +5,7 @@ OBJECT Page 22 Customer List
     Date=27/01/16;
     Time=21:57:42;
     Modified=Yes;
-    Version List=NAVW19.00,WaldoNAVPad;
+    Version List=NAVW19.00,WaldoNAVPadExample;
   }
   PROPERTIES
   {

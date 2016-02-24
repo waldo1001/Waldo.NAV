@@ -2,8 +2,8 @@ OBJECT Codeunit 82100 WaldoNAVPad Class
 {
   OBJECT-PROPERTIES
   {
-    Date=23/02/16;
-    Time=13:00:26;
+    Date=24/02/16;
+    Time=19:47:30;
     Modified=Yes;
     Version List=WaldoNAVPad;
   }
@@ -18,6 +18,7 @@ OBJECT Codeunit 82100 WaldoNAVPad Class
     VAR
       CurrentRecRef@1100084000 : RecordRef;
       IsInitialized@1100084001 : Boolean;
+      NotInitialized@1100084002 : TextConst 'ENU=Record not initialized.  Please review your code!';
 
     PROCEDURE Initialize@1100084000(RecVariant@1100084000 : Variant);
     VAR
@@ -29,10 +30,17 @@ OBJECT Codeunit 82100 WaldoNAVPad Class
     PROCEDURE ShowTexts@1100084004(Editable@1100084000 : Boolean);
     VAR
       WaldoNAVPadShowTextsMeth@1100084001 : Codeunit 82101;
-      NotInitialized@1100084002 : TextConst 'ENU=Record not initialized.  Please review your code!';
     BEGIN
       IF NOT IsInitialized THEN ERROR(NotInitialized);
+
       WaldoNAVPadShowTextsMeth.ShowTexts(Editable,CurrentRecRef);
+    END;
+
+    PROCEDURE HasTexts@1100084001(VAR TableNo@1100084001 : Integer) : Boolean;
+    VAR
+      WaldoNAVPadTableHasTextMeth@1100084000 : Codeunit 82103;
+    BEGIN
+      EXIT(WaldoNAVPadTableHasTextMeth.TableHasTexts(TableNo));
     END;
 
     BEGIN

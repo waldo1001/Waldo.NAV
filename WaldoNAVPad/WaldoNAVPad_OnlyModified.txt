@@ -2,10 +2,10 @@ OBJECT Table 18 Customer
 {
   OBJECT-PROPERTIES
   {
-    Date=23/02/16;
-    Time=16:10:25;
+    Date=24/02/16;
+    Time=20:04:41;
     Modified=Yes;
-    Version List=NAVW19.00.00.43897,NAVBE9.00.00.43897,WaldoNAVPad;
+    Version List=NAVW19.00.00.43897,NAVBE9.00.00.43897,WaldoNAVPadExample;
   }
   PROPERTIES
   {
@@ -1783,6 +1783,7 @@ OBJECT Table 18 Customer
     VAR
       WaldoNAVPadClass@1100084001 : Codeunit 82100;
     BEGIN
+      //Example code to implement the WaldoNAVPad on a Record, using the generic Text tables
       WaldoNAVPadClass.Initialize(Rec);
       WaldoNAVPadClass.ShowTexts(Editable);
     END;
@@ -1796,8 +1797,8 @@ OBJECT Table 82100 WaldoNavPad Blobstore
 {
   OBJECT-PROPERTIES
   {
-    Date=23/02/16;
-    Time=16:15:09;
+    Date=24/02/16;
+    Time=19:43:24;
     Modified=Yes;
     Version List=WaldoNAVPad;
   }
@@ -1809,6 +1810,7 @@ OBJECT Table 82100 WaldoNavPad Blobstore
     { 1   ;   ;Entry No.           ;Integer       ;AutoIncrement=Yes }
     { 10  ;   ;Record ID           ;RecordID       }
     { 20  ;   ;Blob                ;BLOB           }
+    { 100 ;   ;TableNo             ;Integer        }
   }
   KEYS
   {
@@ -1897,8 +1899,8 @@ OBJECT Codeunit 82100 WaldoNAVPad Class
 {
   OBJECT-PROPERTIES
   {
-    Date=23/02/16;
-    Time=13:00:26;
+    Date=24/02/16;
+    Time=19:47:30;
     Modified=Yes;
     Version List=WaldoNAVPad;
   }
@@ -1913,6 +1915,7 @@ OBJECT Codeunit 82100 WaldoNAVPad Class
     VAR
       CurrentRecRef@1100084000 : RecordRef;
       IsInitialized@1100084001 : Boolean;
+      NotInitialized@1100084002 : TextConst 'ENU=Record not initialized.  Please review your code!';
 
     PROCEDURE Initialize@1100084000(RecVariant@1100084000 : Variant);
     VAR
@@ -1924,10 +1927,17 @@ OBJECT Codeunit 82100 WaldoNAVPad Class
     PROCEDURE ShowTexts@1100084004(Editable@1100084000 : Boolean);
     VAR
       WaldoNAVPadShowTextsMeth@1100084001 : Codeunit 82101;
-      NotInitialized@1100084002 : TextConst 'ENU=Record not initialized.  Please review your code!';
     BEGIN
       IF NOT IsInitialized THEN ERROR(NotInitialized);
+
       WaldoNAVPadShowTextsMeth.ShowTexts(Editable,CurrentRecRef);
+    END;
+
+    PROCEDURE HasTexts@1100084001(VAR TableNo@1100084001 : Integer) : Boolean;
+    VAR
+      WaldoNAVPadTableHasTextMeth@1100084000 : Codeunit 82103;
+    BEGIN
+      EXIT(WaldoNAVPadTableHasTextMeth.TableHasTexts(TableNo));
     END;
 
     BEGIN
@@ -1939,8 +1949,8 @@ OBJECT Codeunit 82101 WaldoNAVPad ShowTexts Meth
 {
   OBJECT-PROPERTIES
   {
-    Date=23/02/16;
-    Time=16:27:08;
+    Date=24/02/16;
+    Time=19:43:44;
     Modified=Yes;
     Version List=WaldoNAVPad;
   }
@@ -2049,6 +2059,7 @@ OBJECT Codeunit 82101 WaldoNAVPad ShowTexts Meth
         INIT;
         "Record ID" := RecRef.RECORDID;
         Blob := TempBlob.Blob;
+        TableNo := RecRef.NUMBER;
         INSERT;
       END;
     END;
@@ -2139,8 +2150,8 @@ OBJECT Codeunit 82102 WaldoNAVPad Subscribers
 {
   OBJECT-PROPERTIES
   {
-    Date=23/02/16;
-    Time=16:20:14;
+    Date=24/02/16;
+    Time=19:59:55;
     Modified=Yes;
     Version List=WaldoNAVPad;
   }
@@ -2155,14 +2166,50 @@ OBJECT Codeunit 82102 WaldoNAVPad Subscribers
 
     [EventSubscriber(Codeunit,1,OnAfterGetDatabaseTableTriggerSetup,"",Error,Error)]
     LOCAL PROCEDURE SetUpWaldoNAVPad_OnAfterGetDatabaseTableTriggerSetup@1100084000(TableId@1100084000 : Integer;VAR OnDatabaseInsert@1100084001 : Boolean;VAR OnDatabaseModify@1100084002 : Boolean;VAR OnDatabaseDelete@1100084003 : Boolean;VAR OnDatabaseRename@1100084004 : Boolean);
+    VAR
+      WaldoNAVPadClass@1100084005 : Codeunit 82100;
     BEGIN
-      MESSAGE('TODO: SetUpWaldoNAVPad_OnAfterGetDatabaseTableTriggerSetup');
+      OnDatabaseRename := TRUE;
+      //making this TRUE for all tables should not be that concerning,
+      //as renaming isn't something that happens too often ;-)
+
+      //On the other hand, if we would do it like this:
+      //  OnDatabaseRename := WaldoNAVPadClass.HasTexts(TableId);
+      //Then it would fail for the first text we add to a table:
+      //   - TriggerSetup would be false
+      //   - if we add text and then rename, it wouldn't rename the text
     END;
 
     [EventSubscriber(Codeunit,1,OnAfterOnDatabaseRename)]
     LOCAL PROCEDURE HandleWaldoNAVPadTexts_OnAfterOnDatabaseRename@1100084003(RecRef@1100084000 : RecordRef;xRecRef@1100084001 : RecordRef);
     BEGIN
-      MESSAGE('TODO: HandleWaldoNAVPadTexts_OnAfterOnDatabaseRename');
+      HandleRenameRecord(RecRef,xRecRef);
+    END;
+
+    LOCAL PROCEDURE HandleRenameRecord@1100084001(VAR RecRef@1100084001 : RecordRef;VAR xRecRef@1100084000 : RecordRef);
+    BEGIN
+      HandleBlobStore(RecRef,xRecRef);
+      HandleTextStore(RecRef,xRecRef);
+    END;
+
+    LOCAL PROCEDURE HandleBlobStore@1100084005(VAR RecRef@1100084002 : RecordRef;VAR xRecRef@1100084001 : RecordRef);
+    VAR
+      WaldoNavPadBlobstore@1100084000 : Record 82100;
+    BEGIN
+      WITH WaldoNavPadBlobstore DO BEGIN
+        SETRANGE("Record ID", xRecRef.RECORDID);
+        MODIFYALL("Record ID", RecRef.RECORDID,FALSE);
+      END;
+    END;
+
+    LOCAL PROCEDURE HandleTextStore@1100084006(VAR RecRef@1100084002 : RecordRef;VAR xRecRef@1100084001 : RecordRef);
+    VAR
+      WaldoNAVPadTextstore@1100084000 : Record 82101;
+    BEGIN
+      WITH WaldoNAVPadTextstore DO BEGIN
+        SETRANGE("Record ID", xRecRef.RECORDID);
+        MODIFYALL("Record ID", RecRef.RECORDID,FALSE);
+      END;
     END;
 
     BEGIN
@@ -2174,8 +2221,8 @@ OBJECT Codeunit 82103 WaldoNAVPad TableHasText Meth
 {
   OBJECT-PROPERTIES
   {
-    Date=23/02/16;
-    Time=16:46:27;
+    Date=24/02/16;
+    Time=19:46:42;
     Modified=Yes;
     Version List=WaldoNAVPad;
   }
@@ -2188,22 +2235,30 @@ OBJECT Codeunit 82103 WaldoNAVPad TableHasText Meth
   CODE
   {
 
-    PROCEDURE TableHasTexts@1100084000(VAR RecRef@1100084002 : RecordRef) ResultHasTexts : Boolean;
+    PROCEDURE TableHasTexts@1100084000(TableNo@1100084002 : Integer) ResultHasTexts : Boolean;
     VAR
       Handled@1100084003 : Boolean;
     BEGIN
-      OnBeforeTableHasTexts(RecRef,ResultHasTexts,Handled);
-      ResultHasTexts := DoTableHasTexts(RecRef,Handled);
-      OnAfterTableHasTexts(RecRef);
+      OnBeforeTableHasTexts(TableNo,ResultHasTexts,Handled);
+      ResultHasTexts := DoTableHasTexts(TableNo,Handled);
+      OnAfterTableHasTexts(TableNo);
     END;
 
-    LOCAL PROCEDURE DoTableHasTexts@1100084002(VAR RecRef@1100084001 : RecordRef;Handled@1100084003 : Boolean) : Boolean;
-    VAR
-      WaldoNAVPadTextstore@1100084002 : Record 82101;
-      Text@1100084004 : Text;
-      UpdatedText@1100084005 : Text;
+    LOCAL PROCEDURE DoTableHasTexts@1100084002(VAR TableNo@1100084000 : Integer;Handled@1100084003 : Boolean) : Boolean;
     BEGIN
       IF Handled THEN EXIT;
+
+      EXIT(HasTextsForRecRef(TableNo));
+    END;
+
+    LOCAL PROCEDURE HasTextsForRecRef@1100084001(VAR pTableNo@1100084002 : Integer) : Boolean;
+    VAR
+      WaldoNavPadBlobstore@1100084001 : Record 82100;
+    BEGIN
+      WITH WaldoNavPadBlobstore DO BEGIN
+        SETRANGE(TableNo, pTableNo);
+        EXIT(NOT ISEMPTY);
+      END;
     END;
 
     LOCAL PROCEDURE "--- Event Wrapper"@1100084015();
@@ -2211,12 +2266,12 @@ OBJECT Codeunit 82103 WaldoNAVPad TableHasText Meth
     END;
 
     [Integration]
-    LOCAL PROCEDURE OnBeforeTableHasTexts@1100084004(VAR RecRef@1100084002 : RecordRef;VAR ResultHasTexts@1100084001 : Boolean;VAR Handled@1100084000 : Boolean);
+    LOCAL PROCEDURE OnBeforeTableHasTexts@1100084004(VAR TableNo@1100084003 : Integer;VAR ResultHasTexts@1100084001 : Boolean;VAR Handled@1100084000 : Boolean);
     BEGIN
     END;
 
     [Integration]
-    LOCAL PROCEDURE OnAfterTableHasTexts@1100084008(VAR RecRef@1100084001 : RecordRef);
+    LOCAL PROCEDURE OnAfterTableHasTexts@1100084008(VAR TableNo@1100084000 : Integer);
     BEGIN
     END;
 
@@ -2470,7 +2525,7 @@ OBJECT Page 22 Customer List
     Date=27/01/16;
     Time=21:57:42;
     Modified=Yes;
-    Version List=NAVW19.00,WaldoNAVPad;
+    Version List=NAVW19.00,WaldoNAVPadExample;
   }
   PROPERTIES
   {

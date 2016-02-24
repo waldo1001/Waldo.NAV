@@ -2,8 +2,8 @@ OBJECT Table 82100 WaldoNavPad Blobstore
 {
   OBJECT-PROPERTIES
   {
-    Date=23/02/16;
-    Time=16:15:09;
+    Date=24/02/16;
+    Time=19:43:24;
     Modified=Yes;
     Version List=WaldoNAVPad;
   }
@@ -15,6 +15,7 @@ OBJECT Table 82100 WaldoNavPad Blobstore
     { 1   ;   ;Entry No.           ;Integer       ;AutoIncrement=Yes }
     { 10  ;   ;Record ID           ;RecordID       }
     { 20  ;   ;Blob                ;BLOB           }
+    { 100 ;   ;TableNo             ;Integer        }
   }
   KEYS
   {

@@ -2,8 +2,8 @@ OBJECT Codeunit 82103 WaldoNAVPad TableHasText Meth
 {
   OBJECT-PROPERTIES
   {
-    Date=23/02/16;
-    Time=16:46:27;
+    Date=24/02/16;
+    Time=19:46:42;
     Modified=Yes;
     Version List=WaldoNAVPad;
   }
@@ -16,22 +16,30 @@ OBJECT Codeunit 82103 WaldoNAVPad TableHasText Meth
   CODE
   {
 
-    PROCEDURE TableHasTexts@1100084000(VAR RecRef@1100084002 : RecordRef) ResultHasTexts : Boolean;
+    PROCEDURE TableHasTexts@1100084000(TableNo@1100084002 : Integer) ResultHasTexts : Boolean;
     VAR
       Handled@1100084003 : Boolean;
     BEGIN
-      OnBeforeTableHasTexts(RecRef,ResultHasTexts,Handled);
-      ResultHasTexts := DoTableHasTexts(RecRef,Handled);
-      OnAfterTableHasTexts(RecRef);
+      OnBeforeTableHasTexts(TableNo,ResultHasTexts,Handled);
+      ResultHasTexts := DoTableHasTexts(TableNo,Handled);
+      OnAfterTableHasTexts(TableNo);
     END;
 
-    LOCAL PROCEDURE DoTableHasTexts@1100084002(VAR RecRef@1100084001 : RecordRef;Handled@1100084003 : Boolean) : Boolean;
-    VAR
-      WaldoNAVPadTextstore@1100084002 : Record 82101;
-      Text@1100084004 : Text;
-      UpdatedText@1100084005 : Text;
+    LOCAL PROCEDURE DoTableHasTexts@1100084002(VAR TableNo@1100084000 : Integer;Handled@1100084003 : Boolean) : Boolean;
     BEGIN
       IF Handled THEN EXIT;
+
+      EXIT(HasTextsForRecRef(TableNo));
+    END;
+
+    LOCAL PROCEDURE HasTextsForRecRef@1100084001(VAR pTableNo@1100084002 : Integer) : Boolean;
+    VAR
+      WaldoNavPadBlobstore@1100084001 : Record 82100;
+    BEGIN
+      WITH WaldoNavPadBlobstore DO BEGIN
+        SETRANGE(TableNo, pTableNo);
+        EXIT(NOT ISEMPTY);
+      END;
     END;
 
     LOCAL PROCEDURE "--- Event Wrapper"@1100084015();
@@ -39,12 +47,12 @@ OBJECT Codeunit 82103 WaldoNAVPad TableHasText Meth
     END;
 
     [Integration]
-    LOCAL PROCEDURE OnBeforeTableHasTexts@1100084004(VAR RecRef@1100084002 : RecordRef;VAR ResultHasTexts@1100084001 : Boolean;VAR Handled@1100084000 : Boolean);
+    LOCAL PROCEDURE OnBeforeTableHasTexts@1100084004(VAR TableNo@1100084003 : Integer;VAR ResultHasTexts@1100084001 : Boolean;VAR Handled@1100084000 : Boolean);
     BEGIN
     END;
 
     [Integration]
-    LOCAL PROCEDURE OnAfterTableHasTexts@1100084008(VAR RecRef@1100084001 : RecordRef);
+    LOCAL PROCEDURE OnAfterTableHasTexts@1100084008(VAR TableNo@1100084000 : Integer);
     BEGIN
     END;
 
