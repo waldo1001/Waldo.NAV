@@ -2,8 +2,8 @@ OBJECT Codeunit 82111 WaldoNAVPad Text Parse Meth
 {
   OBJECT-PROPERTIES
   {
-    Date=23/02/16;
-    Time=16:30:17;
+    Date=26/02/16;
+    Time=[ 7:49:19];
     Modified=Yes;
     Version List=WaldoNAVPad;
   }

@@ -1899,8 +1899,8 @@ OBJECT Codeunit 82100 WaldoNAVPad Class
 {
   OBJECT-PROPERTIES
   {
-    Date=24/02/16;
-    Time=19:47:30;
+    Date=26/02/16;
+    Time=[ 7:48:20];
     Modified=Yes;
     Version List=WaldoNAVPad;
   }
@@ -1949,8 +1949,8 @@ OBJECT Codeunit 82101 WaldoNAVPad ShowTexts Meth
 {
   OBJECT-PROPERTIES
   {
-    Date=24/02/16;
-    Time=19:43:44;
+    Date=26/02/16;
+    Time=[ 7:49:35];
     Modified=Yes;
     Version List=WaldoNAVPad;
   }
@@ -2024,8 +2024,6 @@ OBJECT Codeunit 82101 WaldoNAVPad ShowTexts Meth
     END;
 
     LOCAL PROCEDURE UpdateTextForRecord@1100084012(OldText@1100084000 : Text;NewText@1100084001 : Text;MaxLength@1100084004 : Integer;VAR RecRef@1100084003 : RecordRef);
-    VAR
-    ;
     BEGIN
       IF OldText = NewText THEN EXIT;
 
@@ -2127,10 +2125,6 @@ OBJECT Codeunit 82101 WaldoNAVPad ShowTexts Meth
       EXIT(FORMAT(TextBigText));
     END;
 
-    LOCAL PROCEDURE "--- Event Wrapper"@1100084015();
-    BEGIN
-    END;
-
     [Integration]
     LOCAL PROCEDURE OnBeforeShowTexts@1100084004(VAR RecRef@1100084002 : RecordRef;VAR Handled@1100084000 : Boolean);
     BEGIN
@@ -2221,8 +2215,8 @@ OBJECT Codeunit 82103 WaldoNAVPad TableHasText Meth
 {
   OBJECT-PROPERTIES
   {
-    Date=24/02/16;
-    Time=19:46:42;
+    Date=26/02/16;
+    Time=[ 7:49:27];
     Modified=Yes;
     Version List=WaldoNAVPad;
   }
@@ -2284,8 +2278,8 @@ OBJECT Codeunit 82110 WaldoNAVPad Text Class
 {
   OBJECT-PROPERTIES
   {
-    Date=23/02/16;
-    Time=16:28:54;
+    Date=26/02/16;
+    Time=[ 7:49:02];
     Modified=Yes;
     Version List=WaldoNAVPad;
   }
@@ -2357,8 +2351,8 @@ OBJECT Codeunit 82111 WaldoNAVPad Text Parse Meth
 {
   OBJECT-PROPERTIES
   {
-    Date=23/02/16;
-    Time=16:30:17;
+    Date=26/02/16;
+    Time=[ 7:49:19];
     Modified=Yes;
     Version List=WaldoNAVPad;
   }
