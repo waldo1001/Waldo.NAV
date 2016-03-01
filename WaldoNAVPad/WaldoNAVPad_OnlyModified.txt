@@ -1949,8 +1949,8 @@ OBJECT Codeunit 82101 WaldoNAVPad ShowTexts Meth
 {
   OBJECT-PROPERTIES
   {
-    Date=26/02/16;
-    Time=[ 7:49:35];
+    Date=01/03/16;
+    Time=23:32:12;
     Modified=Yes;
     Version List=WaldoNAVPad;
   }
@@ -1977,15 +1977,17 @@ OBJECT Codeunit 82101 WaldoNAVPad ShowTexts Meth
       WaldoNAVPadTextstore@1100084002 : Record 82101;
       Text@1100084004 : Text;
       UpdatedText@1100084005 : Text;
+      WaldoNAVPadTextClass@1100084006 : Codeunit 82110;
     BEGIN
       IF Handled THEN EXIT;
 
       FilterWNPTexts(WaldoNAVPadTextstore, RecRef);
 
       Text := GetTextFromWNPBlob(RecRef);
-      UpdatedText := ShowDialog(Text);
 
-      UpdateTextForRecord(Text, UpdatedText,MAXSTRLEN(WaldoNAVPadTextstore.Textline),RecRef);
+      UpdatedText := GetTextfromDialog(Text,Editable,WaldoNAVPadTextClass);
+
+      UpdateTextForRecord(Text, WaldoNAVPadTextClass,RecRef);
     END;
 
     LOCAL PROCEDURE GetTextFromWNPBlob@1100084053(VAR RecRef@1100084000 : RecordRef) : Text;
@@ -2012,26 +2014,26 @@ OBJECT Codeunit 82101 WaldoNAVPad ShowTexts Meth
       END;
     END;
 
-    LOCAL PROCEDURE ShowDialog@1100084001(VAR Text@1100084000 : Text) : Text;
+    LOCAL PROCEDURE GetTextfromDialog@1100084001(VAR Text@1100084002 : Text;Editable@1100084003 : Boolean;VAR WaldoNAVPadTextClass@1100084000 : Codeunit 82110) : Text;
     VAR
-      WaldoNAVPad@1100084002 : Page 82100;
+      WaldoNAVPadTextstore@1100084001 : Record 82101;
     BEGIN
-      WaldoNAVPad.SetText(Text);
-      WaldoNAVPad.LOOKUPMODE := TRUE;
-      IF WaldoNAVPad.RUNMODAL = ACTION::LookupCancel THEN
-          EXIT(Text);
-      EXIT(WaldoNAVPad.GetText);
+      WITH WaldoNAVPadTextClass DO BEGIN
+        Initialize(Text, MAXSTRLEN(WaldoNAVPadTextstore.Textline));
+        ShowDialog(Editable);
+        EXIT(GetText);
+      END;
     END;
 
-    LOCAL PROCEDURE UpdateTextForRecord@1100084012(OldText@1100084000 : Text;NewText@1100084001 : Text;MaxLength@1100084004 : Integer;VAR RecRef@1100084003 : RecordRef);
+    LOCAL PROCEDURE UpdateTextForRecord@1100084012(OldText@1100084000 : Text;VAR WaldoNAVPadTextClass@1100084002 : Codeunit 82110;VAR RecRef@1100084003 : RecordRef);
     BEGIN
-      IF OldText = NewText THEN EXIT;
+      IF OldText = WaldoNAVPadTextClass.GetText THEN EXIT;
 
-      SaveTextToBlob(NewText,RecRef);;
-      SaveTextToRecords(NewText,MaxLength,RecRef);
+      SaveTextToBlob(WaldoNAVPadTextClass.GetText,RecRef);;
+      SaveTextToRecords(WaldoNAVPadTextClass,RecRef);
     END;
 
-    LOCAL PROCEDURE SaveTextToBlob@1100084024(VAR Text@1100084002 : Text;VAR RecRef@1100084000 : RecordRef);
+    LOCAL PROCEDURE SaveTextToBlob@1100084024(Text@1100084002 : Text;VAR RecRef@1100084000 : RecordRef);
     BEGIN
       DeleteWNPBlobForRecord(RecRef);
       InsertWPNBlobForRecord(Text,RecRef);
@@ -2062,10 +2064,10 @@ OBJECT Codeunit 82101 WaldoNAVPad ShowTexts Meth
       END;
     END;
 
-    LOCAL PROCEDURE SaveTextToRecords@1100084025(VAR Text@1100084002 : Text;MaxLength@1100084001 : Integer;VAR RecRef@1100084000 : RecordRef);
+    LOCAL PROCEDURE SaveTextToRecords@1100084025(VAR WaldoNAVPadTextClass@1100084003 : Codeunit 82110;VAR RecRef@1100084000 : RecordRef);
     BEGIN
       DeleteWNPTextForRecord(RecRef);
-      InsertWPNTextForRecord(Text,MaxLength,RecRef);
+      InsertWPNTextForRecord(WaldoNAVPadTextClass,RecRef);
     END;
 
     LOCAL PROCEDURE DeleteWNPTextForRecord@1100084003(VAR RecRef@1100084000 : RecordRef);
@@ -2076,13 +2078,9 @@ OBJECT Codeunit 82101 WaldoNAVPad ShowTexts Meth
       WaldoNAVPadTextstore.DELETEALL(FALSE);
     END;
 
-    LOCAL PROCEDURE InsertWPNTextForRecord@1100084016(VAR Text@1100084001 : Text;MaxLength@1100084003 : Integer;VAR RecRef@1100084000 : RecordRef);
-    VAR
-      WaldoNAVPadTextClass@1100084002 : Codeunit 82110;
+    LOCAL PROCEDURE InsertWPNTextForRecord@1100084016(VAR WaldoNAVPadTextClass@1100084002 : Codeunit 82110;VAR RecRef@1100084000 : RecordRef);
     BEGIN
       WITH WaldoNAVPadTextClass DO BEGIN
-        Initialize(Text,MaxLength);
-
         IF FINDFIRST THEN
           REPEAT
             InsertWPNText(GetCurrentTextLine, RecRef);
@@ -2278,8 +2276,8 @@ OBJECT Codeunit 82110 WaldoNAVPad Text Class
 {
   OBJECT-PROPERTIES
   {
-    Date=26/02/16;
-    Time=[ 7:49:02];
+    Date=01/03/16;
+    Time=23:22:19;
     Modified=Yes;
     Version List=WaldoNAVPad;
   }
@@ -2296,13 +2294,28 @@ OBJECT Codeunit 82110 WaldoNAVPad Text Class
       MaxLenght@1100084003 : Integer;
       CurrentObjectNr@1100084001 : Integer;
       CurrentObject@1100084002 : DotNet "'mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089'.System.Object";
+      CurrentText@1100084004 : Text;
 
     PROCEDURE Initialize@1100084000(VAR Text@1100084000 : Text;pMaxLength@1100084001 : Integer);
     BEGIN
       SetMaxLenght(pMaxLength);
       ParseText(Text);
+      CurrentText := Text;
 
       FINDFIRST;
+    END;
+
+    PROCEDURE ShowDialog@1100084008(Editable@1100084001 : Boolean);
+    VAR
+      WaldoNAVPadShowdialogMeth@1100084000 : Codeunit 82112;
+    BEGIN
+      WaldoNAVPadShowdialogMeth.ShowDialog(CurrentText,Editable);
+    END;
+
+    PROCEDURE GetText@1100084006() : Text;
+    BEGIN
+      EXIT(CurrentText);
+
     END;
 
     PROCEDURE SetMaxLenght@1100084007(pMaxLenght@1100084000 : Integer);
@@ -2452,6 +2465,68 @@ OBJECT Codeunit 82111 WaldoNAVPad Text Parse Meth
   }
 }
 
+OBJECT Codeunit 82112 WaldoNAVPad Showdialog Meth
+{
+  OBJECT-PROPERTIES
+  {
+    Date=01/03/16;
+    Time=23:01:08;
+    Modified=Yes;
+    Version List=WaldoNAVPad;
+  }
+  PROPERTIES
+  {
+    OnRun=BEGIN
+          END;
+
+  }
+  CODE
+  {
+
+    PROCEDURE ShowDialog@1100084001(VAR Text@1100084001 : Text;Editable@1100084002 : Boolean);
+    VAR
+      Handled@1100084000 : Boolean;
+    BEGIN
+      OnBeforeShowDialog(Text,Editable,Handled);
+      DoShowDialog(Text,Editable,Handled);
+      OnAfterShowDialog(Text,Editable);
+    END;
+
+    LOCAL PROCEDURE DoShowDialog@1100084002(VAR Text@1100084001 : Text;Editable@1100084002 : Boolean;VAR Handled@1100084000 : Boolean);
+    BEGIN
+      IF Handled THEN
+        EXIT;
+
+      ShowTextOnPage(Text,Editable);
+    END;
+
+    LOCAL PROCEDURE ShowTextOnPage@1100084008(VAR Text@1100084000 : Text;Editable@1100084001 : Boolean);
+    VAR
+      WaldoNAVPad@1100084002 : Page 82100;
+    BEGIN
+      WaldoNAVPad.SetText(Text);
+      WaldoNAVPad.LOOKUPMODE := TRUE;
+      WaldoNAVPad.EDITABLE := Editable;
+
+      IF WaldoNAVPad.RUNMODAL = ACTION::LookupOK THEN
+        Text := WaldoNAVPad.GetText;
+    END;
+
+    [Integration(TRUE)]
+    LOCAL PROCEDURE OnBeforeShowDialog@1100084004(VAR Text@1100084001 : Text;Editable@1100084002 : Boolean;VAR Handled@1100084000 : Boolean);
+    BEGIN
+    END;
+
+    [Integration(TRUE)]
+    LOCAL PROCEDURE OnAfterShowDialog@1100084005(VAR Text@1100084000 : Text;Editable@1100084001 : Boolean);
+    BEGIN
+    END;
+
+    BEGIN
+    END.
+  }
+}
+
 OBJECT Codeunit 82120 WaldoNAVPad Test
 {
   OBJECT-PROPERTIES
@@ -2516,8 +2591,8 @@ OBJECT Page 22 Customer List
 {
   OBJECT-PROPERTIES
   {
-    Date=27/01/16;
-    Time=21:57:42;
+    Date=01/03/16;
+    Time=22:39:45;
     Modified=Yes;
     Version List=NAVW19.00,WaldoNAVPadExample;
   }
@@ -3193,19 +3268,20 @@ OBJECT Page 22 Customer List
                       Promoted=Yes;
                       Image=Journals;
                       PromotedCategory=Process }
+      { 1100084001;1 ;Action    ;
+                      Name=OpenWNPText;
+                      CaptionML=ENU=Open WaldoNAVPad Text;
+                      Image=Text;
+                      OnAction=BEGIN
+                                 ThisOpenWNPText;
+                               END;
+                                }
       { 1900000006;0 ;ActionContainer;
                       ActionContainerType=Reports }
       { 3       ;1   ;ActionGroup;
                       CaptionML=[ENU=General;
                                  FRB=G‚n‚ral;
                                  NLB=Algemeen] }
-      { 1100084000;2 ;Action    ;
-                      Name=OpenWNPText;
-                      CaptionML=ENU=Open WaldoNAVPad Text;
-                      OnAction=BEGIN
-                                 ThisOpenWNPText;
-                               END;
-                                }
       { 1905562606;2 ;Action    ;
                       CaptionML=[ENU=Customer List;
                                  FRB=Liste des clients;

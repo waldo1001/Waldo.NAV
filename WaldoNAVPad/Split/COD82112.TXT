@@ -1,0 +1,62 @@
+OBJECT Codeunit 82112 WaldoNAVPad Showdialog Meth
+{
+  OBJECT-PROPERTIES
+  {
+    Date=01/03/16;
+    Time=23:01:08;
+    Modified=Yes;
+    Version List=WaldoNAVPad;
+  }
+  PROPERTIES
+  {
+    OnRun=BEGIN
+          END;
+
+  }
+  CODE
+  {
+
+    PROCEDURE ShowDialog@1100084001(VAR Text@1100084001 : Text;Editable@1100084002 : Boolean);
+    VAR
+      Handled@1100084000 : Boolean;
+    BEGIN
+      OnBeforeShowDialog(Text,Editable,Handled);
+      DoShowDialog(Text,Editable,Handled);
+      OnAfterShowDialog(Text,Editable);
+    END;
+
+    LOCAL PROCEDURE DoShowDialog@1100084002(VAR Text@1100084001 : Text;Editable@1100084002 : Boolean;VAR Handled@1100084000 : Boolean);
+    BEGIN
+      IF Handled THEN
+        EXIT;
+
+      ShowTextOnPage(Text,Editable);
+    END;
+
+    LOCAL PROCEDURE ShowTextOnPage@1100084008(VAR Text@1100084000 : Text;Editable@1100084001 : Boolean);
+    VAR
+      WaldoNAVPad@1100084002 : Page 82100;
+    BEGIN
+      WaldoNAVPad.SetText(Text);
+      WaldoNAVPad.LOOKUPMODE := TRUE;
+      WaldoNAVPad.EDITABLE := Editable;
+
+      IF WaldoNAVPad.RUNMODAL = ACTION::LookupOK THEN
+        Text := WaldoNAVPad.GetText;
+    END;
+
+    [Integration(TRUE)]
+    LOCAL PROCEDURE OnBeforeShowDialog@1100084004(VAR Text@1100084001 : Text;Editable@1100084002 : Boolean;VAR Handled@1100084000 : Boolean);
+    BEGIN
+    END;
+
+    [Integration(TRUE)]
+    LOCAL PROCEDURE OnAfterShowDialog@1100084005(VAR Text@1100084000 : Text;Editable@1100084001 : Boolean);
+    BEGIN
+    END;
+
+    BEGIN
+    END.
+  }
+}
+

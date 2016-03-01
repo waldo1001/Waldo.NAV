@@ -2,8 +2,8 @@ OBJECT Page 22 Customer List
 {
   OBJECT-PROPERTIES
   {
-    Date=27/01/16;
-    Time=21:57:42;
+    Date=01/03/16;
+    Time=22:39:45;
     Modified=Yes;
     Version List=NAVW19.00,WaldoNAVPadExample;
   }
@@ -679,19 +679,20 @@ OBJECT Page 22 Customer List
                       Promoted=Yes;
                       Image=Journals;
                       PromotedCategory=Process }
+      { 1100084001;1 ;Action    ;
+                      Name=OpenWNPText;
+                      CaptionML=ENU=Open WaldoNAVPad Text;
+                      Image=Text;
+                      OnAction=BEGIN
+                                 ThisOpenWNPText;
+                               END;
+                                }
       { 1900000006;0 ;ActionContainer;
                       ActionContainerType=Reports }
       { 3       ;1   ;ActionGroup;
                       CaptionML=[ENU=General;
                                  FRB=G‚n‚ral;
                                  NLB=Algemeen] }
-      { 1100084000;2 ;Action    ;
-                      Name=OpenWNPText;
-                      CaptionML=ENU=Open WaldoNAVPad Text;
-                      OnAction=BEGIN
-                                 ThisOpenWNPText;
-                               END;
-                                }
       { 1905562606;2 ;Action    ;
                       CaptionML=[ENU=Customer List;
                                  FRB=Liste des clients;

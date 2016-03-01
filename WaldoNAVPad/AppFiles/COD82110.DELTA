@@ -2,8 +2,8 @@ OBJECT Codeunit 82110 WaldoNAVPad Text Class
 {
   OBJECT-PROPERTIES
   {
-    Date=26/02/16;
-    Time=[ 7:49:02];
+    Date=01/03/16;
+    Time=23:22:19;
     Modified=Yes;
     Version List=WaldoNAVPad;
   }
@@ -20,13 +20,28 @@ OBJECT Codeunit 82110 WaldoNAVPad Text Class
       MaxLenght@1100084003 : Integer;
       CurrentObjectNr@1100084001 : Integer;
       CurrentObject@1100084002 : DotNet "'mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089'.System.Object";
+      CurrentText@1100084004 : Text;
 
     PROCEDURE Initialize@1100084000(VAR Text@1100084000 : Text;pMaxLength@1100084001 : Integer);
     BEGIN
       SetMaxLenght(pMaxLength);
       ParseText(Text);
+      CurrentText := Text;
 
       FINDFIRST;
+    END;
+
+    PROCEDURE ShowDialog@1100084008(Editable@1100084001 : Boolean);
+    VAR
+      WaldoNAVPadShowdialogMeth@1100084000 : Codeunit 82112;
+    BEGIN
+      WaldoNAVPadShowdialogMeth.ShowDialog(CurrentText,Editable);
+    END;
+
+    PROCEDURE GetText@1100084006() : Text;
+    BEGIN
+      EXIT(CurrentText);
+
     END;
 
     PROCEDURE SetMaxLenght@1100084007(pMaxLenght@1100084000 : Integer);
