@@ -1,0 +1,50 @@
+OBJECT Modification "Customer List"(Page 22)
+{
+  OBJECT-PROPERTIES
+  {
+    Date=15/09/15;
+    Time=12:00:00;
+    Version List=NAVW19.00;
+  }
+  PROPERTIES
+  {
+    Target="Customer List"(Page 22);
+  }
+  CHANGES
+  {
+    { Deletion          ;Target=OpenWNPText(Action 1100084001);
+                         ChangedElements=ActionCollection
+                         {
+                           { 1100084001;1 ;Action    ;
+                                           Name=OpenWNPText;
+                                           CaptionML=ENU=Open WaldoNAVPad Text;
+                                           Image=Text;
+                                           OnAction=BEGIN
+                                                      ThisOpenWNPText;
+                                                    END;
+                                                     }
+                         }
+                          }
+    { Deletion          ;Target=ThisOpenWNPText(PROCEDURE 1100084000);
+                         ChangedElements=PROCEDURECollection
+                         {
+                           LOCAL PROCEDURE ThisOpenWNPText@1100084000();
+                           BEGIN
+                             ShowWNPTexts(TRUE);
+                           END;
+
+                         }
+                          }
+    { PropertyModification;
+                         Property=Version List;
+                         OriginalValue=NAVW19.00,WaldoNAVPadExample;
+                         ModifiedValue=NAVW19.00 }
+  }
+  CODE
+  {
+
+    BEGIN
+    END.
+  }
+}
+

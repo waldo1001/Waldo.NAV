@@ -1,0 +1,41 @@
+OBJECT Modification Customer(Table 18)
+{
+  OBJECT-PROPERTIES
+  {
+    Date=26/11/15;
+    Time=12:00:00;
+    Version List=NAVW19.00.00.43897,NAVBE9.00.00.43897;
+  }
+  PROPERTIES
+  {
+    Target=Customer(Table 18);
+  }
+  CHANGES
+  {
+    { Deletion          ;Target=ShowWNPTexts(PROCEDURE 1100084000);
+                         ChangedElements=PROCEDURECollection
+                         {
+                           PROCEDURE ShowWNPTexts@1100084000(Editable@1100084000 : Boolean);
+                           VAR
+                             WaldoNAVPadClass@1100084001 : Codeunit 82100;
+                           BEGIN
+                             //Example code to implement the WaldoNAVPad on a Record, using the generic Text tables
+                             WaldoNAVPadClass.Initialize(Rec);
+                             WaldoNAVPadClass.ShowTexts(Editable);
+                           END;
+
+                         }
+                          }
+    { PropertyModification;
+                         Property=Version List;
+                         OriginalValue=NAVW19.00.00.43897,NAVBE9.00.00.43897,WaldoNAVPadExample;
+                         ModifiedValue=NAVW19.00.00.43897,NAVBE9.00.00.43897 }
+  }
+  CODE
+  {
+
+    BEGIN
+    END.
+  }
+}
+

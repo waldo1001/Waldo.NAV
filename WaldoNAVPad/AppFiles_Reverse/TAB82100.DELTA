@@ -1,0 +1,21 @@
+OBJECT Modification "WaldoNavPad Blobstore"(Table 82100)
+{
+  OBJECT-PROPERTIES
+  {
+    Date=;
+    Time=;
+    Version List=;
+  }
+  PROPERTIES
+  {
+    Target="WaldoNavPad Blobstore"(Table 82100);
+    ChangeType=Deletion;
+  }
+  CODE
+  {
+
+    BEGIN
+    END.
+  }
+}
+
