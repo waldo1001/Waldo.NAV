@@ -2,8 +2,8 @@ OBJECT Table 18 Customer
 {
   OBJECT-PROPERTIES
   {
-    Date=24/02/16;
-    Time=20:04:41;
+    Date=10/03/16;
+    Time=12:34:31;
     Modified=Yes;
     Version List=NAVW19.00.00.43897,NAVBE9.00.00.43897,WaldoNAVPadExample;
   }
@@ -2276,8 +2276,8 @@ OBJECT Codeunit 82110 WaldoNAVPad Text Class
 {
   OBJECT-PROPERTIES
   {
-    Date=01/03/16;
-    Time=23:22:19;
+    Date=10/03/16;
+    Time=12:47:50;
     Modified=Yes;
     Version List=WaldoNAVPad;
   }
@@ -2299,8 +2299,8 @@ OBJECT Codeunit 82110 WaldoNAVPad Text Class
     PROCEDURE Initialize@1100084000(VAR Text@1100084000 : Text;pMaxLength@1100084001 : Integer);
     BEGIN
       SetMaxLenght(pMaxLength);
-      ParseText(Text);
       CurrentText := Text;
+      ParseText(CurrentText);
 
       FINDFIRST;
     END;
@@ -2310,6 +2310,8 @@ OBJECT Codeunit 82110 WaldoNAVPad Text Class
       WaldoNAVPadShowdialogMeth@1100084000 : Codeunit 82112;
     BEGIN
       WaldoNAVPadShowdialogMeth.ShowDialog(CurrentText,Editable);
+      IF Editable THEN
+        ParseText(CurrentText);
     END;
 
     PROCEDURE GetText@1100084006() : Text;
@@ -2364,8 +2366,8 @@ OBJECT Codeunit 82111 WaldoNAVPad Text Parse Meth
 {
   OBJECT-PROPERTIES
   {
-    Date=26/02/16;
-    Time=[ 7:49:19];
+    Date=10/03/16;
+    Time=12:47:24;
     Modified=Yes;
     Version List=WaldoNAVPad;
   }
@@ -2398,6 +2400,8 @@ OBJECT Codeunit 82111 WaldoNAVPad Text Parse Meth
       IF Handled THEN EXIT;
 
       SystemString := Text;
+
+      ResultWaldoNAVPadTextBuffer.DELETEALL(FALSE);
 
       SystemIOStringReader := SystemIOStringReader.StringReader(Text);
       Line := SystemIOStringReader.ReadLine;
