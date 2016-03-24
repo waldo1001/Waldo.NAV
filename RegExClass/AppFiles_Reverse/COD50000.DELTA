@@ -1,0 +1,21 @@
+OBJECT Modification "RegEx Tests"(Codeunit 50000)
+{
+  OBJECT-PROPERTIES
+  {
+    Date=;
+    Time=;
+    Version List=;
+  }
+  PROPERTIES
+  {
+    Target="RegEx Tests"(Codeunit 50000);
+    ChangeType=Deletion;
+  }
+  CODE
+  {
+
+    BEGIN
+    END.
+  }
+}
+
