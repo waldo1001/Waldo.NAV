@@ -1,0 +1,13 @@
+c:\users\administrator\documents\visual studio 2015\Projects\Waldo.NAV.TinyMCEControl\Waldo.NAV.TinyMCEControl\bin\Debug\Waldo.NAV.TinyMCEControl.dll
+c:\users\administrator\documents\visual studio 2015\Projects\Waldo.NAV.TinyMCEControl\Waldo.NAV.TinyMCEControl\bin\Debug\Waldo.NAV.TinyMCEControl.pdb
+c:\users\administrator\documents\visual studio 2015\Projects\Waldo.NAV.TinyMCEControl\Waldo.NAV.TinyMCEControl\bin\Debug\Microsoft.Dynamics.Framework.UI.Extensibility.dll
+c:\users\administrator\documents\visual studio 2015\Projects\Waldo.NAV.TinyMCEControl\Waldo.NAV.TinyMCEControl\bin\Debug\Microsoft.Dynamics.Framework.UI.Extensibility.xml
+c:\users\administrator\documents\visual studio 2015\Projects\Waldo.NAV.TinyMCEControl\Waldo.NAV.TinyMCEControl\obj\Debug\Waldo.NAV.TinyMCEControl.dll
+c:\users\administrator\documents\visual studio 2015\Projects\Waldo.NAV.TinyMCEControl\Waldo.NAV.TinyMCEControl\obj\Debug\Waldo.NAV.TinyMCEControl.pdb
+C:\Users\Administrator\Dropbox\GitHub\Waldo.NAV\Waldo.NAV.TinyMCEControl\Waldo.NAV.TinyMCEControl\bin\Debug\Waldo.NAV.TinyMCEControl.dll
+C:\Users\Administrator\Dropbox\GitHub\Waldo.NAV\Waldo.NAV.TinyMCEControl\Waldo.NAV.TinyMCEControl\bin\Debug\Waldo.NAV.TinyMCEControl.pdb
+C:\Users\Administrator\Dropbox\GitHub\Waldo.NAV\Waldo.NAV.TinyMCEControl\Waldo.NAV.TinyMCEControl\bin\Debug\Microsoft.Dynamics.Framework.UI.Extensibility.dll
+C:\Users\Administrator\Dropbox\GitHub\Waldo.NAV\Waldo.NAV.TinyMCEControl\Waldo.NAV.TinyMCEControl\bin\Debug\Microsoft.Dynamics.Framework.UI.Extensibility.xml
+C:\Users\Administrator\Dropbox\GitHub\Waldo.NAV\Waldo.NAV.TinyMCEControl\Waldo.NAV.TinyMCEControl\obj\Debug\Waldo.NAV.TinyMCEControl.dll
+C:\Users\Administrator\Dropbox\GitHub\Waldo.NAV\Waldo.NAV.TinyMCEControl\Waldo.NAV.TinyMCEControl\obj\Debug\Waldo.NAV.TinyMCEControl.pdb
+C:\Users\Administrator\Dropbox\GitHub\Waldo.NAV\Waldo.NAV.TinyMCEControl\Waldo.NAV.TinyMCEControl\obj\Debug\Waldo.NAV.TinyMCEControl.csprojResolveAssemblyReference.cache
