@@ -2,8 +2,8 @@ OBJECT Codeunit 82102 WaldoNAVPad Subscribers
 {
   OBJECT-PROPERTIES
   {
-    Date=24/02/16;
-    Time=19:59:55;
+    Date=10/03/16;
+    Time=16:22:32;
     Modified=Yes;
     Version List=WaldoNAVPad;
   }

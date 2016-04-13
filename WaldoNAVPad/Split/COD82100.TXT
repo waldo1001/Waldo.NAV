@@ -2,8 +2,8 @@ OBJECT Codeunit 82100 WaldoNAVPad Class
 {
   OBJECT-PROPERTIES
   {
-    Date=26/02/16;
-    Time=[ 7:48:20];
+    Date=10/03/16;
+    Time=16:22:32;
     Modified=Yes;
     Version List=WaldoNAVPad;
   }

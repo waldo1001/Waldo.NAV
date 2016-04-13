@@ -3,7 +3,7 @@ OBJECT Codeunit 82110 WaldoNAVPad Text Class
   OBJECT-PROPERTIES
   {
     Date=10/03/16;
-    Time=12:47:50;
+    Time=16:22:32;
     Modified=Yes;
     Version List=WaldoNAVPad;
   }
@@ -43,7 +43,6 @@ OBJECT Codeunit 82110 WaldoNAVPad Text Class
     PROCEDURE GetText@1100084006() : Text;
     BEGIN
       EXIT(CurrentText);
-
     END;
 
     PROCEDURE SetMaxLenght@1100084007(pMaxLenght@1100084000 : Integer);

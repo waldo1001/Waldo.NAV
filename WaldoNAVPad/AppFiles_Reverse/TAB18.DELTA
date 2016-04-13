@@ -28,7 +28,7 @@ OBJECT Modification Customer(Table 18)
                           }
     { PropertyModification;
                          Property=Version List;
-                         OriginalValue=NAVW19.00.00.43897,NAVBE9.00.00.43897,WaldoNAVPadExample;
+                         OriginalValue=NAVW19.00.00.43897,NAVBE9.00.00.43897,WaldoNAVPad;
                          ModifiedValue=NAVW19.00.00.43897,NAVBE9.00.00.43897 }
   }
   CODE

@@ -37,7 +37,7 @@ OBJECT Modification "Customer List"(Page 22)
                           }
     { PropertyModification;
                          Property=Version List;
-                         OriginalValue=NAVW19.00,WaldoNAVPadExample;
+                         OriginalValue=NAVW19.00,WaldoNAVPad;
                          ModifiedValue=NAVW19.00 }
   }
   CODE
