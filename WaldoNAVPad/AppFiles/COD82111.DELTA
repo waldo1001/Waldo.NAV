@@ -2,8 +2,8 @@ OBJECT Codeunit 82111 WaldoNAVPad Text Parse Meth
 {
   OBJECT-PROPERTIES
   {
-    Date=10/03/16;
-    Time=16:22:32;
+    Date=18/04/16;
+    Time=13:18:40;
     Modified=Yes;
     Version List=WaldoNAVPad;
   }
@@ -73,7 +73,7 @@ OBJECT Codeunit 82111 WaldoNAVPad Text Parse Meth
       AddToBuffer(LineNo,Line,ResultWaldoNAVPadTextBuffer.Separator::"Carriage Return",ResultWaldoNAVPadTextBuffer);
     END;
 
-    LOCAL PROCEDURE AddToBuffer@1100084041(VAR LineNo@1100084003 : Integer;VAR Line@1100084000 : DotNet "'mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089'.System.String";Separator@1100084002 : Integer;VAR ResultWaldoNAVPadTextBuffer@1100084004 : Record 82110);
+    LOCAL PROCEDURE AddToBuffer@1100084041(VAR LineNo@1100084003 : Integer;VAR Line@1100084000 : DotNet "'mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089'.System.String";pSeparator@1100084002 : Integer;VAR ResultWaldoNAVPadTextBuffer@1100084004 : Record 82110);
     BEGIN
       LineNo += 1;
 
@@ -81,7 +81,7 @@ OBJECT Codeunit 82111 WaldoNAVPad Text Parse Meth
         INIT;
         "Line No." := LineNo;
         Textline := Line;
-        Separator := Separator;
+        Separator := pSeparator;
         INSERT;
       END;
     END;
