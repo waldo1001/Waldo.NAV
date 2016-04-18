@@ -2,14 +2,21 @@ OBJECT Table 18 Customer
 {
   OBJECT-PROPERTIES
   {
-    Date=10/03/16;
-    Time=16:22:32;
+    Date=08/04/16;
+    Time=[ 9:36:00];
     Modified=Yes;
-    Version List=NAVW19.00.00.43897,NAVBE9.00.00.43897,WaldoNAVPad;
+    Version List=NAVW19.00.00.45480,NAVBE9.00.00.45480,WaldoNAVPad;
   }
   PROPERTIES
   {
-    Permissions=TableData 21=r;
+    Permissions=TableData 21=r,
+                TableData 167=r,
+                TableData 249=rd,
+                TableData 5900=r,
+                TableData 5940=rm,
+                TableData 5965=rm,
+                TableData 7002=rd,
+                TableData 7004=rd;
     DataCaptionFields=No.,Name;
     OnInsert=BEGIN
                IF "No." = '' THEN BEGIN
@@ -220,8 +227,7 @@ OBJECT Table 18 Customer
   }
   FIELDS
   {
-    { 1   ;   ;No.                 ;Code20        ;AltSearchField=Search Name;
-                                                   OnValidate=BEGIN
+    { 1   ;   ;No.                 ;Code20        ;OnValidate=BEGIN
                                                                 IF "No." <> xRec."No." THEN BEGIN
                                                                   SalesSetup.GET;
                                                                   NoSeriesMgt.TestManual(SalesSetup."Customer Nos.");
@@ -231,6 +237,7 @@ OBJECT Table 18 Customer
                                                                   "Invoice Disc. Code" := "No.";
                                                               END;
 
+                                                   AltSearchField=Search Name;
                                                    CaptionML=[ENU=No.;
                                                               FRB=N¯;
                                                               NLB=Nr.] }
@@ -973,22 +980,23 @@ OBJECT Table 18 Customer
                                                                 ICPartner@1002 : Record 413;
                                                               BEGIN
                                                                 IF xRec."IC Partner Code" <> "IC Partner Code" THEN BEGIN
-                                                                  CustLedgEntry.SETCURRENTKEY("Customer No.","Posting Date");
-                                                                  CustLedgEntry.SETRANGE("Customer No.","No.");
-                                                                  AccountingPeriod.SETRANGE(Closed,FALSE);
-                                                                  IF AccountingPeriod.FINDFIRST THEN
-                                                                    CustLedgEntry.SETFILTER("Posting Date",'>=%1',AccountingPeriod."Starting Date");
-                                                                  IF CustLedgEntry.FINDFIRST THEN
-                                                                    IF NOT CONFIRM(Text011,FALSE,TABLECAPTION) THEN
-                                                                      "IC Partner Code" := xRec."IC Partner Code";
-
-                                                                  CustLedgEntry.RESET;
                                                                   IF NOT CustLedgEntry.SETCURRENTKEY("Customer No.",Open) THEN
                                                                     CustLedgEntry.SETCURRENTKEY("Customer No.");
                                                                   CustLedgEntry.SETRANGE("Customer No.","No.");
                                                                   CustLedgEntry.SETRANGE(Open,TRUE);
                                                                   IF CustLedgEntry.FINDLAST THEN
                                                                     ERROR(Text012,FIELDCAPTION("IC Partner Code"),TABLECAPTION);
+
+                                                                  CustLedgEntry.RESET;
+                                                                  CustLedgEntry.SETCURRENTKEY("Customer No.","Posting Date");
+                                                                  CustLedgEntry.SETRANGE("Customer No.","No.");
+                                                                  AccountingPeriod.SETRANGE(Closed,FALSE);
+                                                                  IF AccountingPeriod.FINDFIRST THEN BEGIN
+                                                                    CustLedgEntry.SETFILTER("Posting Date",'>=%1',AccountingPeriod."Starting Date");
+                                                                    IF CustLedgEntry.FINDFIRST THEN
+                                                                      IF NOT CONFIRM(Text011,FALSE,TABLECAPTION) THEN
+                                                                        "IC Partner Code" := xRec."IC Partner Code";
+                                                                  END;
                                                                 END;
 
                                                                 IF "IC Partner Code" <> '' THEN BEGIN
@@ -1137,6 +1145,7 @@ OBJECT Table 18 Customer
                                                    OnLookup=VAR
                                                               Cont@1000 : Record 5050;
                                                               ContBusRel@1001 : Record 5054;
+                                                              TempCust@1002 : TEMPORARY Record 18;
                                                             BEGIN
                                                               ContBusRel.SETCURRENTKEY("Link to Table","No.");
                                                               ContBusRel.SETRANGE("Link to Table",ContBusRel."Link to Table"::Customer);
@@ -1148,8 +1157,12 @@ OBJECT Table 18 Customer
 
                                                               IF "Primary Contact No." <> '' THEN
                                                                 IF Cont.GET("Primary Contact No.") THEN ;
-                                                              IF PAGE.RUNMODAL(0,Cont) = ACTION::LookupOK THEN
+                                                              IF PAGE.RUNMODAL(0,Cont) = ACTION::LookupOK THEN BEGIN
+                                                                TempCust.COPY(Rec);
+                                                                FIND;
+                                                                TRANSFERFIELDS(TempCust,FALSE);
                                                                 VALIDATE("Primary Contact No.",Cont."No.");
+                                                              END;
                                                             END;
 
                                                    CaptionML=[ENU=Primary Contact No.;
@@ -2365,8 +2378,8 @@ OBJECT Codeunit 82111 WaldoNAVPad Text Parse Meth
 {
   OBJECT-PROPERTIES
   {
-    Date=10/03/16;
-    Time=16:22:32;
+    Date=18/04/16;
+    Time=13:18:40;
     Modified=Yes;
     Version List=WaldoNAVPad;
   }
@@ -2436,7 +2449,7 @@ OBJECT Codeunit 82111 WaldoNAVPad Text Parse Meth
       AddToBuffer(LineNo,Line,ResultWaldoNAVPadTextBuffer.Separator::"Carriage Return",ResultWaldoNAVPadTextBuffer);
     END;
 
-    LOCAL PROCEDURE AddToBuffer@1100084041(VAR LineNo@1100084003 : Integer;VAR Line@1100084000 : DotNet "'mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089'.System.String";Separator@1100084002 : Integer;VAR ResultWaldoNAVPadTextBuffer@1100084004 : Record 82110);
+    LOCAL PROCEDURE AddToBuffer@1100084041(VAR LineNo@1100084003 : Integer;VAR Line@1100084000 : DotNet "'mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089'.System.String";pSeparator@1100084002 : Integer;VAR ResultWaldoNAVPadTextBuffer@1100084004 : Record 82110);
     BEGIN
       LineNo += 1;
 
@@ -2444,7 +2457,7 @@ OBJECT Codeunit 82111 WaldoNAVPad Text Parse Meth
         INIT;
         "Line No." := LineNo;
         Textline := Line;
-        Separator := Separator;
+        Separator := pSeparator;
         INSERT;
       END;
     END;
@@ -2594,10 +2607,10 @@ OBJECT Page 22 Customer List
 {
   OBJECT-PROPERTIES
   {
-    Date=10/03/16;
-    Time=16:22:32;
+    Date=08/04/16;
+    Time=[ 9:36:00];
     Modified=Yes;
-    Version List=NAVW19.00,WaldoNAVPad;
+    Version List=NAVW19.00.00.44974,WaldoNAVPad;
   }
   PROPERTIES
   {
@@ -2879,6 +2892,7 @@ OBJECT Page 22 Customer List
                                  NLB=Geschiedenis];
                       Image=History }
       { 22      ;2   ;Action    ;
+                      Name=CustomerLedgerEntries;
                       ShortCutKey=Ctrl+F7;
                       CaptionML=[ENU=Ledger E&ntries;
                                  FRB=ê&critures comptables;
@@ -2948,6 +2962,7 @@ OBJECT Page 22 Customer List
                                  NLB=V&erkoop];
                       Image=Sales }
       { 25      ;2   ;Action    ;
+                      Name=Sales_InvoiceDiscounts;
                       CaptionML=[ENU=Invoice &Discounts;
                                  FRB=Remises &facture;
                                  NLB=&Factuurkorting];
@@ -2955,6 +2970,7 @@ OBJECT Page 22 Customer List
                       RunPageLink=Code=FIELD(Invoice Disc. Code);
                       Image=CalculateInvoiceDiscount }
       { 26      ;2   ;Action    ;
+                      Name=Sales_Prices;
                       CaptionML=[ENU=Prices;
                                  FRB=Prix;
                                  NLB=Prijzen];
@@ -2964,6 +2980,7 @@ OBJECT Page 22 Customer List
                                   Sales Code=FIELD(No.);
                       Image=Price }
       { 71      ;2   ;Action    ;
+                      Name=Sales_LineDiscounts;
                       CaptionML=[ENU=Line Discounts;
                                  FRB=Remises ligne;
                                  NLB=Regelkortingen];
@@ -3834,8 +3851,8 @@ OBJECT Page 56111 WNP Texts
 {
   OBJECT-PROPERTIES
   {
-    Date=10/03/16;
-    Time=16:22:32;
+    Date=12/04/16;
+    Time=17:27:26;
     Modified=Yes;
     Version List=WaldoNAVPad;
   }
@@ -3882,8 +3899,8 @@ OBJECT Page 82100 WaldoNAVPad
 {
   OBJECT-PROPERTIES
   {
-    Date=10/03/16;
-    Time=16:22:32;
+    Date=12/04/16;
+    Time=17:30:03;
     Modified=Yes;
     Version List=WaldoNAVPad;
   }
@@ -3901,6 +3918,12 @@ OBJECT Page 82100 WaldoNAVPad
       { 1100084004;1 ;Action    ;
                       Name=Texts;
                       RunObject=Page 56111 }
+      { 1100084006;1 ;Action    ;
+                      Name=Test HTML Editor;
+                      OnAction=BEGIN
+                                 PAGE.RUN(50010);
+                               END;
+                                }
     }
   }
   CONTROLS

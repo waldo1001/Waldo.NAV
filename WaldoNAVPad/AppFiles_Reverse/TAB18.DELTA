@@ -2,9 +2,9 @@ OBJECT Modification Customer(Table 18)
 {
   OBJECT-PROPERTIES
   {
-    Date=26/11/15;
+    Date=23/03/16;
     Time=12:00:00;
-    Version List=NAVW19.00.00.43897,NAVBE9.00.00.43897;
+    Version List=NAVW19.00.00.45480,NAVBE9.00.00.45480;
   }
   PROPERTIES
   {
@@ -28,8 +28,8 @@ OBJECT Modification Customer(Table 18)
                           }
     { PropertyModification;
                          Property=Version List;
-                         OriginalValue=NAVW19.00.00.43897,NAVBE9.00.00.43897,WaldoNAVPad;
-                         ModifiedValue=NAVW19.00.00.43897,NAVBE9.00.00.43897 }
+                         OriginalValue=NAVW19.00.00.45480,NAVBE9.00.00.45480,WaldoNAVPad;
+                         ModifiedValue=NAVW19.00.00.45480,NAVBE9.00.00.45480 }
   }
   CODE
   {
