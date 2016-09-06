@@ -1,6 +1,8 @@
-﻿$ProjectFolder = 'C:\Users\Administrator\Dropbox\GitHub\Waldo.NAV\Waldo.NAV.TinyMCEControl\Waldo.NAV.TinyMCEControl'
-$Dll = Join-Path $ProjectFolder '\bin\Debug\Waldo.NAV.TinyMCEControl.dll'
+﻿# Import settings
+. (Join-Path $PSScriptRoot '_Settings.ps1') -ErrorAction Stop
 
+$Dll = Join-Path $ProjectFolder '\bin\Debug\Waldo.NAV.TinyMCEControl.dll'
+        
 if (!($NavIde)){
     Write-Error 'Please load the model tools'
     break

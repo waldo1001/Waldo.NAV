@@ -59,36 +59,6 @@
             control add-in that binds to an application control of type Boolean.
             </summary>
         </member>
-        <member name="T:Microsoft.Dynamics.Framework.UI.Extensibility.IValueControlAddInDefinition`1">
-            <summary>
-            Base interface for a control add-in definition interface with data.
-            </summary>
-            <typeparam name="T">The type of the data that the control add-in
-            definition interface exposes. Only data of type <see cref="T:System.String"/> and
-            <see cref="T:System.Object"/> is supported currently.</typeparam>
-        </member>
-        <member name="P:Microsoft.Dynamics.Framework.UI.Extensibility.IValueControlAddInDefinition`1.Value">
-            <summary>
-            Gets or sets the value of the control add-in.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Dynamics.Framework.UI.Extensibility.IValueControlAddInDefinition`1.HasValueChanged">
-            <summary>
-            Gets whether the <see cref="P:Microsoft.Dynamics.Framework.UI.Extensibility.IValueControlAddInDefinition`1.Value"/> property has changed its value or not.
-            </summary>
-        </member>
-        <member name="T:Microsoft.Dynamics.Framework.UI.Extensibility.IEventControlAddInDefinition">
-            <summary>
-            Base interface for a control add-in definition interface with
-            a <see cref="T:Microsoft.Dynamics.Framework.UI.Extensibility.ControlAddInEventHandler"/> event.
-            </summary>
-        </member>
-        <member name="E:Microsoft.Dynamics.Framework.UI.Extensibility.IEventControlAddInDefinition.ControlAddIn">
-            <summary>
-            <see cref="T:Microsoft.Dynamics.Framework.UI.Extensibility.ControlAddInEventHandler"/> event that will invoke an
-            application module when it is raised.
-            </summary>
-        </member>
         <member name="T:Microsoft.Dynamics.Framework.UI.Extensibility.IByteControlAddInDefinition">
             <summary>
             Interface for a control add-in definition interface with a <see cref="T:System.Byte"/> value
@@ -128,6 +98,18 @@
             control add-in that binds to an application control of type Decimal.
             </summary>
         </member>
+        <member name="T:Microsoft.Dynamics.Framework.UI.Extensibility.IEventControlAddInDefinition">
+            <summary>
+            Base interface for a control add-in definition interface with
+            a <see cref="T:Microsoft.Dynamics.Framework.UI.Extensibility.ControlAddInEventHandler"/> event.
+            </summary>
+        </member>
+        <member name="E:Microsoft.Dynamics.Framework.UI.Extensibility.IEventControlAddInDefinition.ControlAddIn">
+            <summary>
+            <see cref="T:Microsoft.Dynamics.Framework.UI.Extensibility.ControlAddInEventHandler"/> event that will invoke an
+            application module when it is raised.
+            </summary>
+        </member>
         <member name="T:Microsoft.Dynamics.Framework.UI.Extensibility.IGuidControlAddInDefinition">
             <summary>
             Interface for a control add-in definition interface with a <see cref="T:System.Guid"/> value
@@ -154,6 +136,24 @@
             Interface for a control add-in definition interface with a <see cref="T:System.TimeSpan"/> value
             type and a <see cref="T:Microsoft.Dynamics.Framework.UI.Extensibility.ControlAddInEventHandler"/> event. Use this interface for a 
             control add-in that binds to an application control of type Duration.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Dynamics.Framework.UI.Extensibility.IValueControlAddInDefinition`1">
+            <summary>
+            Base interface for a control add-in definition interface with data.
+            </summary>
+            <typeparam name="T">The type of the data that the control add-in
+            definition interface exposes. Only data of type <see cref="T:System.String"/> and
+            <see cref="T:System.Object"/> is supported currently.</typeparam>
+        </member>
+        <member name="P:Microsoft.Dynamics.Framework.UI.Extensibility.IValueControlAddInDefinition`1.Value">
+            <summary>
+            Gets or sets the value of the control add-in.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Dynamics.Framework.UI.Extensibility.IValueControlAddInDefinition`1.HasValueChanged">
+            <summary>
+            Gets whether the <see cref="P:Microsoft.Dynamics.Framework.UI.Extensibility.IValueControlAddInDefinition`1.Value"/> property has changed its value or not.
             </summary>
         </member>
         <member name="T:Microsoft.Dynamics.Framework.UI.Extensibility.IObjectControlAddInDefinition">
@@ -188,12 +188,6 @@
             Definition of the <see cref="T:Microsoft.Dynamics.Framework.UI.Extensibility.IControlAddInSite"/> interface. This interface 
             allows an control add-in to get information about the container of the add-in 
             control.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Dynamics.Framework.UI.Extensibility.IControlAddInSite.SaveValue">
-            <summary>
-            Tells the site to save the value of the control add-in. The value of the control
-            add-in control is read by the site from the control add-in.
             </summary>
         </member>
         <member name="P:Microsoft.Dynamics.Framework.UI.Extensibility.IControlAddInSite.Enabled">
@@ -256,6 +250,12 @@
             Event is raised when the site has validated the value of the control add-in. The
             validation either succeeds or fails and this event is raised when the validation
             result has changed.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Dynamics.Framework.UI.Extensibility.IControlAddInSite.SaveValue">
+            <summary>
+            Tells the site to save the value of the control add-in. The value of the control
+            add-in control is read by the site from the control add-in.
             </summary>
         </member>
         <member name="T:Microsoft.Dynamics.Framework.UI.Extensibility.Style">
@@ -385,11 +385,6 @@
             <para>Note: This is for internal use only and will be subject to change in coming versions.</para>
             </summary>
         </member>
-        <member name="M:Microsoft.Dynamics.Framework.UI.Extensibility.WinForms.IWinFormsCallback.RequestLayout">
-            <summary>
-            Request a layout to be performed.
-            </summary>
-        </member>
         <member name="P:Microsoft.Dynamics.Framework.UI.Extensibility.WinForms.IWinFormsCallback.DefaultMinimumSize">
             <summary>
             Gets the default minimum size used in the Winforms client.
@@ -403,6 +398,11 @@
         <member name="P:Microsoft.Dynamics.Framework.UI.Extensibility.WinForms.IWinFormsCallback.DefaultPreferredSize">
             <summary>
             Gets the default preferred size used in the Winforms client.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Dynamics.Framework.UI.Extensibility.WinForms.IWinFormsCallback.RequestLayout">
+            <summary>
+            Request a layout to be performed.
             </summary>
         </member>
         <member name="T:Microsoft.Dynamics.Framework.UI.Extensibility.WinForms.IWinFormsControlAddIn">
@@ -428,6 +428,46 @@
             Base class for WinForms control add-in, which transfers data as a <see cref="T:System.String"/>
             and provides functionality for calling an application module.
             </summary>
+        </member>
+        <member name="M:Microsoft.Dynamics.Framework.UI.Extensibility.WinForms.StringControlAddInBase.OnInitialize">
+            <summary>
+            Called when <see cref="M:Microsoft.Dynamics.Framework.UI.Extensibility.IControlAddIn.Initialize(Microsoft.Dynamics.Framework.UI.Extensibility.IControlAddInSite)"/> is called.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Dynamics.Framework.UI.Extensibility.WinForms.StringControlAddInBase.OnEditableChanged(System.Boolean)">
+            <summary>
+            Called when the <see cref="P:Microsoft.Dynamics.Framework.UI.Extensibility.IControlAddInSite.Editable"/> property on the
+            <see cref="P:Microsoft.Dynamics.Framework.UI.Extensibility.WinForms.WinFormsControlAddInBase.Site"/> property has changed.
+            </summary>
+            <remarks>
+            If the control add-in's WinForms control is a <see cref="T:System.Windows.Forms.TextBox"/> its
+            ReadOnly property will be flipped; otherwise the control add-in should
+            override this method and displaying its content in editable/non-editable 
+            mode.
+            </remarks>
+            <param name="editable">The new editable value.</param>
+        </member>
+        <member name="P:Microsoft.Dynamics.Framework.UI.Extensibility.WinForms.StringControlAddInBase.Value">
+            <summary>
+            Gets or set the value of the control add-in as a <see cref="T:System.String"/>.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Dynamics.Framework.UI.Extensibility.WinForms.StringControlAddInBase.HasValueChanged">
+            <summary>
+            Gets whether the <see cref="P:Microsoft.Dynamics.Framework.UI.Extensibility.WinForms.StringControlAddInBase.Value"/> property has changed its value or not.
+            </summary>
+        </member>
+        <member name="E:Microsoft.Dynamics.Framework.UI.Extensibility.WinForms.StringControlAddInBase.ControlAddIn">
+            <summary>
+            Application module is invoked when the event is raised.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Dynamics.Framework.UI.Extensibility.WinForms.StringControlAddInBase.RaiseControlAddInEvent(System.Int32,System.String)">
+            <summary>
+            Raise the <see cref="E:Microsoft.Dynamics.Framework.UI.Extensibility.IEventControlAddInDefinition.ControlAddIn"/> event.
+            </summary>
+            <param name="index">Generic integer.</param>
+            <param name="data">Generic string.</param>
         </member>
         <member name="T:Microsoft.Dynamics.Framework.UI.Extensibility.WinForms.WinFormsControlAddInBase">
             <summary>
@@ -515,29 +555,16 @@
             </summary>
             <param name="validationResult">A <see cref="T:Microsoft.Dynamics.Framework.UI.Extensibility.ValidationResult"/> containing the new validation result.</param>
         </member>
+        <member name="P:Microsoft.Dynamics.Framework.UI.Extensibility.WinForms.WinFormsControlAddInBase.Control">
+            <summary>
+            Gets the WinForms control for the control add-in.
+            </summary>
+        </member>
         <member name="M:Microsoft.Dynamics.Framework.UI.Extensibility.WinForms.WinFormsControlAddInBase.CreateControl">
             <summary>
             Creates the WinForms control for the control add-in.
             </summary>
             <returns>Returns the WinForms control.</returns>
-        </member>
-        <member name="M:Microsoft.Dynamics.Framework.UI.Extensibility.WinForms.WinFormsControlAddInBase.ApplySize(Microsoft.Dynamics.Framework.UI.Extensibility.WinForms.DisplaySize,Microsoft.Dynamics.Framework.UI.Extensibility.WinForms.DisplaySize)">
-            <summary>
-            Apply custom or default behavior for minimum, preferred and maximum sizes.
-            </summary>
-            <param name="width">Custom or <see cref="P:Microsoft.Dynamics.Framework.UI.Extensibility.WinForms.DisplaySize.Default"/> width. <code>Null</code> is treated as default size.</param>
-            <param name="height">Custom or <see cref="P:Microsoft.Dynamics.Framework.UI.Extensibility.WinForms.DisplaySize.Default"/> height. <code>Null</code> is treated as default size.</param>
-        </member>
-        <member name="M:Microsoft.Dynamics.Framework.UI.Extensibility.WinForms.WinFormsControlAddInBase.PreInitialize(System.Object)">
-            <summary>
-            Initialize the internal Winforms callback.
-            </summary>
-            <param name="initializer">Object for initializing the Winforms AddIn.</param>
-        </member>
-        <member name="P:Microsoft.Dynamics.Framework.UI.Extensibility.WinForms.WinFormsControlAddInBase.Control">
-            <summary>
-            Gets the WinForms control for the control add-in.
-            </summary>
         </member>
         <member name="P:Microsoft.Dynamics.Framework.UI.Extensibility.WinForms.WinFormsControlAddInBase.AllowCaptionControl">
             <summary>
@@ -552,50 +579,23 @@
             Gets the <see cref="T:Microsoft.Dynamics.Framework.UI.Extensibility.IControlAddInSite"/> for the control add-in.
             </summary>
         </member>
+        <member name="M:Microsoft.Dynamics.Framework.UI.Extensibility.WinForms.WinFormsControlAddInBase.ApplySize(Microsoft.Dynamics.Framework.UI.Extensibility.WinForms.DisplaySize,Microsoft.Dynamics.Framework.UI.Extensibility.WinForms.DisplaySize)">
+            <summary>
+            Apply custom or default behavior for minimum, preferred and maximum sizes.
+            </summary>
+            <param name="width">Custom or <see cref="P:Microsoft.Dynamics.Framework.UI.Extensibility.WinForms.DisplaySize.Default"/> width. <code>Null</code> is treated as default size.</param>
+            <param name="height">Custom or <see cref="P:Microsoft.Dynamics.Framework.UI.Extensibility.WinForms.DisplaySize.Default"/> height. <code>Null</code> is treated as default size.</param>
+        </member>
         <member name="P:Microsoft.Dynamics.Framework.UI.Extensibility.WinForms.WinFormsControlAddInBase.AcceptsEnterKey">
             <summary>
             Gets a value indicating whether the Enter key is processed by the control add-in.
             </summary>
         </member>
-        <member name="M:Microsoft.Dynamics.Framework.UI.Extensibility.WinForms.StringControlAddInBase.OnInitialize">
+        <member name="M:Microsoft.Dynamics.Framework.UI.Extensibility.WinForms.WinFormsControlAddInBase.PreInitialize(System.Object)">
             <summary>
-            Called when <see cref="M:Microsoft.Dynamics.Framework.UI.Extensibility.IControlAddIn.Initialize(Microsoft.Dynamics.Framework.UI.Extensibility.IControlAddInSite)"/> is called.
+            Initialize the internal Winforms callback.
             </summary>
-        </member>
-        <member name="M:Microsoft.Dynamics.Framework.UI.Extensibility.WinForms.StringControlAddInBase.OnEditableChanged(System.Boolean)">
-            <summary>
-            Called when the <see cref="P:Microsoft.Dynamics.Framework.UI.Extensibility.IControlAddInSite.Editable"/> property on the
-            <see cref="P:Microsoft.Dynamics.Framework.UI.Extensibility.WinForms.WinFormsControlAddInBase.Site"/> property has changed.
-            </summary>
-            <remarks>
-            If the control add-in's WinForms control is a <see cref="T:System.Windows.Forms.TextBox"/> its
-            ReadOnly property will be flipped; otherwise the control add-in should
-            override this method and displaying its content in editable/non-editable 
-            mode.
-            </remarks>
-            <param name="editable">The new editable value.</param>
-        </member>
-        <member name="M:Microsoft.Dynamics.Framework.UI.Extensibility.WinForms.StringControlAddInBase.RaiseControlAddInEvent(System.Int32,System.String)">
-            <summary>
-            Raise the <see cref="E:Microsoft.Dynamics.Framework.UI.Extensibility.IEventControlAddInDefinition.ControlAddIn"/> event.
-            </summary>
-            <param name="index">Generic integer.</param>
-            <param name="data">Generic string.</param>
-        </member>
-        <member name="P:Microsoft.Dynamics.Framework.UI.Extensibility.WinForms.StringControlAddInBase.Value">
-            <summary>
-            Gets or set the value of the control add-in as a <see cref="T:System.String"/>.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Dynamics.Framework.UI.Extensibility.WinForms.StringControlAddInBase.HasValueChanged">
-            <summary>
-            Gets whether the <see cref="P:Microsoft.Dynamics.Framework.UI.Extensibility.WinForms.StringControlAddInBase.Value"/> property has changed its value or not.
-            </summary>
-        </member>
-        <member name="E:Microsoft.Dynamics.Framework.UI.Extensibility.WinForms.StringControlAddInBase.ControlAddIn">
-            <summary>
-            Application module is invoked when the event is raised.
-            </summary>
+            <param name="initializer">Object for initializing the Winforms AddIn.</param>
         </member>
     </members>
 </doc>

@@ -6,27 +6,39 @@
 
     tinymce.init({
         selector: '#WaldoNAVPadControl',
-        height: 500,
+        min_height: 500,        
         theme: 'modern',
+
         plugins: [
           'advlist autolink lists link image charmap print preview hr anchor pagebreak',
           'searchreplace wordcount visualblocks visualchars code fullscreen',
           'insertdatetime media nonbreaking save table contextmenu directionality',
-          'emoticons template paste textcolor colorpicker textpattern imagetools'
+          'emoticons template paste textcolor colorpicker textpattern imagetools',
+          'autoresize'
         ],
         toolbar1: 'insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image',
         toolbar2: 'print preview media | forecolor backcolor emoticons',
-        image_advtab: true,
-        templates: [
-          { title: 'Test template 1', content: 'Test 1' },
-          { title: 'Test template 2', content: 'Test 2' }
-        ],
+        //image_advtab: true,
+        //templates: [
+        //  { title: 'Test template 1', content: 'Test 1' },
+        //  { title: 'Test template 2', content: 'Test 2' }
+        //],
+        //resize: true,
 
-        content_css: [
-          '//fast.fonts.net/cssapi/e6dc9b99-64fe-4292-ad98-6974f93cd2a2.css',
-          '//www.tinymce.com/css/codepen.min.css'
-        ]
+        //,
+        //content_css: [
+        //  'http://fast.fonts.net/cssapi/e6dc9b99-64fe-4292-ad98-6974f93cd2a2.css',
+        //  'http://www.tinymce.com/css/codepen.min.css'
+        //]
+
+        setup: function (ed) {
+            ed.on('NodeChange', function (e) {
+                InvokeEvent('TextHasChanged', []);
+            });
+        }
     });
+
+
 
 }
 
@@ -43,9 +55,20 @@ function GetText() {
 }
 
 
+function SetHTML(HTML) {
+    tinymce.activeEditor.setContent(HTML);
+}
+
+$(document).ready(function () {
+    InitializeControl('controlAddIn');
+   
+    InvokeEvent('ControlAddInReady', []);
+})
+
+
 //function SendRequest(method, arguments) {
-    //alert('method: ' + method);
-    //alert('arguments' + arguments);
+//alert('method: ' + method);
+//alert('arguments' + arguments);
 
 //    if (method === 'SetHTML')
 //        tinymce.activeEditor.setContent(arguments.HTML);
@@ -54,9 +77,3 @@ function GetText() {
 //        InvokeEvent('RequestReady', ['{method:GetHTML,HTML: ' + tinymce.activeEditor.getContent({ format: 'raw' }) + '}']);
 
 //}
-
-$(document).ready(function () {
-    InitializeControl('controlAddIn');
-    
-    InvokeEvent('ControlAddInReady', []);
-})

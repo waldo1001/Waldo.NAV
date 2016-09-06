@@ -10,4 +10,3 @@ C:\Users\Administrator\Dropbox\GitHub\Waldo.NAV\Waldo.NAV.TinyMCEControl\Waldo.N
 C:\Users\Administrator\Dropbox\GitHub\Waldo.NAV\Waldo.NAV.TinyMCEControl\Waldo.NAV.TinyMCEControl\bin\Debug\Microsoft.Dynamics.Framework.UI.Extensibility.xml
 C:\Users\Administrator\Dropbox\GitHub\Waldo.NAV\Waldo.NAV.TinyMCEControl\Waldo.NAV.TinyMCEControl\obj\Debug\Waldo.NAV.TinyMCEControl.dll
 C:\Users\Administrator\Dropbox\GitHub\Waldo.NAV\Waldo.NAV.TinyMCEControl\Waldo.NAV.TinyMCEControl\obj\Debug\Waldo.NAV.TinyMCEControl.pdb
-C:\Users\Administrator\Dropbox\GitHub\Waldo.NAV\Waldo.NAV.TinyMCEControl\Waldo.NAV.TinyMCEControl\obj\Debug\Waldo.NAV.TinyMCEControl.csprojResolveAssemblyReference.cache

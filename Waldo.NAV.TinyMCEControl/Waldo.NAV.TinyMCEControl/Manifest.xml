@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Manifest>
   <Resources>
-    <Script>Script.js</Script>
+    <Script>Script.js</Script>    
   </Resources>
   <ScriptUrls>
     <ScriptUrl>http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.9.1.min.js</ScriptUrl>
-    <ScriptUrl>http://cdn.tinymce.com/4/tinymce.min.js</ScriptUrl>
+    <ScriptUrl>http://cdn.tinymce.com/4/tinymce.min.js</ScriptUrl> 
   </ScriptUrls>
-  <RequestedHeight>800</RequestedHeight>
+  <RequestedHeight>600</RequestedHeight>
   <VerticalStretch>true</VerticalStretch>
   <HorizontalStretch>true</HorizontalStretch>
 </Manifest>

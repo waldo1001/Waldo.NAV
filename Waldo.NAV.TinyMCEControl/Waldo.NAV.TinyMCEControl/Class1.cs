@@ -20,6 +20,12 @@ namespace Waldo.NAV.TinyMCEControl
         event TextValueEventHandler GetTextReady;
 
         [ApplicationVisible]
+        event ApplicationEventHandler TextHasChanged;
+
+        [ApplicationVisible]
+        void SetHTML(string HTML);
+
+        [ApplicationVisible]
         void GetHTML();
 
         [ApplicationVisible]
