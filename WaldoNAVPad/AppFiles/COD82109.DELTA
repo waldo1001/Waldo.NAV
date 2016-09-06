@@ -1,0 +1,71 @@
+OBJECT Codeunit 82109 WaldoNAVPad Subscribers
+{
+  OBJECT-PROPERTIES
+  {
+    Date=06/09/16;
+    Time=10:32:16;
+    Modified=Yes;
+    Version List=WaldoNAVPad;
+  }
+  PROPERTIES
+  {
+    OnRun=BEGIN
+          END;
+
+  }
+  CODE
+  {
+
+    [EventSubscriber(Codeunit,1,OnAfterGetDatabaseTableTriggerSetup,"",Error,Error)]
+    LOCAL PROCEDURE SetUpWaldoNAVPad_OnAfterGetDatabaseTableTriggerSetup@1100084000(TableId@1100084000 : Integer;VAR OnDatabaseInsert@1100084001 : Boolean;VAR OnDatabaseModify@1100084002 : Boolean;VAR OnDatabaseDelete@1100084003 : Boolean;VAR OnDatabaseRename@1100084004 : Boolean);
+    VAR
+      WaldoNAVPadClass@1100084005 : Codeunit 82100;
+    BEGIN
+      OnDatabaseRename := TRUE;
+      //making this TRUE for all tables should not be that concerning,
+      //as renaming isn't something that happens too often ;-)
+
+      //On the other hand, if we would do it like this:
+      //  OnDatabaseRename := WaldoNAVPadClass.HasTexts(TableId);
+      //Then it would fail for the first text we add to a table:
+      //   - TriggerSetup would be false
+      //   - if we add text and then rename, it wouldn't rename the text
+    END;
+
+    [EventSubscriber(Codeunit,1,OnAfterOnDatabaseRename)]
+    LOCAL PROCEDURE HandleWaldoNAVPadTexts_OnAfterOnDatabaseRename@1100084003(RecRef@1100084000 : RecordRef;xRecRef@1100084001 : RecordRef);
+    BEGIN
+      HandleRenameRecord(RecRef,xRecRef);
+    END;
+
+    LOCAL PROCEDURE HandleRenameRecord@1100084001(VAR RecRef@1100084001 : RecordRef;VAR xRecRef@1100084000 : RecordRef);
+    BEGIN
+      HandleBlobStore(RecRef,xRecRef);
+      HandleTextStore(RecRef,xRecRef);
+    END;
+
+    LOCAL PROCEDURE HandleBlobStore@1100084005(VAR RecRef@1100084002 : RecordRef;VAR xRecRef@1100084001 : RecordRef);
+    VAR
+      WaldoNavPadBlobstore@1100084000 : Record 82100;
+    BEGIN
+      WITH WaldoNavPadBlobstore DO BEGIN
+        SETRANGE("Record ID", xRecRef.RECORDID);
+        MODIFYALL("Record ID", RecRef.RECORDID,FALSE);
+      END;
+    END;
+
+    LOCAL PROCEDURE HandleTextStore@1100084006(VAR RecRef@1100084002 : RecordRef;VAR xRecRef@1100084001 : RecordRef);
+    VAR
+      WaldoNAVPadTextstore@1100084000 : Record 82101;
+    BEGIN
+      WITH WaldoNAVPadTextstore DO BEGIN
+        SETRANGE("Record ID", xRecRef.RECORDID);
+        MODIFYALL("Record ID", RecRef.RECORDID,FALSE);
+      END;
+    END;
+
+    BEGIN
+    END.
+  }
+}
+

@@ -2,8 +2,8 @@ OBJECT Codeunit 82101 WaldoNAVPad ShowTexts Meth
 {
   OBJECT-PROPERTIES
   {
-    Date=10/03/16;
-    Time=16:22:32;
+    Date=06/09/16;
+    Time=14:48:02;
     Modified=Yes;
     Version List=WaldoNAVPad;
   }
@@ -16,31 +16,26 @@ OBJECT Codeunit 82101 WaldoNAVPad ShowTexts Meth
   CODE
   {
 
-    PROCEDURE ShowTexts@1100084000(Editable@1100084000 : Boolean;VAR RecRef@1100084002 : RecordRef);
+    PROCEDURE ShowTexts@1100084000(Editable@1100084000 : Boolean;UseHTMLEditor@1100084001 : Boolean;VAR RecRef@1100084002 : RecordRef;VAR ReturnWaldoNAVPadTextClass@1000 : Codeunit 82110);
     VAR
       Handled@1100084003 : Boolean;
     BEGIN
       OnBeforeShowTexts(RecRef,Handled);
-      DoShowTexts(Editable,RecRef,Handled);
+      DoShowTexts(Editable,UseHTMLEditor,RecRef,ReturnWaldoNAVPadTextClass,Handled);
       OnAfterShowTexts(RecRef);
     END;
 
-    LOCAL PROCEDURE DoShowTexts@1100084002(Editable@1100084000 : Boolean;VAR RecRef@1100084001 : RecordRef;Handled@1100084003 : Boolean);
+    LOCAL PROCEDURE DoShowTexts@1100084002(Editable@1100084000 : Boolean;UseHTMLEditor@1100084007 : Boolean;VAR RecRef@1100084001 : RecordRef;VAR ReturnWaldoNAVPadTextClass@1000 : Codeunit 82110;Handled@1100084003 : Boolean);
     VAR
       WaldoNAVPadTextstore@1100084002 : Record 82101;
-      Text@1100084004 : Text;
+      TextFromBlob@1100084004 : Text;
       UpdatedText@1100084005 : Text;
-      WaldoNAVPadTextClass@1100084006 : Codeunit 82110;
     BEGIN
       IF Handled THEN EXIT;
 
-      FilterWNPTexts(WaldoNAVPadTextstore, RecRef);
+      TextFromBlob := GetTextFromWNPBlob(RecRef);
 
-      Text := GetTextFromWNPBlob(RecRef);
-
-      UpdatedText := GetTextfromDialog(Text,Editable,WaldoNAVPadTextClass);
-
-      UpdateTextForRecord(Text, WaldoNAVPadTextClass,RecRef);
+      LoadTextfromDialog(TextFromBlob,Editable,UseHTMLEditor,ReturnWaldoNAVPadTextClass);
     END;
 
     LOCAL PROCEDURE GetTextFromWNPBlob@1100084053(VAR RecRef@1100084000 : RecordRef) : Text;
@@ -60,110 +55,14 @@ OBJECT Codeunit 82101 WaldoNAVPad ShowTexts Meth
       END;
     END;
 
-    LOCAL PROCEDURE FilterWNPTexts@1100084005(VAR WaldoNAVPadTextstore@1100084002 : Record 82101;VAR RecRef@1100084001 : RecordRef);
-    BEGIN
-      WITH WaldoNAVPadTextstore DO BEGIN
-        SETRANGE("Record ID", RecRef.RECORDID);
-      END;
-    END;
-
-    LOCAL PROCEDURE GetTextfromDialog@1100084001(VAR Text@1100084002 : Text;Editable@1100084003 : Boolean;VAR WaldoNAVPadTextClass@1100084000 : Codeunit 82110) : Text;
+    LOCAL PROCEDURE LoadTextfromDialog@1100084001(VAR TextFromBlob@1100084002 : Text;Editable@1100084003 : Boolean;UseHTMLEditor@1100084004 : Boolean;VAR ResultWaldoNAVPadTextClass@1100084000 : Codeunit 82110);
     VAR
       WaldoNAVPadTextstore@1100084001 : Record 82101;
     BEGIN
-      WITH WaldoNAVPadTextClass DO BEGIN
-        Initialize(Text, MAXSTRLEN(WaldoNAVPadTextstore.Textline));
-        ShowDialog(Editable);
-        EXIT(GetText);
+      WITH ResultWaldoNAVPadTextClass DO BEGIN
+        Initialize(TextFromBlob, MAXSTRLEN(WaldoNAVPadTextstore.Textline));
+        LoadTextFromDialog(Editable,UseHTMLEditor);
       END;
-    END;
-
-    LOCAL PROCEDURE UpdateTextForRecord@1100084012(OldText@1100084000 : Text;VAR WaldoNAVPadTextClass@1100084002 : Codeunit 82110;VAR RecRef@1100084003 : RecordRef);
-    BEGIN
-      IF OldText = WaldoNAVPadTextClass.GetText THEN EXIT;
-
-      SaveTextToBlob(WaldoNAVPadTextClass.GetText,RecRef);;
-      SaveTextToRecords(WaldoNAVPadTextClass,RecRef);
-    END;
-
-    LOCAL PROCEDURE SaveTextToBlob@1100084024(Text@1100084002 : Text;VAR RecRef@1100084000 : RecordRef);
-    BEGIN
-      DeleteWNPBlobForRecord(RecRef);
-      InsertWPNBlobForRecord(Text,RecRef);
-    END;
-
-    LOCAL PROCEDURE DeleteWNPBlobForRecord@1100084019(VAR RecRef@1100084000 : RecordRef);
-    VAR
-      WaldoNavPadBlobstore@1100084001 : Record 82100;
-    BEGIN
-      WITH WaldoNavPadBlobstore DO BEGIN
-        SETRANGE("Record ID", RecRef.RECORDID);
-        DELETEALL(FALSE);
-      END;
-    END;
-
-    LOCAL PROCEDURE InsertWPNBlobForRecord@1100084018(VAR Text@1100084001 : Text;VAR RecRef@1100084000 : RecordRef);
-    VAR
-      WaldoNavPadBlobstore@1100084004 : Record 82100;
-      TempBlob@1100084002 : Record 99008535;
-    BEGIN
-      WITH WaldoNavPadBlobstore DO BEGIN
-        GetBlobFromText(Text,TempBlob);
-        INIT;
-        "Record ID" := RecRef.RECORDID;
-        Blob := TempBlob.Blob;
-        TableNo := RecRef.NUMBER;
-        INSERT;
-      END;
-    END;
-
-    LOCAL PROCEDURE SaveTextToRecords@1100084025(VAR WaldoNAVPadTextClass@1100084003 : Codeunit 82110;VAR RecRef@1100084000 : RecordRef);
-    BEGIN
-      DeleteWNPTextForRecord(RecRef);
-      InsertWPNTextForRecord(WaldoNAVPadTextClass,RecRef);
-    END;
-
-    LOCAL PROCEDURE DeleteWNPTextForRecord@1100084003(VAR RecRef@1100084000 : RecordRef);
-    VAR
-      WaldoNAVPadTextstore@1100084001 : Record 82101;
-    BEGIN
-      FilterWNPTexts(WaldoNAVPadTextstore, RecRef);
-      WaldoNAVPadTextstore.DELETEALL(FALSE);
-    END;
-
-    LOCAL PROCEDURE InsertWPNTextForRecord@1100084016(VAR WaldoNAVPadTextClass@1100084002 : Codeunit 82110;VAR RecRef@1100084000 : RecordRef);
-    BEGIN
-      WITH WaldoNAVPadTextClass DO BEGIN
-        IF FINDFIRST THEN
-          REPEAT
-            InsertWPNText(GetCurrentTextLine, RecRef);
-          UNTIL NEXT < 1;
-      END;
-    END;
-
-    LOCAL PROCEDURE InsertWPNText@1100084020(pTextline@1100084000 : Text;VAR RecRef@1100084002 : RecordRef);
-    VAR
-      WaldoNAVPadTextstore@1100084001 : Record 82101;
-    BEGIN
-      WITH WaldoNAVPadTextstore DO BEGIN
-        INIT;
-
-        Textline := pTextline;
-        "Record ID" := RecRef.RECORDID;
-        TableNo := RecRef.NUMBER;
-
-        INSERT;
-      END;
-    END;
-
-    LOCAL PROCEDURE GetBlobFromText@1100084010(Text@1100084001 : Text;VAR TempBlob@1100084000 : Record 99008535);
-    VAR
-      WriteStream@1100084002 : OutStream;
-      TextBigText@1100084003 : BigText;
-    BEGIN
-      TempBlob.Blob.CREATEOUTSTREAM(WriteStream);
-      TextBigText.ADDTEXT(Text);
-      TextBigText.WRITE(WriteStream);
     END;
 
     LOCAL PROCEDURE GetTextFromBlob@1100084047(VAR TempBlob@1100084000 : Record 99008535) : Text;

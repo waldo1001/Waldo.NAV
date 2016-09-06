@@ -2,8 +2,8 @@ OBJECT Codeunit 82100 WaldoNAVPad Class
 {
   OBJECT-PROPERTIES
   {
-    Date=10/03/16;
-    Time=16:22:32;
+    Date=06/09/16;
+    Time=14:38:36;
     Modified=Yes;
     Version List=WaldoNAVPad;
   }
@@ -17,26 +17,53 @@ OBJECT Codeunit 82100 WaldoNAVPad Class
   {
     VAR
       CurrentRecRef@1100084000 : RecordRef;
+      WaldoNAVPadTextClass@1000 : Codeunit 82110;
       IsInitialized@1100084001 : Boolean;
       NotInitialized@1100084002 : TextConst 'ENU=Record not initialized.  Please review your code!';
+      IsTextLoaded@1001 : Boolean;
+      NoTextWasLoaded@1002 : TextConst 'ENU=No text was loaded.';
 
     PROCEDURE Initialize@1100084000(RecVariant@1100084000 : Variant);
     VAR
       DataTypeManagement@1100084001 : Codeunit 701;
     BEGIN
       IsInitialized := DataTypeManagement.GetRecordRef(RecVariant, CurrentRecRef);
+      CLEAR(WaldoNAVPadTextClass);
+      IsTextLoaded := FALSE;
     END;
 
-    PROCEDURE ShowTexts@1100084004(Editable@1100084000 : Boolean);
+    PROCEDURE ShowAndSaveTexts@1100084004(Editable@1100084000 : Boolean;UseHTMLEditor@1100084002 : Boolean);
     VAR
       WaldoNAVPadShowTextsMeth@1100084001 : Codeunit 82101;
     BEGIN
       IF NOT IsInitialized THEN ERROR(NotInitialized);
 
-      WaldoNAVPadShowTextsMeth.ShowTexts(Editable,CurrentRecRef);
+      LoadTextFromDialog(Editable,UseHTMLEditor);
+      IF Editable THEN
+        SaveText;
     END;
 
-    PROCEDURE HasTexts@1100084001(VAR TableNo@1100084001 : Integer) : Boolean;
+    PROCEDURE LoadTextFromDialog@1(Editable@1002 : Boolean;UseHTMLEditor@1001 : Boolean) : Boolean;
+    VAR
+      WaldoNAVPadShowTextsMeth@1000 : Codeunit 82101;
+    BEGIN
+      IF NOT IsInitialized THEN ERROR(NotInitialized);
+
+      WaldoNAVPadShowTextsMeth.ShowTexts(Editable,UseHTMLEditor,CurrentRecRef,WaldoNAVPadTextClass);
+      IsTextLoaded := TRUE;
+    END;
+
+    PROCEDURE SaveText@9();
+    VAR
+      WaldoNAVPadSaveTextsMeth@1000 : Codeunit 82102;
+    BEGIN
+      IF NOT IsInitialized THEN ERROR(NotInitialized);
+      IF NOT IsTextLoaded THEN ERROR(NoTextWasLoaded);
+
+      WaldoNAVPadSaveTextsMeth.SaveTexts(WaldoNAVPadTextClass,CurrentRecRef);
+    END;
+
+    PROCEDURE HasSavedTexts@1100084001(VAR TableNo@1100084001 : Integer) : Boolean;
     VAR
       WaldoNAVPadTableHasTextMeth@1100084000 : Codeunit 82103;
     BEGIN

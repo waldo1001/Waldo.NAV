@@ -2,8 +2,8 @@ OBJECT Codeunit 82120 WaldoNAVPad Test
 {
   OBJECT-PROPERTIES
   {
-    Date=10/03/16;
-    Time=16:22:32;
+    Date=06/09/16;
+    Time=14:58:51;
     Modified=Yes;
     Version List=WaldoNAVPad;
   }
@@ -22,9 +22,15 @@ OBJECT Codeunit 82120 WaldoNAVPad Test
     PROCEDURE TestShowDialogChange@1100084001();
     VAR
       MyText@1100084001 : Text;
+      WaldoNAVPadTextClass@1000 : Codeunit 82110;
     BEGIN
       MyText := 'TestText';
-      //WaldoNAVPadShowTextsMeth.ShowTexts(TRUE,MyText);
+
+      WaldoNAVPadTextClass.Initialize(MyText,100);
+      WaldoNAVPadTextClass.LoadTextFromDialog(TRUE,FALSE);
+
+      MyText := WaldoNAVPadTextClass.GetText;
+
       IF MyText <> 'waldo' THEN ERROR('Text Should have changed to waldo');
     END;
 
@@ -32,10 +38,16 @@ OBJECT Codeunit 82120 WaldoNAVPad Test
     [HandlerFunctions(DialogHandlerCancel)]
     PROCEDURE TestShowDialogCancel@1100084007();
     VAR
+      WaldoNAVPadTextClass@1000 : Codeunit 82110;
       MyText@1100084001 : Text;
     BEGIN
       MyText := 'TestText';
-      //WNPShowDialogMeth.ShowTexts(TRUE,MyText);
+
+      WaldoNAVPadTextClass.Initialize(MyText,100);
+      WaldoNAVPadTextClass.LoadTextFromDialog(TRUE,FALSE);
+
+      MyText := WaldoNAVPadTextClass.GetText;
+
       IF MyText <> 'TestText' THEN ERROR('Text should not have changed!');
     END;
 
@@ -43,6 +55,7 @@ OBJECT Codeunit 82120 WaldoNAVPad Test
     PROCEDURE DialogHandlerChangeToWaldo@1100084003(VAR WaldoNAVPad@1100084000 : TestPage 82100);
     BEGIN
       WaldoNAVPad.FullText.VALUE := 'waldo';
+      WaldoNAVPad.OK.INVOKE;
     END;
 
     [ModalPageHandler]
@@ -50,7 +63,8 @@ OBJECT Codeunit 82120 WaldoNAVPad Test
     VAR
       Response@1100084001 : Action;
     BEGIN
-      //WaldoNAVPad.Cancel;
+      WaldoNAVPad.FullText.VALUE := 'waldo';
+      WaldoNAVPad.Cancel.INVOKE;
     END;
 
     BEGIN

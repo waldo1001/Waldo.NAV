@@ -2,10 +2,10 @@ OBJECT Page 50010 Test Text Editor
 {
   OBJECT-PROPERTIES
   {
-    Date=07/04/16;
-    Time=11:51:57;
+    Date=06/09/16;
+    Time=15:21:34;
     Modified=Yes;
-    Version List=;
+    Version List=WaldoNAVPad;
   }
   PROPERTIES
   {
@@ -24,6 +24,12 @@ OBJECT Page 50010 Test Text Editor
                       Name=GetText;
                       OnAction=BEGIN
                                  CurrPage.WaldoNAVPad.GetText;
+                               END;
+                                }
+      { 2       ;1   ;Action    ;
+                      Name=TestSetTexts;
+                      OnAction=BEGIN
+                                 SetHTML('kut<b>te</b>kop');
                                END;
                                 }
     }
@@ -51,6 +57,9 @@ OBJECT Page 50010 Test Text Editor
       DotNetDictionary := DotNetDictionary.Dictionary;
       DotNetDictionary.Add('HTML', HTML);
 
+      CurrPage.WaldoNAVPad.SetHTML(HTML);
+
+      MESSAGE(HTML);
       //CurrPage.WaldoNAVPad.
       //CurrPage.WaldoNAVPad.SendRequest('SetHTML', DotNetDictionary);
     END;
@@ -74,6 +83,7 @@ OBJECT Page 50010 Test Text Editor
     EVENT WaldoNAVPad@-1100084005::ControlAddInReady@2();
     BEGIN
       SetHTML('<b>waldo</b> has set some <font color="red">HTML</font>');
+      //SetHTML('This is just text');
     END;
 
     EVENT WaldoNAVPad@-1100084005::GetHTMLReady@3(value@1100084000 : Text);

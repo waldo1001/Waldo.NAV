@@ -1,0 +1,21 @@
+OBJECT Modification "WaldoNAVPad HTML"(Page 82101)
+{
+  OBJECT-PROPERTIES
+  {
+    Date=;
+    Time=;
+    Version List=;
+  }
+  PROPERTIES
+  {
+    Target="WaldoNAVPad HTML"(Page 82101);
+    ChangeType=Deletion;
+  }
+  CODE
+  {
+
+    BEGIN
+    END.
+  }
+}
+

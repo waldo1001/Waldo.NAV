@@ -1,0 +1,21 @@
+OBJECT Modification "WaldoNAVPad SaveTexts Meth"(Codeunit 82102)
+{
+  OBJECT-PROPERTIES
+  {
+    Date=;
+    Time=;
+    Version List=;
+  }
+  PROPERTIES
+  {
+    Target="WaldoNAVPad SaveTexts Meth"(Codeunit 82102);
+    ChangeType=Deletion;
+  }
+  CODE
+  {
+
+    BEGIN
+    END.
+  }
+}
+

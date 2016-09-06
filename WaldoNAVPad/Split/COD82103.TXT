@@ -2,8 +2,8 @@ OBJECT Codeunit 82103 WaldoNAVPad TableHasText Meth
 {
   OBJECT-PROPERTIES
   {
-    Date=10/03/16;
-    Time=16:22:32;
+    Date=06/09/16;
+    Time=10:32:16;
     Modified=Yes;
     Version List=WaldoNAVPad;
   }

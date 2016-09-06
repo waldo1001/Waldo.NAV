@@ -1,0 +1,203 @@
+OBJECT Page 82101 WaldoNAVPad HTML
+{
+  OBJECT-PROPERTIES
+  {
+    Date=06/09/16;
+    Time=16:54:21;
+    Modified=Yes;
+    Version List=WaldoNAVPad;
+  }
+  PROPERTIES
+  {
+    CaptionML=ENU=waldoNAVPad;
+    PageType=Card;
+    OnQueryClosePage=BEGIN
+                       IF TextHasChanged THEN
+                         EXIT(CONFIRM('Warning, there is unsaved text .. do you really want to close?',FALSE));
+                     END;
+
+    ActionList=ACTIONS
+    {
+      { 1100084002;  ;ActionContainer;
+                      ActionContainerType=ActionItems }
+      { 1       ;1   ;Action    ;
+                      Name=Save;
+                      Promoted=Yes;
+                      PromotedIsBig=Yes;
+                      Image=Save;
+                      PromotedCategory=Process;
+                      OnAction=BEGIN
+                                 ActionSave;
+                               END;
+                                }
+      { 5       ;1   ;Action    ;
+                      Name=Save & Close;
+                      Promoted=Yes;
+                      PromotedIsBig=Yes;
+                      Image=Save;
+                      PromotedCategory=Process;
+                      OnAction=BEGIN
+                                 ActionSaveAndClose;
+                               END;
+                                }
+      { 3       ;1   ;Action    ;
+                      Name=Cancel;
+                      Promoted=Yes;
+                      PromotedIsBig=Yes;
+                      Image=Delete;
+                      PromotedCategory=Process;
+                      OnAction=BEGIN
+                                 ActionCancel;
+                               END;
+                                }
+      { 1100084003;1 ;Action    ;
+                      Name=Blobs;
+                      RunObject=Page 56110 }
+      { 1100084004;1 ;Action    ;
+                      Name=Texts;
+                      RunObject=Page 56111 }
+      { 1100084006;1 ;Action    ;
+                      Name=Test HTML Editor;
+                      OnAction=BEGIN
+                                 PAGE.RUN(50010);
+                               END;
+                                }
+      { 2       ;1   ;Action    ;
+                      Name=ForceInitialize;
+                      Promoted=Yes;
+                      PromotedIsBig=Yes;
+                      Image=Refresh;
+                      OnAction=BEGIN
+                                 InitializeContent;
+                               END;
+                                }
+    }
+  }
+  CONTROLS
+  {
+    { 1100084000;;Container;
+                ContainerType=ContentArea }
+
+    { 1100084005;1;Group  ;
+                GroupType=GridLayout }
+
+    { 4   ;2   ;Field     ;
+                Name=WaldoNAVPad;
+                ControlAddIn=[Waldo TinyMCE Control for NAV;PublicKeyToken=0693cb47ed6631b6] }
+
+  }
+  CODE
+  {
+    VAR
+      ControlAddInReady@1000 : Boolean;
+      TextHasChanged@1001 : Boolean;
+      FullText@1100084000 : Text;
+      FullHTML@1100084001 : Text;
+      WaldoNAVPadTextClass@1100084002 : Codeunit 82110;
+      HTMLSaved@1002 : Boolean;
+      TextSaved@1003 : Boolean;
+      DialogResultOK@1004 : Boolean;
+      CloseWhenSaved@1005 : Boolean;
+
+    PROCEDURE SetText@1100084000(VAR Value@1100084000 : Text;VAR HTML@1100084001 : Text);
+    BEGIN
+      FullText := Value;
+      FullHTML := HTML;
+    END;
+
+    PROCEDURE GetLastSavedText@7() : Text;
+    BEGIN
+      EXIT(FullText);
+    END;
+
+    PROCEDURE GetLastSavedHTML@6() : Text;
+    BEGIN
+
+      EXIT(FullHTML);
+    END;
+
+    LOCAL PROCEDURE ActionSave@2();
+    BEGIN
+      CurrPage.WaldoNAVPad.GetText;
+      CurrPage.WaldoNAVPad.GetHTML;
+      TextSaved := FALSE;
+      HTMLSaved := FALSE;
+      CloseWhenSaved := FALSE;
+    END;
+
+    LOCAL PROCEDURE ActionSaveAndClose@5();
+    BEGIN
+      CurrPage.WaldoNAVPad.GetText;
+      CurrPage.WaldoNAVPad.GetHTML;
+      TextSaved := FALSE;
+      HTMLSaved := FALSE;
+      CloseWhenSaved := TRUE;
+    END;
+
+    LOCAL PROCEDURE ActionCancel@8();
+    BEGIN
+      DialogResultOK := FALSE;
+      TextHasChanged := FALSE;
+      CurrPage.CLOSE;
+    END;
+
+    LOCAL PROCEDURE InitializeContent@1();
+    BEGIN
+      IF NOT ControlAddInReady THEN EXIT;
+
+      CurrPage.WaldoNAVPad.SetHTML(FullHTML);
+      TextHasChanged := FALSE;
+    END;
+
+    LOCAL PROCEDURE CloseIfAllSaved@10();
+    BEGIN
+      IF HTMLSaved AND TextSaved THEN BEGIN
+        TextHasChanged := FALSE;
+
+        DialogResultOK := TRUE;
+
+        IF CloseWhenSaved THEN
+          CurrPage.CLOSE;
+      END;
+    END;
+
+    PROCEDURE GetDialogResultOK@3() : Boolean;
+    BEGIN
+      EXIT(DialogResultOK);
+    END;
+
+    EVENT WaldoNAVPad@-4::ControlAddInReady@3();
+    BEGIN
+      ControlAddInReady := TRUE;
+
+      InitializeContent;
+    END;
+
+    EVENT WaldoNAVPad@-4::GetHTMLReady@4(value@1000 : Text);
+    BEGIN
+      FullHTML := value;
+      //TextHasChanged := FALSE;
+      HTMLSaved := TRUE;
+
+      CloseIfAllSaved;
+    END;
+
+    EVENT WaldoNAVPad@-4::GetTextReady@5(value@1000 : Text);
+    BEGIN
+      FullText := value;
+      //TextHasChanged := FALSE;
+      TextSaved := TRUE;
+
+      CloseIfAllSaved;
+    END;
+
+    EVENT WaldoNAVPad@-4::TextHasChanged@6();
+    BEGIN
+      TextHasChanged := TRUE;
+    END;
+
+    BEGIN
+    END.
+  }
+}
+

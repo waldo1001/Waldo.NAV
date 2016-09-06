@@ -2,8 +2,8 @@ OBJECT Codeunit 82112 WaldoNAVPad Showdialog Meth
 {
   OBJECT-PROPERTIES
   {
-    Date=10/03/16;
-    Time=16:22:32;
+    Date=06/09/16;
+    Time=16:55:57;
     Modified=Yes;
     Version List=WaldoNAVPad;
   }
@@ -16,24 +16,27 @@ OBJECT Codeunit 82112 WaldoNAVPad Showdialog Meth
   CODE
   {
 
-    PROCEDURE ShowDialog@1100084001(VAR Text@1100084001 : Text;Editable@1100084002 : Boolean);
+    PROCEDURE ShowDialog@1100084001(VAR Text@1100084001 : Text;VAR HTML@1100084004 : Text;VAR DialogResultTrue@1000 : Boolean;Editable@1100084002 : Boolean;UseHTMLEditor@1100084003 : Boolean);
     VAR
       Handled@1100084000 : Boolean;
     BEGIN
-      OnBeforeShowDialog(Text,Editable,Handled);
-      DoShowDialog(Text,Editable,Handled);
-      OnAfterShowDialog(Text,Editable);
+      OnBeforeShowDialog(Text,HTML,Editable,UseHTMLEditor,Handled);
+      DoShowDialog(Text,HTML,DialogResultTrue,Editable,UseHTMLEditor,Handled);
+      OnAfterShowDialog(Text,HTML,Editable,UseHTMLEditor);
     END;
 
-    LOCAL PROCEDURE DoShowDialog@1100084002(VAR Text@1100084001 : Text;Editable@1100084002 : Boolean;VAR Handled@1100084000 : Boolean);
+    LOCAL PROCEDURE DoShowDialog@1100084002(VAR Text@1100084001 : Text;VAR HTML@1100084004 : Text;VAR DialogResultTrue@1000 : Boolean;Editable@1100084002 : Boolean;UseHTMLEditor@1100084003 : Boolean;VAR Handled@1100084000 : Boolean);
     BEGIN
       IF Handled THEN
         EXIT;
 
-      ShowTextOnPage(Text,Editable);
+      IF UseHTMLEditor THEN
+        ShowTextOnPageHTML(Text,HTML,DialogResultTrue,Editable)
+      ELSE
+        ShowTextOnPage(Text,HTML,DialogResultTrue,Editable);
     END;
 
-    LOCAL PROCEDURE ShowTextOnPage@1100084008(VAR Text@1100084000 : Text;Editable@1100084001 : Boolean);
+    LOCAL PROCEDURE ShowTextOnPage@1100084008(VAR Text@1100084000 : Text;VAR HTML@1001 : Text;VAR DialogResultTrue@1000 : Boolean;Editable@1100084001 : Boolean);
     VAR
       WaldoNAVPad@1100084002 : Page 82100;
     BEGIN
@@ -41,17 +44,38 @@ OBJECT Codeunit 82112 WaldoNAVPad Showdialog Meth
       WaldoNAVPad.LOOKUPMODE := TRUE;
       WaldoNAVPad.EDITABLE := Editable;
 
-      IF WaldoNAVPad.RUNMODAL = ACTION::LookupOK THEN
+      IF WaldoNAVPad.RUNMODAL = ACTION::LookupOK THEN BEGIN
         Text := WaldoNAVPad.GetText;
+        HTML := Text;
+
+        DialogResultTrue := TRUE;
+      END;
+    END;
+
+    LOCAL PROCEDURE ShowTextOnPageHTML@1100084000(VAR Text@1100084000 : Text;VAR HTML@1100084003 : Text;VAR DialogResultTrue@1000 : Boolean;Editable@1100084001 : Boolean);
+    VAR
+      WaldoNAVPadHTML@1100084002 : Page 82101;
+    BEGIN
+      WaldoNAVPadHTML.SetText(Text,HTML);
+      WaldoNAVPadHTML.LOOKUPMODE := FALSE;
+      WaldoNAVPadHTML.EDITABLE := Editable;
+
+      WaldoNAVPadHTML.RUNMODAL;
+      IF WaldoNAVPadHTML.GetDialogResultOK THEN BEGIN
+        Text := WaldoNAVPadHTML.GetLastSavedText;
+        HTML := WaldoNAVPadHTML.GetLastSavedHTML;
+
+        DialogResultTrue := TRUE;
+      END;
     END;
 
     [Integration(TRUE)]
-    LOCAL PROCEDURE OnBeforeShowDialog@1100084004(VAR Text@1100084001 : Text;Editable@1100084002 : Boolean;VAR Handled@1100084000 : Boolean);
+    LOCAL PROCEDURE OnBeforeShowDialog@1100084004(VAR Text@1100084001 : Text;VAR HTML@1100084004 : Text;Editable@1100084002 : Boolean;UseHTMLEditor@1100084003 : Boolean;VAR Handled@1100084000 : Boolean);
     BEGIN
     END;
 
     [Integration(TRUE)]
-    LOCAL PROCEDURE OnAfterShowDialog@1100084005(VAR Text@1100084000 : Text;Editable@1100084001 : Boolean);
+    LOCAL PROCEDURE OnAfterShowDialog@1100084005(VAR Text@1100084000 : Text;VAR HTML@1100084003 : Text;Editable@1100084001 : Boolean;UseHTMLEditor@1100084002 : Boolean);
     BEGIN
     END;
 

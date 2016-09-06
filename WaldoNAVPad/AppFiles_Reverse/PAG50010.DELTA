@@ -1,0 +1,21 @@
+OBJECT Modification "Test Text Editor"(Page 50010)
+{
+  OBJECT-PROPERTIES
+  {
+    Date=;
+    Time=;
+    Version List=;
+  }
+  PROPERTIES
+  {
+    Target="Test Text Editor"(Page 50010);
+    ChangeType=Deletion;
+  }
+  CODE
+  {
+
+    BEGIN
+    END.
+  }
+}
+

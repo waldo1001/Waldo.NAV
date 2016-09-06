@@ -1,9 +1,9 @@
-OBJECT Codeunit 82102 WaldoNAVPad Subscribers
+OBJECT Codeunit 82102 WaldoNAVPad SaveTexts Meth
 {
   OBJECT-PROPERTIES
   {
-    Date=10/03/16;
-    Time=16:22:32;
+    Date=06/09/16;
+    Time=14:48:46;
     Modified=Yes;
     Version List=WaldoNAVPad;
   }
@@ -16,52 +16,127 @@ OBJECT Codeunit 82102 WaldoNAVPad Subscribers
   CODE
   {
 
-    [EventSubscriber(Codeunit,1,OnAfterGetDatabaseTableTriggerSetup,"",Error,Error)]
-    LOCAL PROCEDURE SetUpWaldoNAVPad_OnAfterGetDatabaseTableTriggerSetup@1100084000(TableId@1100084000 : Integer;VAR OnDatabaseInsert@1100084001 : Boolean;VAR OnDatabaseModify@1100084002 : Boolean;VAR OnDatabaseDelete@1100084003 : Boolean;VAR OnDatabaseRename@1100084004 : Boolean);
+    PROCEDURE SaveTexts@1(VAR WaldoNAVPadTextClass@1001 : Codeunit 82110;VAR RecRef@1003 : RecordRef);
     VAR
-      WaldoNAVPadClass@1100084005 : Codeunit 82100;
+      Handled@1000 : Boolean;
     BEGIN
-      OnDatabaseRename := TRUE;
-      //making this TRUE for all tables should not be that concerning,
-      //as renaming isn't something that happens too often ;-)
+      OnBeforeSaveTexts(Handled);
 
-      //On the other hand, if we would do it like this:
-      //  OnDatabaseRename := WaldoNAVPadClass.HasTexts(TableId);
-      //Then it would fail for the first text we add to a table:
-      //   - TriggerSetup would be false
-      //   - if we add text and then rename, it wouldn't rename the text
+      DoSaveTexts(WaldoNAVPadTextClass,RecRef,Handled);
+
+      OnAfterSaveTexts();
     END;
 
-    [EventSubscriber(Codeunit,1,OnAfterOnDatabaseRename)]
-    LOCAL PROCEDURE HandleWaldoNAVPadTexts_OnAfterOnDatabaseRename@1100084003(RecRef@1100084000 : RecordRef;xRecRef@1100084001 : RecordRef);
-    BEGIN
-      HandleRenameRecord(RecRef,xRecRef);
-    END;
-
-    LOCAL PROCEDURE HandleRenameRecord@1100084001(VAR RecRef@1100084001 : RecordRef;VAR xRecRef@1100084000 : RecordRef);
-    BEGIN
-      HandleBlobStore(RecRef,xRecRef);
-      HandleTextStore(RecRef,xRecRef);
-    END;
-
-    LOCAL PROCEDURE HandleBlobStore@1100084005(VAR RecRef@1100084002 : RecordRef;VAR xRecRef@1100084001 : RecordRef);
+    LOCAL PROCEDURE DoSaveTexts@2(VAR WaldoNAVPadTextClass@1005 : Codeunit 82110;VAR RecRef@1004 : RecordRef;VAR Handled@1000 : Boolean);
     VAR
-      WaldoNavPadBlobstore@1100084000 : Record 82100;
+      OldBlobText@1003 : Text;
     BEGIN
-      WITH WaldoNavPadBlobstore DO BEGIN
-        SETRANGE("Record ID", xRecRef.RECORDID);
-        MODIFYALL("Record ID", RecRef.RECORDID,FALSE);
-      END;
+      IF Handled THEN EXIT;
+
+      IF NOT WaldoNAVPadTextClass.GetTextIsUpdated THEN EXIT;
+
+      UpdateTextForRecord(WaldoNAVPadTextClass,RecRef);
     END;
 
-    LOCAL PROCEDURE HandleTextStore@1100084006(VAR RecRef@1100084002 : RecordRef;VAR xRecRef@1100084001 : RecordRef);
-    VAR
-      WaldoNAVPadTextstore@1100084000 : Record 82101;
+    LOCAL PROCEDURE UpdateTextForRecord@1100084012(VAR WaldoNAVPadTextClass@1100084002 : Codeunit 82110;VAR RecRef@1100084003 : RecordRef);
+    BEGIN
+      SaveTextToBlob(WaldoNAVPadTextClass.GetHTML,RecRef);;
+      SaveTextToRecords(WaldoNAVPadTextClass,RecRef);
+    END;
+
+    LOCAL PROCEDURE FilterWNPTexts@1100084005(VAR WaldoNAVPadTextstore@1100084002 : Record 82101;VAR RecRef@1100084001 : RecordRef);
     BEGIN
       WITH WaldoNAVPadTextstore DO BEGIN
-        SETRANGE("Record ID", xRecRef.RECORDID);
-        MODIFYALL("Record ID", RecRef.RECORDID,FALSE);
+        SETRANGE("Record ID", RecRef.RECORDID);
       END;
+    END;
+
+    LOCAL PROCEDURE SaveTextToBlob@1100084024(Text@1100084002 : Text;VAR RecRef@1100084000 : RecordRef);
+    BEGIN
+      DeleteWNPBlobForRecord(RecRef);
+      InsertWPNBlobForRecord(Text,RecRef);
+    END;
+
+    LOCAL PROCEDURE DeleteWNPBlobForRecord@1100084019(VAR RecRef@1100084000 : RecordRef);
+    VAR
+      WaldoNavPadBlobstore@1100084001 : Record 82100;
+    BEGIN
+      WITH WaldoNavPadBlobstore DO BEGIN
+        SETRANGE("Record ID", RecRef.RECORDID);
+        DELETEALL(FALSE);
+      END;
+    END;
+
+    LOCAL PROCEDURE InsertWPNBlobForRecord@1100084018(VAR Text@1100084001 : Text;VAR RecRef@1100084000 : RecordRef);
+    VAR
+      WaldoNavPadBlobstore@1100084004 : Record 82100;
+      TempBlob@1100084002 : Record 99008535;
+    BEGIN
+      WITH WaldoNavPadBlobstore DO BEGIN
+        GetBlobFromText(Text,TempBlob);
+        INIT;
+        "Record ID" := RecRef.RECORDID;
+        Blob := TempBlob.Blob;
+        TableNo := RecRef.NUMBER;
+        INSERT;
+      END;
+    END;
+
+    LOCAL PROCEDURE SaveTextToRecords@1100084025(VAR WaldoNAVPadTextClass@1100084003 : Codeunit 82110;VAR RecRef@1100084000 : RecordRef);
+    BEGIN
+      DeleteWNPTextForRecord(RecRef);
+      InsertWPNTextForRecord(WaldoNAVPadTextClass,RecRef);
+    END;
+
+    LOCAL PROCEDURE DeleteWNPTextForRecord@1100084003(VAR RecRef@1100084000 : RecordRef);
+    VAR
+      WaldoNAVPadTextstore@1100084001 : Record 82101;
+    BEGIN
+      FilterWNPTexts(WaldoNAVPadTextstore, RecRef);
+      WaldoNAVPadTextstore.DELETEALL(FALSE);
+    END;
+
+    LOCAL PROCEDURE InsertWPNTextForRecord@1100084016(VAR WaldoNAVPadTextClass@1100084002 : Codeunit 82110;VAR RecRef@1100084000 : RecordRef);
+    BEGIN
+      WITH WaldoNAVPadTextClass DO BEGIN
+        IF FINDFIRST THEN
+          REPEAT
+            InsertWPNText(GetCurrentTextLine, RecRef);
+          UNTIL NEXT < 1;
+      END;
+    END;
+
+    LOCAL PROCEDURE InsertWPNText@1100084020(pTextline@1100084000 : Text;VAR RecRef@1100084002 : RecordRef);
+    VAR
+      WaldoNAVPadTextstore@1100084001 : Record 82101;
+    BEGIN
+      WITH WaldoNAVPadTextstore DO BEGIN
+        INIT;
+
+        Textline := pTextline;
+        "Record ID" := RecRef.RECORDID;
+        TableNo := RecRef.NUMBER;
+
+        INSERT;
+      END;
+    END;
+
+    LOCAL PROCEDURE GetBlobFromText@1100084010(Text@1100084001 : Text;VAR TempBlob@1100084000 : Record 99008535);
+    VAR
+      WriteStream@1100084002 : OutStream;
+      TextBigText@1100084003 : BigText;
+    BEGIN
+      TempBlob.Blob.CREATEOUTSTREAM(WriteStream);
+      TextBigText.ADDTEXT(Text);
+      TextBigText.WRITE(WriteStream);
+    END;
+
+    LOCAL PROCEDURE OnBeforeSaveTexts@5(VAR Handled@1000 : Boolean);
+    BEGIN
+    END;
+
+    LOCAL PROCEDURE OnAfterSaveTexts@6();
+    BEGIN
     END;
 
     BEGIN
