@@ -2,8 +2,8 @@ OBJECT Page 82101 WaldoNAVPad HTML
 {
   OBJECT-PROPERTIES
   {
-    Date=06/09/16;
-    Time=16:54:21;
+    Date=08/09/16;
+    Time=10:03:42;
     Modified=Yes;
     Version List=WaldoNAVPad;
   }
@@ -56,21 +56,6 @@ OBJECT Page 82101 WaldoNAVPad HTML
       { 1100084004;1 ;Action    ;
                       Name=Texts;
                       RunObject=Page 56111 }
-      { 1100084006;1 ;Action    ;
-                      Name=Test HTML Editor;
-                      OnAction=BEGIN
-                                 PAGE.RUN(50010);
-                               END;
-                                }
-      { 2       ;1   ;Action    ;
-                      Name=ForceInitialize;
-                      Promoted=Yes;
-                      PromotedIsBig=Yes;
-                      Image=Refresh;
-                      OnAction=BEGIN
-                                 InitializeContent;
-                               END;
-                                }
     }
   }
   CONTROLS

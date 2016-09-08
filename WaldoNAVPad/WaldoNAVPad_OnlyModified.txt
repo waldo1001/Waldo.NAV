@@ -2148,109 +2148,6 @@ OBJECT Page 22 Customer List
   }
 }
 
-OBJECT Page 50010 Test Text Editor
-{
-  OBJECT-PROPERTIES
-  {
-    Date=06/09/16;
-    Time=15:21:34;
-    Modified=Yes;
-    Version List=WaldoNAVPad;
-  }
-  PROPERTIES
-  {
-    ActionList=ACTIONS
-    {
-      { 1100084003;  ;ActionContainer;
-                      ActionContainerType=ActionItems }
-      { 1100084004;1 ;Action    ;
-                      Name=GetHTML;
-                      OnAction=BEGIN
-                                 //CurrPage.WaldoNAVPad.SendRequest('GetHTML','');
-                                 CurrPage.WaldoNAVPad.GetHTML;
-                               END;
-                                }
-      { 1100084002;1 ;Action    ;
-                      Name=GetText;
-                      OnAction=BEGIN
-                                 CurrPage.WaldoNAVPad.GetText;
-                               END;
-                                }
-      { 2       ;1   ;Action    ;
-                      Name=TestSetTexts;
-                      OnAction=BEGIN
-                                 SetHTML('kut<b>te</b>kop');
-                               END;
-                                }
-    }
-  }
-  CONTROLS
-  {
-    { 1100084000;;Container;
-                ContainerType=ContentArea }
-
-    { 1100084001;1;Group  ;
-                GroupType=Group }
-
-    { 1100084005;2;Field  ;
-                Name=WaldoNAVPad;
-                ControlAddIn=[Waldo TinyMCE Control for NAV;PublicKeyToken=0693cb47ed6631b6] }
-
-  }
-  CODE
-  {
-
-    LOCAL PROCEDURE SetHTML@1100084001(HTML@1100084000 : Text);
-    VAR
-      DotNetDictionary@1100084001 : DotNet "'mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089'.System.Collections.Generic.Dictionary`2";
-    BEGIN
-      DotNetDictionary := DotNetDictionary.Dictionary;
-      DotNetDictionary.Add('HTML', HTML);
-
-      CurrPage.WaldoNAVPad.SetHTML(HTML);
-
-      MESSAGE(HTML);
-      //CurrPage.WaldoNAVPad.
-      //CurrPage.WaldoNAVPad.SendRequest('SetHTML', DotNetDictionary);
-    END;
-
-    LOCAL PROCEDURE GetHTML@1100084012(VAR pVariant@1100084000 : Variant);
-    VAR
-      DotNetDictionary@1100084002 : DotNet "'mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089'.System.Collections.Generic.Dictionary`2";
-      method@1100084001 : Text;
-      HTML@1100084003 : Text;
-    BEGIN
-      ERROR('GetHTML not used anymore');
-
-      DotNetDictionary := pVariant;
-      DotNetDictionary.TryGetValue('method',method);
-      IF method <> 'GetHTML' THEN ERROR('GetHTML method expected');
-
-      DotNetDictionary.TryGetValue('HTML',HTML);
-      MESSAGE(HTML);
-    END;
-
-    EVENT WaldoNAVPad@-1100084005::ControlAddInReady@2();
-    BEGIN
-      SetHTML('<b>waldo</b> has set some <font color="red">HTML</font>');
-      //SetHTML('This is just text');
-    END;
-
-    EVENT WaldoNAVPad@-1100084005::GetHTMLReady@3(value@1100084000 : Text);
-    BEGIN
-      MESSAGE(value);
-    END;
-
-    EVENT WaldoNAVPad@-1100084005::GetTextReady@4(value@1100084000 : Text);
-    BEGIN
-      MESSAGE(value);
-    END;
-
-    BEGIN
-    END.
-  }
-}
-
 OBJECT Page 56110 WNP Blobs
 {
   OBJECT-PROPERTIES
@@ -2409,8 +2306,8 @@ OBJECT Page 82101 WaldoNAVPad HTML
 {
   OBJECT-PROPERTIES
   {
-    Date=06/09/16;
-    Time=16:54:21;
+    Date=08/09/16;
+    Time=10:03:42;
     Modified=Yes;
     Version List=WaldoNAVPad;
   }
@@ -2463,21 +2360,6 @@ OBJECT Page 82101 WaldoNAVPad HTML
       { 1100084004;1 ;Action    ;
                       Name=Texts;
                       RunObject=Page 56111 }
-      { 1100084006;1 ;Action    ;
-                      Name=Test HTML Editor;
-                      OnAction=BEGIN
-                                 PAGE.RUN(50010);
-                               END;
-                                }
-      { 2       ;1   ;Action    ;
-                      Name=ForceInitialize;
-                      Promoted=Yes;
-                      PromotedIsBig=Yes;
-                      Image=Refresh;
-                      OnAction=BEGIN
-                                 InitializeContent;
-                               END;
-                                }
     }
   }
   CONTROLS

@@ -62,7 +62,10 @@ function SetHTML(HTML) {
 $(document).ready(function () {
     InitializeControl('controlAddIn');
    
-    InvokeEvent('ControlAddInReady', []);
+    //InvokeEvent('ControlAddInReady', []);
+    setTimeout(function () {
+        InvokeEvent('ControlAddInReady', []);
+    }, 0);
 })
 
 
