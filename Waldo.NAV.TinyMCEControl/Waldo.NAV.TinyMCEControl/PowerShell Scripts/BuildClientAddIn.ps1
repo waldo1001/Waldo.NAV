@@ -15,7 +15,7 @@ $ResourceItems |
     Create-ZipFileFromPipedItems `        -zipfilename $ResourceFile
 
 $MyAddIn = 
-    Get-NAVAddIn `        -ServerInstance $ServerInstance `        -AddInName $AddInName
+    Get-NAVAddIn `        -ServerInstance $ServerInstance `        -AddInName $AddInName `        -ErrorAction SilentlyContinue
 
 if (!($MyAddIn)){
     New-NAVAddIn `        -AddInName $AddInName `        -PublicKeyToken '0693cb47ed6631b6' `        -Category JavaScriptControlAddIn `        -ServerInstance $ServerInstance
