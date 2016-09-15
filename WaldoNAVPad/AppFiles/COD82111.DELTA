@@ -2,8 +2,8 @@ OBJECT Codeunit 82111 WaldoNAVPad Text Parse Meth
 {
   OBJECT-PROPERTIES
   {
-    Date=06/09/16;
-    Time=10:32:16;
+    Date=15/09/16;
+    Time=21:56:54;
     Modified=Yes;
     Version List=WaldoNAVPad;
   }
@@ -57,7 +57,9 @@ OBJECT Codeunit 82111 WaldoNAVPad Text Parse Meth
       WHILE STRLEN(Line) > MaxLength DO BEGIN
         SubString := COPYSTR(Line,1,MaxLength);
         SpaceIndex := SubString.LastIndexOf(' ');
-        IF SpaceIndex = -1 THEN
+        IF SpaceIndex = -1 THEN //No Space Found
+          SpaceIndex := MaxLength;
+        IF SpaceIndex = 0 THEN //First Character is a space
           SpaceIndex := MaxLength;
         ResultString := SubString;
         IF SpaceIndex < SubString.Length THEN BEGIN

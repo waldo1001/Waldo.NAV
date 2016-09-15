@@ -3,7 +3,9 @@ $AppName = 'WaldoNAVPad'
 $AppPublisher = 'Cloud Ready Software GmbH'
 $AppDescription = 'WaldoNAVPadApp'
 $InitialAppVersion = '1.0.0.0'
-
+$IncludeFilesInNavApp = 
+    "C:\Users\Administrator\Dropbox\GitHub\Waldo.NAV\Waldo.NAV.TinyMCEControl\Waldo.NAV.TinyMCEControl\ExtensionFiles\Resources.zip"
+    
 #The build environment
 $WorkingFolder = 'C:\_Workingfolder'
 

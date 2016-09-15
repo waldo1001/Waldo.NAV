@@ -2,8 +2,8 @@ OBJECT Page 82101 WaldoNAVPad HTML
 {
   OBJECT-PROPERTIES
   {
-    Date=08/09/16;
-    Time=10:03:42;
+    Date=15/09/16;
+    Time=16:40:04;
     Modified=Yes;
     Version List=WaldoNAVPad;
   }
@@ -68,7 +68,7 @@ OBJECT Page 82101 WaldoNAVPad HTML
 
     { 4   ;2   ;Field     ;
                 Name=WaldoNAVPad;
-                ControlAddIn=[Waldo TinyMCE Control for NAV;PublicKeyToken=0693cb47ed6631b6] }
+                ControlAddIn=[Waldo.NAV.TinyMCEControl;PublicKeyToken=0693cb47ed6631b6] }
 
   }
   CODE
@@ -158,7 +158,7 @@ OBJECT Page 82101 WaldoNAVPad HTML
       InitializeContent;
     END;
 
-    EVENT WaldoNAVPad@-4::GetHTMLReady@4(value@1000 : Text);
+    EVENT WaldoNAVPad@-4::GetHTMLReady@4(value@1100084000 : Text);
     BEGIN
       FullHTML := value;
       //TextHasChanged := FALSE;
@@ -167,7 +167,7 @@ OBJECT Page 82101 WaldoNAVPad HTML
       CloseIfAllSaved;
     END;
 
-    EVENT WaldoNAVPad@-4::GetTextReady@5(value@1000 : Text);
+    EVENT WaldoNAVPad@-4::GetTextReady@5(value@1100084000 : Text);
     BEGIN
       FullText := value;
       //TextHasChanged := FALSE;

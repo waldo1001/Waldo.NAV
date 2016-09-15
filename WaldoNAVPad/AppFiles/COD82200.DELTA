@@ -1,0 +1,29 @@
+OBJECT Codeunit 82200 Cust. Open WNP Action
+{
+  OBJECT-PROPERTIES
+  {
+    Date=13/09/16;
+    Time=15:20:37;
+    Modified=Yes;
+    Version List=WaldoNAVPad;
+  }
+  PROPERTIES
+  {
+    TableNo=18;
+    OnRun=VAR
+            WaldoNAVPadClass@1100084000 : Codeunit 82100;
+          BEGIN
+            //Example code to implement the WaldoNAVPad on a Record, using the generic Text tables
+            WaldoNAVPadClass.Initialize(Rec);
+            WaldoNAVPadClass.ShowAndSaveTexts(TRUE,FALSE);
+          END;
+
+  }
+  CODE
+  {
+
+    BEGIN
+    END.
+  }
+}
+

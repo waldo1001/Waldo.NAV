@@ -2,8 +2,8 @@ OBJECT Table 82100 WaldoNavPad Blobstore
 {
   OBJECT-PROPERTIES
   {
-    Date=06/09/16;
-    Time=10:32:16;
+    Date=09/09/16;
+    Time=13:55:24;
     Modified=Yes;
     Version List=WaldoNAVPad;
   }
@@ -36,8 +36,8 @@ OBJECT Table 82101 WaldoNAVPad Textstore
 {
   OBJECT-PROPERTIES
   {
-    Date=06/09/16;
-    Time=10:32:16;
+    Date=09/09/16;
+    Time=13:55:24;
     Modified=Yes;
     Version List=WaldoNAVPad;
   }
@@ -71,8 +71,8 @@ OBJECT Table 82110 WaldoNAVPad Text Buffer
 {
   OBJECT-PROPERTIES
   {
-    Date=06/09/16;
-    Time=10:32:16;
+    Date=09/09/16;
+    Time=13:55:24;
     Modified=Yes;
     Version List=WaldoNAVPad;
   }
@@ -104,8 +104,8 @@ OBJECT Codeunit 82100 WaldoNAVPad Class
 {
   OBJECT-PROPERTIES
   {
-    Date=06/09/16;
-    Time=14:38:36;
+    Date=09/09/16;
+    Time=13:55:24;
     Modified=Yes;
     Version List=WaldoNAVPad;
   }
@@ -181,8 +181,8 @@ OBJECT Codeunit 82101 WaldoNAVPad ShowTexts Meth
 {
   OBJECT-PROPERTIES
   {
-    Date=06/09/16;
-    Time=14:48:02;
+    Date=09/09/16;
+    Time=13:55:24;
     Modified=Yes;
     Version List=WaldoNAVPad;
   }
@@ -273,8 +273,8 @@ OBJECT Codeunit 82102 WaldoNAVPad SaveTexts Meth
 {
   OBJECT-PROPERTIES
   {
-    Date=06/09/16;
-    Time=14:48:46;
+    Date=09/09/16;
+    Time=13:55:24;
     Modified=Yes;
     Version List=WaldoNAVPad;
   }
@@ -419,8 +419,8 @@ OBJECT Codeunit 82103 WaldoNAVPad TableHasText Meth
 {
   OBJECT-PROPERTIES
   {
-    Date=06/09/16;
-    Time=10:32:16;
+    Date=09/09/16;
+    Time=13:55:24;
     Modified=Yes;
     Version List=WaldoNAVPad;
   }
@@ -478,12 +478,85 @@ OBJECT Codeunit 82103 WaldoNAVPad TableHasText Meth
   }
 }
 
+OBJECT Codeunit 82108 WaldoNAVPad Upgrade Mgt.
+{
+  OBJECT-PROPERTIES
+  {
+    Date=19/01/16;
+    Time=23:10:40;
+    Modified=Yes;
+    Version List=RA1.00;
+  }
+  PROPERTIES
+  {
+    OnRun=BEGIN
+          END;
+
+  }
+  CODE
+  {
+
+    PROCEDURE OnNavAppUpgradePerDatabase@1100084000();
+    BEGIN
+    END;
+
+    PROCEDURE OnNavAppUpgradePerCompany@1100084001();
+    BEGIN
+      RestoreFieldsInModifiedTables(50000,99999);
+      RestoreAppTables(50000,99999);
+    END;
+
+    LOCAL PROCEDURE RestoreFieldsInModifiedTables@1100084005(FromField@1100084004 : Integer;ToField@1100084005 : Integer);
+    VAR
+      Field@1100084001 : Record 2000000041;
+      AllObj@1100084000 : Record 2000000038;
+      SourceRecRef@1100084002 : RecordRef;
+      DestinationRecRef@1100084003 : RecordRef;
+      KeyRef@1100084006 : KeyRef;
+    BEGIN
+      WITH AllObj DO BEGIN
+        SETRANGE("Object Type","Object Type"::Table);
+
+        IF FINDSET THEN
+          REPEAT
+              Field.SETRANGE(TableNo, "Object ID");
+              Field.SETRANGE("No.", FromField, ToField);
+              IF NOT Field.ISEMPTY THEN BEGIN
+                NAVAPP.RESTOREARCHIVEDATA("Object ID");
+              END;
+          UNTIL NEXT < 1;
+      END;
+    END;
+
+    LOCAL PROCEDURE RestoreAppTables@1100084006(FromTableID@1100084003 : Integer;ToTableID@1100084004 : Integer);
+    VAR
+      SourceRecRef@1100084002 : RecordRef;
+      DestinationRecRef@1100084001 : RecordRef;
+      Field@1100084000 : Record 2000000041;
+      AllObj@1100084005 : Record 2000000038;
+    BEGIN
+      WITH AllObj DO BEGIN
+        SETRANGE("Object Type", "Object Type"::Table);
+        SETRANGE("Object ID", FromTableID,ToTableID);
+
+        IF FINDSET THEN
+          REPEAT
+            NAVAPP.RESTOREARCHIVEDATA("Object ID");
+          UNTIL NEXT < 1;
+      END;
+    END;
+
+    BEGIN
+    END.
+  }
+}
+
 OBJECT Codeunit 82109 WaldoNAVPad Subscribers
 {
   OBJECT-PROPERTIES
   {
-    Date=06/09/16;
-    Time=10:32:16;
+    Date=09/09/16;
+    Time=13:55:24;
     Modified=Yes;
     Version List=WaldoNAVPad;
   }
@@ -553,8 +626,8 @@ OBJECT Codeunit 82110 WaldoNAVPad Text Class
 {
   OBJECT-PROPERTIES
   {
-    Date=06/09/16;
-    Time=14:49:49;
+    Date=09/09/16;
+    Time=13:55:24;
     Modified=Yes;
     Version List=WaldoNAVPad;
   }
@@ -671,8 +744,8 @@ OBJECT Codeunit 82111 WaldoNAVPad Text Parse Meth
 {
   OBJECT-PROPERTIES
   {
-    Date=06/09/16;
-    Time=10:32:16;
+    Date=15/09/16;
+    Time=21:56:54;
     Modified=Yes;
     Version List=WaldoNAVPad;
   }
@@ -726,7 +799,9 @@ OBJECT Codeunit 82111 WaldoNAVPad Text Parse Meth
       WHILE STRLEN(Line) > MaxLength DO BEGIN
         SubString := COPYSTR(Line,1,MaxLength);
         SpaceIndex := SubString.LastIndexOf(' ');
-        IF SpaceIndex = -1 THEN
+        IF SpaceIndex = -1 THEN //No Space Found
+          SpaceIndex := MaxLength;
+        IF SpaceIndex = 0 THEN //First Character is a space
           SpaceIndex := MaxLength;
         ResultString := SubString;
         IF SpaceIndex < SubString.Length THEN BEGIN
@@ -778,8 +853,8 @@ OBJECT Codeunit 82112 WaldoNAVPad Showdialog Meth
 {
   OBJECT-PROPERTIES
   {
-    Date=06/09/16;
-    Time=16:55:57;
+    Date=09/09/16;
+    Time=13:55:24;
     Modified=Yes;
     Version List=WaldoNAVPad;
   }
@@ -864,8 +939,8 @@ OBJECT Codeunit 82120 WaldoNAVPad Test
 {
   OBJECT-PROPERTIES
   {
-    Date=06/09/16;
-    Time=14:58:51;
+    Date=09/09/16;
+    Time=13:55:24;
     Modified=Yes;
     Version List=WaldoNAVPad;
   }
@@ -934,23 +1009,85 @@ OBJECT Codeunit 82120 WaldoNAVPad Test
   }
 }
 
+OBJECT Codeunit 82200 Cust. Open WNP Action
+{
+  OBJECT-PROPERTIES
+  {
+    Date=13/09/16;
+    Time=15:20:37;
+    Modified=Yes;
+    Version List=WaldoNAVPad;
+  }
+  PROPERTIES
+  {
+    TableNo=18;
+    OnRun=VAR
+            WaldoNAVPadClass@1100084000 : Codeunit 82100;
+          BEGIN
+            //Example code to implement the WaldoNAVPad on a Record, using the generic Text tables
+            WaldoNAVPadClass.Initialize(Rec);
+            WaldoNAVPadClass.ShowAndSaveTexts(TRUE,FALSE);
+          END;
+
+  }
+  CODE
+  {
+
+    BEGIN
+    END.
+  }
+}
+
+OBJECT Codeunit 82201 Cust. Open WNP HTML Action
+{
+  OBJECT-PROPERTIES
+  {
+    Date=13/09/16;
+    Time=15:20:41;
+    Modified=Yes;
+    Version List=WaldoNAVPad;
+  }
+  PROPERTIES
+  {
+    TableNo=18;
+    OnRun=VAR
+            WaldoNAVPadClass@1100084000 : Codeunit 82100;
+          BEGIN
+            //Example code to implement the WaldoNAVPad on a Record, using the generic Text tables
+            WaldoNAVPadClass.Initialize(Rec);
+            WaldoNAVPadClass.ShowAndSaveTexts(TRUE,TRUE);
+          END;
+
+  }
+  CODE
+  {
+
+    BEGIN
+    END.
+  }
+}
+
 OBJECT Page 22 Customer List
 {
   OBJECT-PROPERTIES
   {
-    Date=06/09/16;
-    Time=11:35:45;
+    Date=13/09/16;
+    Time=15:20:16;
     Modified=Yes;
-    Version List=NAVW110.0,WaldoNAVPad;
+    Version List=NAVW110.00,WaldoNAVPad;
   }
   PROPERTIES
   {
     Editable=No;
-    CaptionML=ENU=Customer List;
+    CaptionML=[ENU=Customer List;
+               FRB=Liste des clients;
+               NLB=Klantenoverzicht];
     SourceTable=Table18;
     PageType=List;
     CardPageID=Customer Card;
-    PromotedActionCategoriesML=ENU=New,Process,Report,Approve,New Document,Request Approval;
+    PromotedActionCategoriesML=[ENU=New,Process,Report,Approve,New Document,Request Approval;
+                                FRB=Nouveau,Traitement,tat,Approuver,Nouveau document,Demande d'approbation;
+                                NLB=Nieuw,Verwerken,Rapporteren,Goedkeuren,Nieuw document,Goedkeuring aanvragen];
     OnInit=BEGIN
              SetCustomerNoVisibilityOnFactBoxes;
            END;
@@ -984,21 +1121,31 @@ OBJECT Page 22 Customer List
       { 1900000003;0 ;ActionContainer;
                       ActionContainerType=RelatedInformation }
       { 16      ;1   ;ActionGroup;
-                      CaptionML=ENU=&Customer;
+                      CaptionML=[ENU=&Customer;
+                                 FRB=&Client;
+                                 NLB=&Klant];
                       Image=Customer }
       { 20      ;2   ;Action    ;
-                      CaptionML=ENU=Co&mments;
+                      CaptionML=[ENU=Co&mments;
+                                 FRB=Commentaire&s;
+                                 NLB=Op&merkingen];
                       RunObject=Page 124;
                       RunPageLink=Table Name=CONST(Customer),
                                   No.=FIELD(No.);
                       Image=ViewComments }
       { 66      ;2   ;ActionGroup;
-                      CaptionML=ENU=Dimensions;
+                      CaptionML=[ENU=Dimensions;
+                                 FRB=Axes analytiques;
+                                 NLB=Dimensies];
                       Image=Dimensions }
       { 84      ;3   ;Action    ;
                       ShortCutKey=Shift+Ctrl+D;
-                      CaptionML=ENU=Dimensions-Single;
-                      ToolTipML=ENU=View or edit the single set of dimensions that are set up for the selected record.;
+                      CaptionML=[ENU=Dimensions-Single;
+                                 FRB=Affectations - Simples;
+                                 NLB=Dimensies - Enkel];
+                      ToolTipML=[ENU=View or edit the single set of dimensions that are set up for the selected record.;
+                                 FRB=Affichez ou modifiez l'ensemble unique de dimensions param‚tr‚es pour l'enregistrement s‚lectionn‚.;
+                                 NLB=De enkele dimensieset weergeven of bewerken die voor de geselecteerde record is ingesteld.];
                       ApplicationArea=#Suite;
                       RunObject=Page 540;
                       RunPageLink=Table ID=CONST(18),
@@ -1006,8 +1153,12 @@ OBJECT Page 22 Customer List
                       Image=Dimensions }
       { 42      ;3   ;Action    ;
                       AccessByPermission=TableData 348=R;
-                      CaptionML=ENU=Dimensions-&Multiple;
-                      ToolTipML=ENU=View or edit dimensions for a group of records. You can assign dimension codes to transactions to distribute costs and analyze historical information.;
+                      CaptionML=[ENU=Dimensions-&Multiple;
+                                 FRB=Affectations - &Multiples;
+                                 NLB=Dimensies - &Multi];
+                      ToolTipML=[ENU=View or edit dimensions for a group of records. You can assign dimension codes to transactions to distribute costs and analyze historical information.;
+                                 FRB=Affichez ou modifiez les axes analytiques pour un groupe d'enregistrements. Vous pouvez affecter des codes axe aux transactions dans le but de r‚partir les co–ts et d'analyser les informations d'historique.;
+                                 NLB=Dimensies voor een groep records weergeven of bewerken. U kunt dimensiecodes toewijzen aan transacties om kosten te verdelen en historische informatie te analyseren.];
                       ApplicationArea=#Suite;
                       Image=DimensionSets;
                       OnAction=VAR
@@ -1020,31 +1171,47 @@ OBJECT Page 22 Customer List
                                END;
                                 }
       { 58      ;2   ;Action    ;
-                      CaptionML=ENU=Bank Accounts;
-                      ToolTipML=ENU=View or set up the customer's bank accounts. You can set up any number of bank accounts for each customer.;
+                      CaptionML=[ENU=Bank Accounts;
+                                 FRB=Comptes bancaires;
+                                 NLB=Bankrekeningen];
+                      ToolTipML=[ENU=View or set up the customer's bank accounts. You can set up any number of bank accounts for each customer.;
+                                 FRB=Affichez ou configurez les comptes bancaires de votre client. Vous pouvez configurer autant de comptes bancaires que vous le souhaitez pour chaque client.;
+                                 NLB=Bankrekeningen van de klant weergeven of instellen. U kunt een willekeurig aantal bankrekeningen instellen voor elke klant.];
                       ApplicationArea=#Basic,#Suite;
                       RunObject=Page 424;
                       RunPageLink=Customer No.=FIELD(No.);
                       Image=BankAccount }
       { 29      ;2   ;Action    ;
-                      CaptionML=ENU=Direct Debit Mandates;
-                      ToolTipML=ENU=View the direct-debit mandates that reflect agreements with customers to collect invoice payments from their bank account.;
+                      CaptionML=[ENU=Direct Debit Mandates;
+                                 FRB=Mandats de domiciliation europ‚enne;
+                                 NLB=Mandaten voor Europese domicili‰ring];
+                      ToolTipML=[ENU=View the direct-debit mandates that reflect agreements with customers to collect invoice payments from their bank account.;
+                                 FRB=Affichez les mandats de pr‚lŠvement que vous d‚finissez afin de refl‚ter les accords pass‚s avec les clients pour le recouvrement des paiements des factures sur leur compte bancaire.;
+                                 NLB=De incassomachtigingen weergeven die overeenkomen met overeenkomsten met klanten om factuurbetalingen te innen van hun bankrekening.];
                       ApplicationArea=#Suite;
                       RunObject=Page 1230;
                       RunPageLink=Customer No.=FIELD(No.);
                       Image=MakeAgreement }
       { 23      ;2   ;Action    ;
                       Name=ShipToAddresses;
-                      CaptionML=ENU=Ship-&to Addresses;
-                      ToolTipML=ENU=View or edit alternate shipping addresses where the customer wants items delivered if different from the regular address.;
+                      CaptionML=[ENU=Ship-&to Addresses;
+                                 FRB=&Adresses destinataire;
+                                 NLB=Ver&zendadressen];
+                      ToolTipML=[ENU=View or edit alternate shipping addresses where the customer wants items delivered if different from the regular address.;
+                                 FRB=View or edit alternate shipping addresses where the customer wants items delivered if different from the regular address.;
+                                 NLB=View or edit alternate shipping addresses where the customer wants items delivered if different from the regular address.];
                       ApplicationArea=#Basic,#Suite;
                       RunObject=Page 301;
                       RunPageLink=Customer No.=FIELD(No.);
                       Image=ShipAddress }
       { 60      ;2   ;Action    ;
                       AccessByPermission=TableData 5050=R;
-                      CaptionML=ENU=C&ontact;
-                      ToolTipML=ENU=View or edit detailed information about the contact person at the customer.;
+                      CaptionML=[ENU=C&ontact;
+                                 FRB=C&ontact;
+                                 NLB=&Contact];
+                      ToolTipML=[ENU=View or edit detailed information about the contact person at the customer.;
+                                 FRB=Affichez ou modifiez des informations d‚taill‚es concernant la personne … contacter chez le client.;
+                                 NLB=Gedetailleerde informatie weergeven of bewerken over de contactpersoon bij de klant.];
                       ApplicationArea=#Basic,#Suite;
                       Image=ContactPerson;
                       OnAction=BEGIN
@@ -1052,8 +1219,12 @@ OBJECT Page 22 Customer List
                                END;
                                 }
       { 45      ;2   ;Action    ;
-                      CaptionML=ENU=Cross Re&ferences;
-                      ToolTipML=ENU=Set up the customer's own identification of items that you sell to the customer. Cross-references to the customer's item number means that the item number is automatically shown on sales documents instead of the number that you use.;
+                      CaptionML=[ENU=Cross Re&ferences;
+                                 FRB=&R‚f‚rences externes;
+                                 NLB=Kruisver&wijzingen];
+                      ToolTipML=[ENU=Set up the customer's own identification of items that you sell to the customer. Cross-references to the customer's item number means that the item number is automatically shown on sales documents instead of the number that you use.;
+                                 FRB=Configurez la maniŠre dont le client identifie les articles que vous lui vendez. Les r‚f‚rences externes au num‚ro d'article du client impliquent que le num‚ro d'article est automatiquement affich‚ sur les documents vente au lieu du num‚ro que vous utilisez.;
+                                 NLB=De eigen identificatie van de klant instellen voor artikelen die u aan de klant verkoopt. Kruisverwijzingen naar het artikelnummer van de klant betekenen dat het artikelnummer automatisch op verkoopdocumenten wordt weergegeven in plaats van het nummer dat u gebruikt.];
                       ApplicationArea=#Basic,#Suite;
                       RunObject=Page 5723;
                       RunPageView=SORTING(Cross-Reference Type,Cross-Reference Type No.);
@@ -1062,8 +1233,12 @@ OBJECT Page 22 Customer List
                       Image=Change }
       { 64      ;2   ;Action    ;
                       Name=OnlineMap;
-                      CaptionML=ENU=Online Map;
-                      ToolTipML=ENU=View the address on an online map.;
+                      CaptionML=[ENU=Online Map;
+                                 FRB=Online Map;
+                                 NLB=Online Map];
+                      ToolTipML=[ENU=View the address on an online map.;
+                                 FRB=Affichez l'adresse sur une carte en ligne.;
+                                 NLB=Het adres weergeven op een onlinekaart.];
                       ApplicationArea=#All;
                       Promoted=Yes;
                       Visible=FALSE;
@@ -1078,8 +1253,12 @@ OBJECT Page 22 Customer List
       { 67      ;2   ;Action    ;
                       Name=ApprovalEntries;
                       AccessByPermission=TableData 454=R;
-                      CaptionML=ENU=Approvals;
-                      ToolTipML=ENU=View a list of the records that are waiting to be approved. For example, you can see who requested the record to be approved, when it was sent, and when it is due to be approved.;
+                      CaptionML=[ENU=Approvals;
+                                 FRB=Approbations;
+                                 NLB=Goedkeuringen];
+                      ToolTipML=[ENU=View a list of the records that are waiting to be approved. For example, you can see who requested the record to be approved, when it was sent, and when it is due to be approved.;
+                                 FRB=Affichez une liste des enregistrements en attente d'approbation. Par exemple, vous pouvez voir qui a demand‚ l'approbation de l'enregistrement, quand il a ‚t‚ envoy‚ et quand son approbation est due.;
+                                 NLB=Een lijst weergeven met de records die wachten op goedkeuring. U kunt bijvoorbeeld zien wie goedkeuring van de record heeft aangevraagd, wanneer de record is verzonden en wanneer deze moet worden goedgekeurd.];
                       ApplicationArea=#Suite;
                       Image=Approvals;
                       OnAction=BEGIN
@@ -1088,12 +1267,18 @@ OBJECT Page 22 Customer List
                                 }
       { 44      ;1   ;ActionGroup;
                       Name=ActionGroupCRM;
-                      CaptionML=ENU=Dynamics CRM;
+                      CaptionML=[ENU=Dynamics CRM;
+                                 FRB=Dynamics CRM;
+                                 NLB=Dynamics CRM];
                       Visible=CRMIntegrationEnabled }
       { 41      ;2   ;Action    ;
                       Name=CRMGotoAccount;
-                      CaptionML=ENU=Account;
-                      ToolTipML=ENU=Open the coupled Microsoft Dynamics CRM account.;
+                      CaptionML=[ENU=Account;
+                                 FRB=Compte;
+                                 NLB=Account];
+                      ToolTipML=[ENU=Open the coupled Microsoft Dynamics CRM account.;
+                                 FRB=Ouvrez le compte Microsoft Dynamics CRM coupl‚.;
+                                 NLB=Het gekoppelde Microsoft Dynamics CRM-account openen.];
                       ApplicationArea=#All;
                       Image=CoupledCustomer;
                       OnAction=VAR
@@ -1105,8 +1290,12 @@ OBJECT Page 22 Customer List
       { 37      ;2   ;Action    ;
                       Name=CRMSynchronizeNow;
                       AccessByPermission=TableData 5331=IM;
-                      CaptionML=ENU=Synchronize Now;
-                      ToolTipML=ENU=Send or get updated data to or from Microsoft Dynamics CRM.;
+                      CaptionML=[ENU=Synchronize Now;
+                                 FRB=Synchroniser maintenant;
+                                 NLB=Nu synchroniseren];
+                      ToolTipML=[ENU=Send or get updated data to or from Microsoft Dynamics CRM.;
+                                 FRB=Envoyez/recevez des donn‚es mises … jour …/de Microsoft Dynamics CRM.;
+                                 NLB=Bijgewerkte gegevens verzenden naar of ophalen uit Microsoft Dynamics CRM.];
                       ApplicationArea=#All;
                       Image=Refresh;
                       OnAction=VAR
@@ -1127,8 +1316,12 @@ OBJECT Page 22 Customer List
                                 }
       { 97      ;2   ;Action    ;
                       Name=UpdateStatisticsInCRM;
-                      CaptionML=ENU=Update Account Statistics;
-                      ToolTipML=ENU=Send customer statistics data to Dynamics CRM to update the Account Statistics FactBox.;
+                      CaptionML=[ENU=Update Account Statistics;
+                                 FRB=Mettre … jour les statistiques compte;
+                                 NLB=Rekeningstatistiek bijwerken];
+                      ToolTipML=[ENU=Send customer statistics data to Dynamics CRM to update the Account Statistics FactBox.;
+                                 FRB=Envoyez les donn‚es statistiques client … Dynamics CRM pour mettre … jour le r‚capitulatif Statistiques compte;
+                                 NLB=Gegevens van klantstatistiek naar Dynamics CRM verzenden om het infoblok Rekeningstatistiek bij te werken.];
                       ApplicationArea=#All;
                       Enabled=CRMIsCoupledToRecord;
                       Image=UpdateXML;
@@ -1141,14 +1334,22 @@ OBJECT Page 22 Customer List
       { 31      ;2   ;ActionGroup;
                       Name=Coupling;
                       CaptionML=[@@@=Coupling is a noun;
-                                 ENU=Coupling];
-                      ToolTipML=ENU=Create, change, or delete a coupling between the Microsoft Dynamics NAV record and a Microsoft Dynamics CRM record.;
+                                 ENU=Coupling;
+                                 FRB=Couplage;
+                                 NLB=Koppeling];
+                      ToolTipML=[ENU=Create, change, or delete a coupling between the Microsoft Dynamics NAV record and a Microsoft Dynamics CRM record.;
+                                 FRB=Cr‚ez, modifiez ou supprimez un couplage entre l'enregistrement MicrosoftÿDynamicsÿNAV et un enregistrement MicrosoftÿDynamicsÿCRM.;
+                                 NLB=Een koppeling tussen de Microsoft Dynamics NAV-record en een Microsoft Dynamics CRM-record maken, wijzigen of verwijderen.];
                       Image=LinkAccount }
       { 49      ;3   ;Action    ;
                       Name=ManageCRMCoupling;
                       AccessByPermission=TableData 5331=IM;
-                      CaptionML=ENU=Set Up Coupling;
-                      ToolTipML=ENU=Create or modify the coupling to a Microsoft Dynamics CRM account.;
+                      CaptionML=[ENU=Set Up Coupling;
+                                 FRB=Configurer le couplage;
+                                 NLB=Koppeling instellen];
+                      ToolTipML=[ENU=Create or modify the coupling to a Microsoft Dynamics CRM account.;
+                                 FRB=Cr‚ez ou modifiez le couplage avec un compte Microsoft Dynamics CRM.;
+                                 NLB=De koppeling met een Microsoft Dynamics CRM-account maken of wijzigen.];
                       ApplicationArea=#All;
                       Image=LinkAccount;
                       OnAction=VAR
@@ -1160,8 +1361,12 @@ OBJECT Page 22 Customer List
       { 47      ;3   ;Action    ;
                       Name=DeleteCRMCoupling;
                       AccessByPermission=TableData 5331=IM;
-                      CaptionML=ENU=Delete Coupling;
-                      ToolTipML=ENU=Delete the coupling to a Microsoft Dynamics CRM account.;
+                      CaptionML=[ENU=Delete Coupling;
+                                 FRB=Supprimer le couplage;
+                                 NLB=Koppeling verwijderen];
+                      ToolTipML=[ENU=Delete the coupling to a Microsoft Dynamics CRM account.;
+                                 FRB=Supprimez le couplage avec un compte Microsoft Dynamics CRM.;
+                                 NLB=De koppeling met een Microsoft Dynamics CRM-account verwijderen.];
                       ApplicationArea=#All;
                       Enabled=CRMIsCoupledToRecord;
                       Image=UnLinkAccount;
@@ -1173,12 +1378,18 @@ OBJECT Page 22 Customer List
                                 }
       { 53      ;2   ;ActionGroup;
                       Name=Create;
-                      CaptionML=ENU=Create;
+                      CaptionML=[ENU=Create;
+                                 FRB=Cr‚er;
+                                 NLB=Maken];
                       Image=NewCustomer }
       { 57      ;3   ;Action    ;
                       Name=CreateInCRM;
-                      CaptionML=ENU=Create Account in Dynamics CRM;
-                      ToolTipML=ENU=Generate the account in the coupled Microsoft Dynamics CRM account.;
+                      CaptionML=[ENU=Create Account in Dynamics CRM;
+                                 FRB=Cr‚er un compte dans Dynamics CRM;
+                                 NLB=Account maken in Dynamics CRM];
+                      ToolTipML=[ENU=Generate the account in the coupled Microsoft Dynamics CRM account.;
+                                 FRB=G‚n‚rez le compte dans le compte MicrosoftÿDynamicsÿCRM coupl‚.;
+                                 NLB=De rekening genereren in het gekoppelde Microsoft Dynamics CRM-account.];
                       ApplicationArea=#All;
                       Image=NewCustomer;
                       OnAction=VAR
@@ -1199,8 +1410,12 @@ OBJECT Page 22 Customer List
                                 }
       { 17      ;3   ;Action    ;
                       Name=CreateFromCRM;
-                      CaptionML=ENU=Create Customer in Dynamics NAV;
-                      ToolTipML=ENU=Generate the customer in the coupled Microsoft Dynamics CRM account.;
+                      CaptionML=[ENU=Create Customer in Dynamics NAV;
+                                 FRB=Cr‚er un client dans Dynamics NAV;
+                                 NLB=Klant maken in Dynamics NAV];
+                      ToolTipML=[ENU=Generate the customer in the coupled Microsoft Dynamics CRM account.;
+                                 FRB=G‚n‚rez le client dans le compte MicrosoftÿDynamicsÿCRM coupl‚.;
+                                 NLB=De klant genereren in het gekoppelde Microsoft Dynamics CRM-account.];
                       ApplicationArea=#All;
                       Image=NewCustomer;
                       OnAction=VAR
@@ -1210,13 +1425,19 @@ OBJECT Page 22 Customer List
                                END;
                                 }
       { 9       ;1   ;ActionGroup;
-                      CaptionML=ENU=History;
+                      CaptionML=[ENU=History;
+                                 FRB=Historique;
+                                 NLB=Geschiedenis];
                       Image=History }
       { 22      ;2   ;Action    ;
                       Name=CustomerLedgerEntries;
                       ShortCutKey=Ctrl+F7;
-                      CaptionML=ENU=Ledger E&ntries;
-                      ToolTipML=ENU=View the history of transactions that have been posted for the selected record.;
+                      CaptionML=[ENU=Ledger E&ntries;
+                                 FRB=&critures comptables;
+                                 NLB=Poste&n];
+                      ToolTipML=[ENU=View the history of transactions that have been posted for the selected record.;
+                                 FRB=Affichez l'historique des transactions qui ont ‚t‚ valid‚es pour l'enregistrement s‚lectionn‚.;
+                                 NLB=De historiek weergeven van transacties die zijn geboekt voor de geselecteerde record.];
                       ApplicationArea=#Basic,#Suite;
                       RunObject=Page 25;
                       RunPageView=SORTING(Customer No.)
@@ -1225,7 +1446,9 @@ OBJECT Page 22 Customer List
                       Image=CustomerLedger }
       { 18      ;2   ;Action    ;
                       ShortCutKey=F7;
-                      CaptionML=ENU=Statistics;
+                      CaptionML=[ENU=Statistics;
+                                 FRB=Statistiques;
+                                 NLB=Statistiek];
                       RunObject=Page 151;
                       RunPageLink=No.=FIELD(No.),
                                   Date Filter=FIELD(Date Filter),
@@ -1235,14 +1458,18 @@ OBJECT Page 22 Customer List
                       Image=Statistics;
                       PromotedCategory=Process }
       { 21      ;2   ;Action    ;
-                      CaptionML=ENU=S&ales;
+                      CaptionML=[ENU=S&ales;
+                                 FRB=&Ventes;
+                                 NLB=V&erkoop];
                       RunObject=Page 155;
                       RunPageLink=No.=FIELD(No.),
                                   Global Dimension 1 Filter=FIELD(Global Dimension 1 Filter),
                                   Global Dimension 2 Filter=FIELD(Global Dimension 2 Filter);
                       Image=Sales }
       { 19      ;2   ;Action    ;
-                      CaptionML=ENU=Entry Statistics;
+                      CaptionML=[ENU=Entry Statistics;
+                                 FRB=Statistiques ‚critures;
+                                 NLB=Boekingsstatistiek];
                       RunObject=Page 302;
                       RunPageLink=No.=FIELD(No.),
                                   Date Filter=FIELD(Date Filter),
@@ -1250,7 +1477,9 @@ OBJECT Page 22 Customer List
                                   Global Dimension 2 Filter=FIELD(Global Dimension 2 Filter);
                       Image=EntryStatistics }
       { 63      ;2   ;Action    ;
-                      CaptionML=ENU=Statistics by C&urrencies;
+                      CaptionML=[ENU=Statistics by C&urrencies;
+                                 FRB=Statistiques par &devise;
+                                 NLB=Statistiek per &valuta];
                       RunObject=Page 486;
                       RunPageLink=Customer Filter=FIELD(No.),
                                   Global Dimension 1 Filter=FIELD(Global Dimension 1 Filter),
@@ -1258,7 +1487,9 @@ OBJECT Page 22 Customer List
                                   Date Filter=FIELD(Date Filter);
                       Image=Currencies }
       { 6500    ;2   ;Action    ;
-                      CaptionML=ENU=Item &Tracking Entries;
+                      CaptionML=[ENU=Item &Tracking Entries;
+                                 FRB=&Ecritures tra‡abilit‚;
+                                 NLB=Ar&tikeltraceringsposten];
                       Image=ItemTrackingLedger;
                       OnAction=VAR
                                  ItemTrackingDocMgt@1001 : Codeunit 6503;
@@ -1267,20 +1498,30 @@ OBJECT Page 22 Customer List
                                END;
                                 }
       { 24      ;1   ;ActionGroup;
-                      CaptionML=ENU=S&ales;
+                      CaptionML=[ENU=S&ales;
+                                 FRB=&Ventes;
+                                 NLB=V&erkoop];
                       Image=Sales }
       { 25      ;2   ;Action    ;
                       Name=Sales_InvoiceDiscounts;
-                      CaptionML=ENU=Invoice &Discounts;
-                      ToolTipML=ENU=Set up different discounts that are applied to invoices for the customer. An invoice discount is automatically granted to the customer when the total on a sales invoice exceeds a certain amount.;
+                      CaptionML=[ENU=Invoice &Discounts;
+                                 FRB=Remises &facture;
+                                 NLB=&Factuurkorting];
+                      ToolTipML=[ENU=Set up different discounts that are applied to invoices for the customer. An invoice discount is automatically granted to the customer when the total on a sales invoice exceeds a certain amount.;
+                                 FRB=Configurez des remises diff‚rentes qui seront appliqu‚es aux factures client. Une remise facture est automatiquement accord‚e au client lorsque le total sur la facture vente d‚passe un certain montant.;
+                                 NLB=Verschillende kortingen instellen die worden toegepast op facturen voor de klant. Er wordt automatisch een factuurkorting aan de klant verleend wanneer het totaal van een verkoopfactuur boven een bepaald bedrag komt.];
                       ApplicationArea=#Basic,#Suite;
                       RunObject=Page 23;
                       RunPageLink=Code=FIELD(Invoice Disc. Code);
                       Image=CalculateInvoiceDiscount }
       { 26      ;2   ;Action    ;
                       Name=Sales_Prices;
-                      CaptionML=ENU=Prices;
-                      ToolTipML=ENU=View or set up different prices for items that you sell to the customer. An item price is automatically granted on invoice lines when the specified criteria are met, such as customer, quantity, or ending date.;
+                      CaptionML=[ENU=Prices;
+                                 FRB=Prix;
+                                 NLB=Prijzen];
+                      ToolTipML=[ENU=View or set up different prices for items that you sell to the customer. An item price is automatically granted on invoice lines when the specified criteria are met, such as customer, quantity, or ending date.;
+                                 FRB=Affichez ou param‚trez des prix diff‚rents pour les articles que vous vendez au client. Un prix article est automatiquement affect‚ sur les lignes facture lorsque les critŠres sp‚cifi‚s sont satisfaits, par exemple le client, la quantit‚ ou la date de fin.;
+                                 NLB=Andere prijzen weergeven of instellen voor artikelen die u aan de klant verkoopt. Er wordt automatisch een artikelprijs op factuurregels gehanteerd als aan de opgegeven criteria wordt voldaan, zoals klant, aantal of einddatum.];
                       ApplicationArea=#Basic,#Suite;
                       RunObject=Page 7002;
                       RunPageView=SORTING(Sales Type,Sales Code);
@@ -1289,8 +1530,12 @@ OBJECT Page 22 Customer List
                       Image=Price }
       { 71      ;2   ;Action    ;
                       Name=Sales_LineDiscounts;
-                      CaptionML=ENU=Line Discounts;
-                      ToolTipML=ENU=Set up different discounts for items that you sell to the customer. An item discount is automatically granted on invoice lines when the specified criteria are met, such as customer, quantity, or ending date.;
+                      CaptionML=[ENU=Line Discounts;
+                                 FRB=Remises ligne;
+                                 NLB=Regelkortingen];
+                      ToolTipML=[ENU=Set up different discounts for items that you sell to the customer. An item discount is automatically granted on invoice lines when the specified criteria are met, such as customer, quantity, or ending date.;
+                                 FRB=Param‚trez des remises diff‚rentes pour les articles que vous vendez au client. Une remise article est automatiquement affect‚e sur les lignes facture lorsque les critŠres sp‚cifi‚s sont satisfaits, par exemple le client, la quantit‚ ou la date de fin.;
+                                 NLB=Verschillende kortingen instellen voor artikelen die u aan de klant verkoopt. Er wordt automatisch een artikelkorting aan factuurregels verleend als aan de opgegeven criteria wordt voldaan, zoals klant, aantal of einddatum.];
                       ApplicationArea=#Basic,#Suite;
                       RunObject=Page 7004;
                       RunPageView=SORTING(Sales Type,Sales Code);
@@ -1298,76 +1543,104 @@ OBJECT Page 22 Customer List
                                   Sales Code=FIELD(No.);
                       Image=LineDiscount }
       { 82      ;2   ;Action    ;
-                      CaptionML=ENU=Prepa&yment Percentages;
+                      CaptionML=[ENU=Prepa&yment Percentages;
+                                 FRB=Pourcentages acom&pte;
+                                 NLB=&Vooruitbetalingspercentages];
                       RunObject=Page 664;
                       RunPageView=SORTING(Sales Type,Sales Code);
                       RunPageLink=Sales Type=CONST(Customer),
                                   Sales Code=FIELD(No.);
                       Image=PrepaymentPercentages }
       { 75      ;2   ;Action    ;
-                      CaptionML=ENU=S&td. Cust. Sales Codes;
+                      CaptionML=[ENU=S&td. Cust. Sales Codes;
+                                 FRB=Codes &vente std client;
+                                 NLB=St&d. klantenverkoopcodes];
                       RunObject=Page 173;
                       RunPageLink=Customer No.=FIELD(No.);
                       Image=CodesList }
       { 11      ;1   ;ActionGroup;
-                      CaptionML=ENU=Documents;
+                      CaptionML=[ENU=Documents;
+                                 FRB=Documents;
+                                 NLB=Documenten];
                       Image=Documents }
       { 27      ;2   ;Action    ;
-                      CaptionML=ENU=Quotes;
+                      CaptionML=[ENU=Quotes;
+                                 FRB=Devis;
+                                 NLB=Offertes];
                       RunObject=Page 9300;
                       RunPageView=SORTING(Sell-to Customer No.);
                       RunPageLink=Sell-to Customer No.=FIELD(No.);
                       Image=Quote }
       { 28      ;2   ;Action    ;
-                      CaptionML=ENU=Orders;
+                      CaptionML=[ENU=Orders;
+                                 FRB=Commandes;
+                                 NLB=Orders];
                       RunObject=Page 9305;
                       RunPageView=SORTING(Sell-to Customer No.);
                       RunPageLink=Sell-to Customer No.=FIELD(No.);
                       Image=Document }
       { 70      ;2   ;Action    ;
-                      CaptionML=ENU=Return Orders;
+                      CaptionML=[ENU=Return Orders;
+                                 FRB=Retours;
+                                 NLB=Retourorders];
                       RunObject=Page 9304;
                       RunPageView=SORTING(Sell-to Customer No.);
                       RunPageLink=Sell-to Customer No.=FIELD(No.);
                       Image=ReturnOrder }
       { 76      ;2   ;ActionGroup;
-                      CaptionML=ENU=Issued Documents;
+                      CaptionML=[ENU=Issued Documents;
+                                 FRB=Documents ‚mis;
+                                 NLB=Verzonden documenten];
                       Image=Documents }
       { 77      ;3   ;Action    ;
-                      CaptionML=ENU=Issued &Reminders;
+                      CaptionML=[ENU=Issued &Reminders;
+                                 FRB=&Relances ‚mises;
+                                 NLB=Verzonden &aanmaningen];
                       RunObject=Page 440;
                       RunPageView=SORTING(Customer No.,Posting Date);
                       RunPageLink=Customer No.=FIELD(No.);
                       Image=OrderReminder }
       { 78      ;3   ;Action    ;
-                      CaptionML=ENU=Issued &Finance Charge Memos;
+                      CaptionML=[ENU=Issued &Finance Charge Memos;
+                                 FRB=Fact&ures d'int‚rˆts ‚mises;
+                                 NLB=Verzonden &rentefacturen];
                       RunObject=Page 452;
                       RunPageView=SORTING(Customer No.,Posting Date);
                       RunPageLink=Customer No.=FIELD(No.);
                       Image=FinChargeMemo }
       { 65      ;2   ;Action    ;
-                      CaptionML=ENU=Blanket Orders;
+                      CaptionML=[ENU=Blanket Orders;
+                                 FRB=Commandes ouvertes;
+                                 NLB=Raamcontracten];
                       RunObject=Page 9303;
                       RunPageView=SORTING(Document Type,Sell-to Customer No.);
                       RunPageLink=Sell-to Customer No.=FIELD(No.);
                       Image=BlanketOrder }
       { 14      ;1   ;ActionGroup;
-                      CaptionML=ENU=Service;
+                      CaptionML=[ENU=Service;
+                                 FRB=Service;
+                                 NLB=Service];
                       Image=ServiceItem }
       { 81      ;2   ;Action    ;
-                      CaptionML=ENU=Service Orders;
+                      CaptionML=[ENU=Service Orders;
+                                 FRB=Commandes service;
+                                 NLB=Serviceorders];
                       RunObject=Page 9318;
                       RunPageView=SORTING(Document Type,Customer No.);
                       RunPageLink=Customer No.=FIELD(No.);
                       Image=Document }
       { 68      ;2   ;Action    ;
-                      CaptionML=ENU=Ser&vice Contracts;
+                      CaptionML=[ENU=Ser&vice Contracts;
+                                 FRB=&Contrats de service;
+                                 NLB=Servicec&ontracten];
                       RunObject=Page 6065;
                       RunPageView=SORTING(Customer No.,Ship-to Code);
                       RunPageLink=Customer No.=FIELD(No.);
                       Image=ServiceAgreement }
       { 69      ;2   ;Action    ;
-                      CaptionML=ENU=Service &Items;
+                      CaptionML=[ENU=Service &Items;
+                                 FRB=Ar&ticles de service;
+                                 NLB=Serviceart&ikelen];
                       RunObject=Page 5988;
                       RunPageView=SORTING(Customer No.,Ship-to Code,Item No.,Serial No.);
                       RunPageLink=Customer No.=FIELD(No.);
@@ -1376,15 +1649,21 @@ OBJECT Page 22 Customer List
                       ActionContainerType=NewDocumentItems }
       { 1902575205;1 ;Action    ;
                       Name=NewSalesBlanketOrder;
-                      CaptionML=ENU=Blanket Sales Order;
+                      CaptionML=[ENU=Blanket Sales Order;
+                                 FRB=Commande ouverte vente;
+                                 NLB=Verkoopraamcontract];
                       RunObject=Page 507;
                       RunPageLink=Sell-to Customer No.=FIELD(No.);
                       Image=BlanketOrder;
                       RunPageMode=Create }
       { 1900246505;1 ;Action    ;
                       Name=NewSalesQuote;
-                      CaptionML=ENU=Sales Quote;
-                      ToolTipML=ENU=Create a new sales quote where you offer items or services to a customer.;
+                      CaptionML=[ENU=Sales Quote;
+                                 FRB=Devis;
+                                 NLB=Verk.-offerte];
+                      ToolTipML=[ENU=Create a new sales quote where you offer items or services to a customer.;
+                                 FRB=Cr‚ez un devis proposant des articles ou des services … un client.;
+                                 NLB=Een nieuwe verkoopofferte maken waarin u artikelen of services aan een klant aanbiedt.];
                       ApplicationArea=#Basic,#Suite;
                       RunObject=Page 41;
                       RunPageLink=Sell-to Customer No.=FIELD(No.);
@@ -1394,8 +1673,12 @@ OBJECT Page 22 Customer List
                       RunPageMode=Create }
       { 1906384905;1 ;Action    ;
                       Name=NewSalesInvoice;
-                      CaptionML=ENU=Sales Invoice;
-                      ToolTipML=ENU=Create a sales invoice for the customer.;
+                      CaptionML=[ENU=Sales Invoice;
+                                 FRB=Facture vente;
+                                 NLB=Verk.-factuur];
+                      ToolTipML=[ENU=Create a sales invoice for the customer.;
+                                 FRB=Cr‚ez une facture vente pour le client.;
+                                 NLB=Een verkoopfactuur voor de klant maken.];
                       ApplicationArea=#Basic,#Suite;
                       RunObject=Page 43;
                       RunPageLink=Sell-to Customer No.=FIELD(No.);
@@ -1405,8 +1688,12 @@ OBJECT Page 22 Customer List
                       RunPageMode=Create }
       { 1904747105;1 ;Action    ;
                       Name=NewSalesOrder;
-                      CaptionML=ENU=Sales Order;
-                      ToolTipML=ENU=Create a sales order for the customer.;
+                      CaptionML=[ENU=Sales Order;
+                                 FRB=Commande vente;
+                                 NLB=Verkooporder];
+                      ToolTipML=[ENU=Create a sales order for the customer.;
+                                 FRB=Cr‚ez une commande vente pour le client.;
+                                 NLB=Een verkooporder voor de klant maken.];
                       ApplicationArea=#Basic,#Suite;
                       RunObject=Page 42;
                       RunPageLink=Sell-to Customer No.=FIELD(No.);
@@ -1416,8 +1703,12 @@ OBJECT Page 22 Customer List
                       RunPageMode=Create }
       { 1902583505;1 ;Action    ;
                       Name=NewSalesCrMemo;
-                      CaptionML=ENU=Sales Credit Memo;
-                      ToolTipML=ENU=Create a new sales credit memo to revert a posted sales invoice.;
+                      CaptionML=[ENU=Sales Credit Memo;
+                                 FRB=Avoir vente;
+                                 NLB=Verk.-creditnota];
+                      ToolTipML=[ENU=Create a new sales credit memo to revert a posted sales invoice.;
+                                 FRB=Cr‚ez un avoir vente pour annuler une facture vente valid‚e.;
+                                 NLB=Een nieuwe verkoopcreditnota maken om een geboekte verkoopfactuur terug te draaien.];
                       ApplicationArea=#Basic,#Suite;
                       RunObject=Page 44;
                       RunPageLink=Sell-to Customer No.=FIELD(No.);
@@ -1427,42 +1718,54 @@ OBJECT Page 22 Customer List
                       RunPageMode=Create }
       { 1905163705;1 ;Action    ;
                       Name=NewSalesReturnOrder;
-                      CaptionML=ENU=Sales Return Order;
+                      CaptionML=[ENU=Sales Return Order;
+                                 FRB=Retour vente;
+                                 NLB=Verkoopretourorder];
                       RunObject=Page 6630;
                       RunPageLink=Sell-to Customer No.=FIELD(No.);
                       Image=ReturnOrder;
                       RunPageMode=Create }
       { 1905185205;1 ;Action    ;
                       Name=NewServiceQuote;
-                      CaptionML=ENU=Service Quote;
+                      CaptionML=[ENU=Service Quote;
+                                 FRB=Devis service;
+                                 NLB=Serviceofferte];
                       RunObject=Page 5964;
                       RunPageLink=Customer No.=FIELD(No.);
                       Image=Quote;
                       RunPageMode=Create }
       { 1902079405;1 ;Action    ;
                       Name=NewServiceInvoice;
-                      CaptionML=ENU=Service Invoice;
+                      CaptionML=[ENU=Service Invoice;
+                                 FRB=Facture service;
+                                 NLB=Servicefactuur];
                       RunObject=Page 5933;
                       RunPageLink=Customer No.=FIELD(No.);
                       Image=Invoice;
                       RunPageMode=Create }
       { 1907102005;1 ;Action    ;
                       Name=NewServiceOrder;
-                      CaptionML=ENU=Service Order;
+                      CaptionML=[ENU=Service Order;
+                                 FRB=Commande service;
+                                 NLB=Serviceorder];
                       RunObject=Page 5900;
                       RunPageLink=Customer No.=FIELD(No.);
                       Image=Document;
                       RunPageMode=Create }
       { 1901662105;1 ;Action    ;
                       Name=NewServiceCrMemo;
-                      CaptionML=ENU=Service Credit Memo;
+                      CaptionML=[ENU=Service Credit Memo;
+                                 FRB=Avoir service;
+                                 NLB=Servicecreditnota];
                       RunObject=Page 5935;
                       RunPageLink=Customer No.=FIELD(No.);
                       Image=CreditMemo;
                       RunPageMode=Create }
       { 1903839805;1 ;Action    ;
                       Name=NewReminder;
-                      CaptionML=ENU=Reminder;
+                      CaptionML=[ENU=Reminder;
+                                 FRB=Relance;
+                                 NLB=Aanmaning];
                       RunObject=Page 434;
                       RunPageLink=Customer No.=FIELD(No.);
                       Promoted=Yes;
@@ -1471,7 +1774,9 @@ OBJECT Page 22 Customer List
                       RunPageMode=Create }
       { 1901102005;1 ;Action    ;
                       Name=NewFinChargeMemo;
-                      CaptionML=ENU=Finance Charge Memo;
+                      CaptionML=[ENU=Finance Charge Memo;
+                                 FRB=Facture d'int‚rˆts;
+                                 NLB=Rentefactuur];
                       RunObject=Page 446;
                       RunPageLink=Customer No.=FIELD(No.);
                       Image=FinChargeMemo;
@@ -1479,13 +1784,19 @@ OBJECT Page 22 Customer List
       { 1900000004;0 ;ActionContainer;
                       ActionContainerType=ActionItems }
       { 104     ;1   ;ActionGroup;
-                      CaptionML=ENU=History;
+                      CaptionML=[ENU=History;
+                                 FRB=Historique;
+                                 NLB=Historiek];
                       Image=History }
       { 103     ;2   ;Action    ;
                       Name=CustomerLedgerEntriesHistory;
                       ShortCutKey=Ctrl+F7;
-                      CaptionML=ENU=Ledger E&ntries;
-                      ToolTipML=ENU=View the history of transactions that have been posted for the selected record.;
+                      CaptionML=[ENU=Ledger E&ntries;
+                                 FRB=&critures comptables;
+                                 NLB=Poste&n];
+                      ToolTipML=[ENU=View the history of transactions that have been posted for the selected record.;
+                                 FRB=Affichez l'historique des transactions qui ont ‚t‚ valid‚es pour l'enregistrement s‚lectionn‚.;
+                                 NLB=De historiek weergeven van transacties die zijn geboekt voor de geselecteerde record.];
                       ApplicationArea=#Basic,#Suite;
                       RunObject=Page 25;
                       RunPageView=SORTING(Customer No.);
@@ -1494,11 +1805,17 @@ OBJECT Page 22 Customer List
                       Scope=Repeater }
       { 102     ;1   ;ActionGroup;
                       Name=PricesAndDiscounts;
-                      CaptionML=ENU=Prices and Discounts }
+                      CaptionML=[ENU=Prices and Discounts;
+                                 FRB=Prix et remises;
+                                 NLB=Prijzen en kortingen] }
       { 101     ;2   ;Action    ;
                       Name=Prices_InvoiceDiscounts;
-                      CaptionML=ENU=Invoice &Discounts;
-                      ToolTipML=ENU=Set up different discounts applied to invoices for the selected customer. An invoice discount is automatically granted to the customer when the total on a sales invoice exceeds a certain amount.;
+                      CaptionML=[ENU=Invoice &Discounts;
+                                 FRB=Remises &facture;
+                                 NLB=&Factuurkortingen];
+                      ToolTipML=[ENU=Set up different discounts applied to invoices for the selected customer. An invoice discount is automatically granted to the customer when the total on a sales invoice exceeds a certain amount.;
+                                 FRB=Configurez des remises diff‚rentes qui seront lettr‚es aux factures pour le client s‚lectionn‚. Une remise facture est automatiquement accord‚e au client lorsque le total sur la facture vente d‚passe un certain montant.;
+                                 NLB=Andere kortingen instellen die worden gebruikt voor facturen voor de geselecteerde klant. Er wordt automatisch een factuurkorting aan de klant verleend wanneer het totaal van een verkoopfactuur een bepaald bedrag overschrijdt.];
                       ApplicationArea=#Basic,#Suite;
                       RunObject=Page 23;
                       RunPageLink=Code=FIELD(Invoice Disc. Code);
@@ -1506,8 +1823,12 @@ OBJECT Page 22 Customer List
                       Scope=Repeater }
       { 100     ;2   ;Action    ;
                       Name=Prices_Prices;
-                      CaptionML=ENU=Prices;
-                      ToolTipML=ENU=View or set up different prices for items that you sell to the selected customer. An item price is automatically granted on invoice lines when the specified criteria are met, such as customer, quantity, or ending date.;
+                      CaptionML=[ENU=Prices;
+                                 FRB=Prix;
+                                 NLB=Prijzen];
+                      ToolTipML=[ENU=View or set up different prices for items that you sell to the selected customer. An item price is automatically granted on invoice lines when the specified criteria are met, such as customer, quantity, or ending date.;
+                                 FRB=Affichez ou param‚trez des prix diff‚rents pour les articles que vous vendez au client s‚lectionn‚. Un prix article est automatiquement affect‚ sur les lignes facture lorsque les critŠres sp‚cifi‚s sont satisfaits, par exemple le client, la quantit‚ ou la date de fin.;
+                                 NLB=Andere prijzen weergeven of instellen voor artikelen die u aan de geselecteerde klant verkoopt. Er wordt automatisch een artikelprijs op factuurregels gehanteerd als aan de opgegeven criteria wordt voldaan, zoals klant, aantal of einddatum.];
                       ApplicationArea=#Basic,#Suite;
                       RunObject=Page 7002;
                       RunPageView=SORTING(Sales Type,Sales Code);
@@ -1517,8 +1838,12 @@ OBJECT Page 22 Customer List
                       Scope=Repeater }
       { 98      ;2   ;Action    ;
                       Name=Prices_LineDiscounts;
-                      CaptionML=ENU=Line Discounts;
-                      ToolTipML=ENU=Set up different discounts for items that you sell to the selected customer. An item discount is automatically granted on invoice lines when the specified criteria are met, such as customer, quantity, or ending date.;
+                      CaptionML=[ENU=Line Discounts;
+                                 FRB=Remises ligne;
+                                 NLB=Regelkortingen];
+                      ToolTipML=[ENU=Set up different discounts for items that you sell to the selected customer. An item discount is automatically granted on invoice lines when the specified criteria are met, such as customer, quantity, or ending date.;
+                                 FRB=Param‚trez des remises diff‚rentes pour les articles que vous vendez au client s‚lectionn‚. Une remise article est automatiquement affect‚e sur les lignes facture lorsque les critŠres sp‚cifi‚s sont satisfaits, par exemple le client, la quantit‚ ou la date de fin.;
+                                 NLB=Andere kortingen instellen voor artikelen die u aan de geselecteerde klant verkoopt. Er wordt automatisch een artikelkorting op factuurregels verleend als aan de opgegeven criteria wordt voldaan, zoals klant, aantal of einddatum.];
                       ApplicationArea=#Basic,#Suite;
                       RunObject=Page 7004;
                       RunPageView=SORTING(Sales Type,Sales Code);
@@ -1528,85 +1853,141 @@ OBJECT Page 22 Customer List
                       Scope=Repeater }
       { 96      ;1   ;ActionGroup;
                       Name=Reports;
-                      CaptionML=ENU=Reports }
+                      CaptionML=[ENU=Reports;
+                                 FRB=tats;
+                                 NLB=Rapporten] }
       { 95      ;2   ;ActionGroup;
                       Name=SalesReports;
-                      CaptionML=ENU=Sales Reports;
+                      CaptionML=[ENU=Sales Reports;
+                                 FRB=tats vente;
+                                 NLB=Verkooprapporten];
                       Image=Report }
       { 94      ;3   ;Action    ;
-                      CaptionML=ENU=Customer - Top 10 List;
-                      ToolTipML=ENU=View which customers purchase the most or owe the most in a selected period. Only customers that have either purchases during the period or a balance at the end of the period will be included.;
+                      CaptionML=[ENU=Customer - Top 10 List;
+                                 FRB=Clients : PalmarŠs;
+                                 NLB=Klant - Top 10];
+                      ToolTipML=[ENU=View which customers purchase the most or owe the most in a selected period. Only customers that have either purchases during the period or a balance at the end of the period will be included.;
+                                 FRB=Affichez les clients qui achŠtent le plus ou qui doivent le plus d'argent au cours d'une p‚riode s‚lectionn‚e. Seuls les clients qui ont des achats pour cette p‚riode ou un solde … la fin de la p‚riode seront inclus.;
+                                 NLB=Een overzicht weergeven van klanten die in een geselecteerde periode het meest kopen of het meest verschuldigd zijn. Alleen klanten die tijdens de periode inkopen hebben gedaan of aan het einde van de periode een saldo hebben, worden opgenomen.];
                       ApplicationArea=#Basic,#Suite;
                       RunObject=Report 111;
                       Image=Report }
       { 93      ;3   ;Action    ;
-                      CaptionML=ENU=Customer - Sales List;
-                      ToolTipML=ENU=View customer sales in a period, for example, to report sales activity to customs and tax authorities.;
+                      CaptionML=[ENU=Customer - Sales List;
+                                 FRB=Clients : Liste des ventes;
+                                 NLB=Klant - Verkoopoverzicht];
+                      ToolTipML=[ENU=View customer sales in a period, for example, to report sales activity to customs and tax authorities.;
+                                 FRB=Affichez les ventes client au cours d'une p‚riode, par exemple, pour signaler une activit‚ vente aux autorit‚s douaniŠres et fiscales.;
+                                 NLB=Een overzicht van verkopen per klant in een periode weergeven, bijvoorbeeld om verkoopactiviteiten aan de douane of de belastingdienst te rapporteren.];
                       ApplicationArea=#Basic,#Suite;
                       RunObject=Report 119;
                       Image=Report }
       { 92      ;3   ;Action    ;
-                      CaptionML=ENU=Sales Statistics;
-                      ToolTipML=ENU=View customers' total costs, sales, and profits over time, for example, to analyze earnings trends. The report shows amounts for original and adjusted costs, sales, profits, invoice discounts, payment discounts, and profit percentage in three adjustable periods.;
+                      CaptionML=[ENU=Sales Statistics;
+                                 FRB=Statistiques vente;
+                                 NLB=Verkoopstatistiek];
+                      ToolTipML=[ENU=View customers' total costs, sales, and profits over time, for example, to analyze earnings trends. The report shows amounts for original and adjusted costs, sales, profits, invoice discounts, payment discounts, and profit percentage in three adjustable periods.;
+                                 FRB=Affichez les co–ts totaux, les ventes et la marge … long terme des clients, par exemple, pour analyser les tendances b‚n‚ficiaires. L'‚tat affiche les montants des co–ts originaux et ajust‚s, des ventes, de la marge, de la remise facture et de l'escompte, ainsi que le pourcentage marge sur vente au cours de trois p‚riodesÿs‚lectionnables.;
+                                 NLB=Totale kosten, verkoop en winst van klanten over een periode weergeven, bijvoorbeeld om trends in resultaten te analyseren. Het rapport bevat bedragen voor oorspronkelijke en aangepaste kosten, verkoop, winst, factuurkortingen, contantkortingen en winstpercentages in drie aanpasbare perioden.];
                       ApplicationArea=#Basic,#Suite;
                       RunObject=Report 112;
                       Image=Report }
       { 91      ;2   ;ActionGroup;
                       Name=FinanceReports;
-                      CaptionML=ENU=Finance Reports;
+                      CaptionML=[ENU=Finance Reports;
+                                 FRB=tats financiers;
+                                 NLB=Financi‰le rapporten];
                       Image=Report }
       { 90      ;3   ;Action    ;
-                      CaptionML=ENU=Statement;
-                      ToolTipML=ENU=View a list of a customer's transactions for a selected period, for example, to send to the customer at the close of an accounting period. You can choose to have all overdue balances displayed regardless of the period specified, or you can choose to include an aging band.;
+                      CaptionML=[ENU=Statement;
+                                 FRB=Relev‚;
+                                 NLB=Rekeningoverzicht];
+                      ToolTipML=[ENU=View a list of a customer's transactions for a selected period, for example, to send to the customer at the close of an accounting period. You can choose to have all overdue balances displayed regardless of the period specified, or you can choose to include an aging band.;
+                                 FRB=Affichez une liste des transactions d'un client pour une p‚riode s‚lectionn‚e, par exemple, … envoyer au client … la cl“ture d'une p‚riode comptable. Vous pouvez choisir d'afficher tous les soldes ‚chus, sans tenir compte de la p‚riode sp‚cifi‚e, ou d'inclure un cumul date.;
+                                 NLB=Een lijst met transacties van een klant in een bepaalde periode weergeven. Deze lijst kan dan bijvoorbeeld aan het eind van een boekingsperiode naar de klant worden verzonden. U kunt alle openstaande saldi weergeven, ongeacht de opgegeven periode, of u kunt ervoor kiezen een vervaldatuminterval op te nemen.];
                       ApplicationArea=#Basic,#Suite;
                       RunObject=Codeunit 8810;
                       Image=Report }
       { 89      ;3   ;Action    ;
-                      CaptionML=ENU=Customer - Balance to Date;
-                      ToolTipML=ENU=View, print, or save a customer's balance on a certain date. You can use the report to extract your total sales income at the close of an accounting period or fiscal year.;
+                      CaptionML=[ENU=Customer - Balance to Date;
+                                 FRB=Clients : critures ouvertes;
+                                 NLB=Klant - Saldo t/m datum];
+                      ToolTipML=[ENU=View, print, or save a customer's balance on a certain date. You can use the report to extract your total sales income at the close of an accounting period or fiscal year.;
+                                 FRB=Affichez, imprimez ou enregistrez un solde de client … une certaine date. Vous pouvez utiliser l'‚tat pour extraire vos revenus de vente totaux … la cl“ture d'une p‚riode ou d'un exercice comptable.;
+                                 NLB=Het saldo van een klant op een bepaalde datum weergeven, afdrukken of opslaan. U kunt het rapport gebruiken om er bij de afsluiting van een boekingsperiode of boekjaar de totale omzet uit te extraheren.];
                       RunObject=Report 121;
                       Image=Report }
       { 88      ;3   ;Action    ;
-                      CaptionML=ENU=Customer - Trial Balance;
-                      ToolTipML=ENU=View the beginning and ending balance for customers with entries within a specified period. The report can be used to verify that the balance for a customer posting group is equal to the balance on the corresponding general ledger account on a certain date.;
+                      CaptionML=[ENU=Customer - Trial Balance;
+                                 FRB=Clients : Balance;
+                                 NLB=Klant - Proefbalans];
+                      ToolTipML=[ENU=View the beginning and ending balance for customers with entries within a specified period. The report can be used to verify that the balance for a customer posting group is equal to the balance on the corresponding general ledger account on a certain date.;
+                                 FRB=Affichez le solde d'ouverture et final pour les clients pr‚sentant des ‚critures au cours d'une p‚riode sp‚cifi‚e. L'‚tat peut ˆtre utilis‚ pour v‚rifier que le solde pour un groupe comptabilisation client est ‚gal … celui du compte g‚n‚ral correspondant … une certaine date.;
+                                 NLB=Het begin- en eindsaldo voor klanten met posten binnen een opgegeven periode weergeven. Met dit rapport kunt u controleren of het saldo van een klantboekingsgroep op een bepaalde datum gelijk is aan het saldo van de bijbehorende grootboekrekening.];
                       ApplicationArea=#Suite;
                       RunObject=Report 129;
                       Image=Report }
       { 87      ;3   ;Action    ;
-                      CaptionML=ENU=Customer - Detail Trial Bal.;
-                      ToolTipML=ENU=View the balance for customers with balances on a specified date. The report can be used at the close of an accounting period, for example, or for an audit.;
+                      CaptionML=[ENU=Customer - Detail Trial Bal.;
+                                 FRB=Clients : Grand livre client;
+                                 NLB=Klant - Historie];
+                      ToolTipML=[ENU=View the balance for customers with balances on a specified date. The report can be used at the close of an accounting period, for example, or for an audit.;
+                                 FRB=Affichez le solde des clients pr‚sentant des soldes … une date donn‚e. L'‚tat peut ˆtre utilis‚ … la cl“ture d'une p‚riode comptable, par exemple, ou pour un audit.;
+                                 NLB=Het saldo van klanten met saldi op een bepaalde datum weergeven. Het rapport kan bijvoorbeeld worden gebruikt bij het afsluiten van een boekingsperiode of voor een controle.];
                       ApplicationArea=#Basic,#Suite;
                       RunObject=Report 104;
                       Image=Report }
       { 83      ;3   ;Action    ;
-                      CaptionML=ENU=Customer - Summary Aging;
-                      ToolTipML=ENU=View, print, or save a summary of each customer's total payments due, divided into three time periods. The report can be used to decide when to issue reminders, to evaluate a customer's creditworthiness, or to prepare liquidity analyses.;
+                      CaptionML=[ENU=Customer - Summary Aging;
+                                 FRB=Clients : ch‚ancier;
+                                 NLB=Klant - Open posten];
+                      ToolTipML=[ENU=View, print, or save a summary of each customer's total payments due, divided into three time periods. The report can be used to decide when to issue reminders, to evaluate a customer's creditworthiness, or to prepare liquidity analyses.;
+                                 FRB=Affichez, imprimez ou enregistrez un r‚sum‚ des totaux dus de chaque client, divis‚ en troisÿp‚riodes. Cet ‚tat sert … d‚cider quand ‚mettre des relances, … ‚valuer la solvabilit‚ d'un client ou … pr‚parer des analyses de liquidit‚s.;
+                                 NLB=Een in drie perioden onderverdeeld overzicht weergeven, afdrukken of opslaan van het totaal aan openstaande betalingen van elke klant. Dit rapport kan worden gebruikt om te besluiten wanneer aanmaningen moeten worden verzonden, om de kredietwaardigheid van een klant te evalueren of om liquiditeitsanalyses voor te bereiden.];
                       RunObject=Report 105;
                       Image=Report }
       { 80      ;3   ;Action    ;
-                      CaptionML=ENU=Customer - Detailed Aging;
-                      ToolTipML=ENU=View, print, or save a detailed list of each customer's total payments due, divided into three time periods. The report can be used to decide when to issue reminders, to evaluate a customer's creditworthiness, or to prepare liquidity analyses.;
+                      CaptionML=[ENU=Customer - Detailed Aging;
+                                 FRB=Client - critures ‚chues;
+                                 NLB=Klant - Vervallen posten];
+                      ToolTipML=[ENU=View, print, or save a detailed list of each customer's total payments due, divided into three time periods. The report can be used to decide when to issue reminders, to evaluate a customer's creditworthiness, or to prepare liquidity analyses.;
+                                 FRB=Affichez, imprimez ou enregistrez une liste d‚taill‚e des totaux dus de chaque client, divis‚e en troisÿp‚riodes. Cet ‚tat sert … d‚cider quand ‚mettre des relances, … ‚valuer la solvabilit‚ d'un client ou … pr‚parer des analyses de liquidit‚s.;
+                                 NLB=Een gedetailleerde, in drie perioden verdeelde lijst met het totaal aan openstaande betalingen van elke klant weergeven, afdrukken of opslaan. Het rapport kan worden gebruikt om te besluiten wanneer er aanmaningen moeten worden verzonden, om de kredietwaardigheid van een klant te evalueren of om liquiditeitsanalyses voor te bereiden.];
                       RunObject=Report 106;
                       Image=Report }
       { 74      ;3   ;Action    ;
-                      CaptionML=ENU=Aged Accounts Receivable;
-                      ToolTipML=ENU=View an overview of when customer payments are due or overdue, divided into four periods. You must specify the date you want aging calculated from and the length of the period that each column will contain data for.;
+                      CaptionML=[ENU=Aged Accounts Receivable;
+                                 FRB=Comptabilit‚ client ƒg‚e;
+                                 NLB=Vervallen vorderingen];
+                      ToolTipML=[ENU=View an overview of when customer payments are due or overdue, divided into four periods. You must specify the date you want aging calculated from and the length of the period that each column will contain data for.;
+                                 FRB=Affichez un aper‡u des dates d'‚ch‚ance des paiements dus au client, divis‚ en quatreÿp‚riodes. Vous devez sp‚cifier la date … partir de laquelle vous souhaitez que le cumul soit calcul‚ et la dur‚e de la p‚riode pour laquelle chaque colonne contiendra des donn‚es.;
+                                 NLB=Een in vier perioden onderverdeeld overzicht weergeven van wanneer klantbetalingen vervallen of achterstallig zijn. U moet de datum opgeven vanaf wanneer u het verval wilt berekenen, en de lengte van de periode waarvoor gegevens worden opgenomen in elke kolom.];
                       ApplicationArea=#Basic,#Suite;
                       RunObject=Report 120;
                       Image=Report }
       { 73      ;3   ;Action    ;
-                      CaptionML=ENU=Customer - Payment Receipt;
-                      ToolTipML=ENU=View a document showing which customer ledger entries that a payment has been applied to. This report can be used as a payment receipt that you send to the customer.;
+                      CaptionML=[ENU=Customer - Payment Receipt;
+                                 FRB=Re‡u paiement client;
+                                 NLB=Klant - Betalingsontvangst];
+                      ToolTipML=[ENU=View a document showing which customer ledger entries that a payment has been applied to. This report can be used as a payment receipt that you send to the customer.;
+                                 FRB=Affichez un document pr‚sentant les ‚critures comptables client avec lesquelles un paiement a ‚t‚ lettr‚. Cet ‚tat peut ˆtre utilis‚ comme re‡u de paiement … envoyer au client.;
+                                 NLB=Een document weergeven dat aangeeft met welke klantenposten een betaling is vereffend. Dit rapport kan worden gebruikt als betalingsontvangst die u naar de klant stuurt.];
                       ApplicationArea=#Suite;
                       RunObject=Report 211;
                       Image=Report }
       { 55      ;1   ;ActionGroup;
-                      CaptionML=ENU=Request Approval;
+                      CaptionML=[ENU=Request Approval;
+                                 FRB=Approbation demande achat;
+                                 NLB=Goedkeuring aanvragen];
                       Image=SendApprovalRequest }
       { 51      ;2   ;Action    ;
                       Name=SendApprovalRequest;
-                      CaptionML=ENU=Send A&pproval Request;
-                      ToolTipML=ENU=Send an approval request.;
+                      CaptionML=[ENU=Send A&pproval Request;
+                                 FRB=Envoyer demande d'a&pprobation;
+                                 NLB=G&oedkeuringsaanvraag verzenden];
+                      ToolTipML=[ENU=Send an approval request.;
+                                 FRB=Envoyez une demande d'approbation.;
+                                 NLB=Een goedkeuringsaanvraag verzenden.];
                       ApplicationArea=#Suite;
                       Enabled=(NOT OpenApprovalEntriesExist) AND EnabledApprovalWorkflowsExist;
                       Image=SendApprovalRequest;
@@ -1619,8 +2000,12 @@ OBJECT Page 22 Customer List
                                 }
       { 39      ;2   ;Action    ;
                       Name=CancelApprovalRequest;
-                      CaptionML=ENU=Cancel Approval Re&quest;
-                      ToolTipML=ENU=Cancel the approval request.;
+                      CaptionML=[ENU=Cancel Approval Re&quest;
+                                 FRB=Annuler demande d'appro&bation;
+                                 NLB=&Goedkeuringsaanvraag annuleren];
+                      ToolTipML=[ENU=Cancel the approval request.;
+                                 FRB=Annulez la demande d'approbation.;
+                                 NLB=De goedkeuringsaanvraag annuleren.];
                       ApplicationArea=#Suite;
                       Enabled=CanCancelApprovalForRecord;
                       Image=CancelApprovalRequest;
@@ -1631,11 +2016,17 @@ OBJECT Page 22 Customer List
                                END;
                                 }
       { 85      ;1   ;ActionGroup;
-                      CaptionML=ENU=Workflow }
+                      CaptionML=[ENU=Workflow;
+                                 FRB=Flux de travail;
+                                 NLB=Werkstroom] }
       { 15      ;2   ;Action    ;
                       Name=CreateApprovalWorkflow;
-                      CaptionML=ENU=Create Approval Workflow;
-                      ToolTipML=ENU=Set up an approval workflow for creating or changing customers, by going through a few pages that will guide you.;
+                      CaptionML=[ENU=Create Approval Workflow;
+                                 FRB=Cr‚er flux de travail approbation;
+                                 NLB=Goedkeuringswerkstroom maken];
+                      ToolTipML=[ENU=Set up an approval workflow for creating or changing customers, by going through a few pages that will guide you.;
+                                 FRB=Configurez un flux de travail approbation pour cr‚er ou modifier des clients, en consultant quelques pages qui vous guideront.;
+                                 NLB=Een goedkeuringswerkstroom voor het maken of wijzigen van klanten instellen door enkele pagina's te doorlopen die u begeleiden.];
                       ApplicationArea=#Suite;
                       Enabled=NOT EnabledApprovalWorkflowsExist;
                       Image=CreateWorkflow;
@@ -1646,8 +2037,12 @@ OBJECT Page 22 Customer List
                                 }
       { 13      ;2   ;Action    ;
                       Name=ManageApprovalWorkflows;
-                      CaptionML=ENU=Manage Approval Workflows;
-                      ToolTipML=ENU=View or edit existing approval workflows for creating or changing customers.;
+                      CaptionML=[ENU=Manage Approval Workflows;
+                                 FRB=G‚rer les flux de travail approbation;
+                                 NLB=Goedkeuringswerkstromen beheren];
+                      ToolTipML=[ENU=View or edit existing approval workflows for creating or changing customers.;
+                                 FRB=Affichez ou modifiez des flux de travail approbation existants pour cr‚er ou modifier des clients.;
+                                 NLB=Bestaande goedkeuringswerkstromen voor het maken of wijzigen van klanten weergeven of bewerken.];
                       ApplicationArea=#Suite;
                       Enabled=EnabledApprovalWorkflowsExist;
                       Image=WorkflowSetup;
@@ -1659,13 +2054,17 @@ OBJECT Page 22 Customer List
                                END;
                                 }
       { 1900839804;1 ;Action    ;
-                      CaptionML=ENU=Cash Receipt Journal;
+                      CaptionML=[ENU=Cash Receipt Journal;
+                                 FRB=Feuille rŠglement;
+                                 NLB=Ontvangstendagboek];
                       RunObject=Page 255;
                       Promoted=Yes;
                       Image=CashReceiptJournal;
                       PromotedCategory=Process }
       { 1905171704;1 ;Action    ;
-                      CaptionML=ENU=Sales Journal;
+                      CaptionML=[ENU=Sales Journal;
+                                 FRB=Feuille vente;
+                                 NLB=Verkoopdagboek];
                       RunObject=Page 253;
                       Promoted=Yes;
                       Image=Journals;
@@ -1673,118 +2072,146 @@ OBJECT Page 22 Customer List
       { 1100084001;1 ;Action    ;
                       Name=OpenWNPText;
                       CaptionML=ENU=Open WaldoNAVPad Text;
+                      RunObject=Codeunit 82200;
+                      RunPageOnRec=Yes;
                       Promoted=Yes;
                       PromotedIsBig=Yes;
-                      Image=Text;
-                      OnAction=VAR
-                                 WaldoNAVPadClass@1000 : Codeunit 82100;
-                               BEGIN
-                                 //Example code to implement the WaldoNAVPad on a Record, using the generic Text tables
-                                 WaldoNAVPadClass.Initialize(Rec);
-                                 WaldoNAVPadClass.ShowAndSaveTexts(TRUE,FALSE);
-                               END;
-                                }
+                      Image=Text }
       { 1100084000;1 ;Action    ;
                       Name=OpenWNPTextHTML;
                       CaptionML=ENU=Open WaldoNAVPad HTML;
+                      RunObject=Codeunit 82201;
+                      RunPageOnRec=Yes;
                       Promoted=Yes;
                       PromotedIsBig=Yes;
-                      Image=Text;
-                      OnAction=VAR
-                                 WaldoNAVPadClass@1000 : Codeunit 82100;
-                               BEGIN
-                                 //Example code to implement the WaldoNAVPad on a Record, using the generic Text tables
-                                 WaldoNAVPadClass.Initialize(Rec);
-                                 WaldoNAVPadClass.ShowAndSaveTexts(TRUE,TRUE);
-                               END;
-                                }
+                      Image=Text }
       { 1900000006;0 ;ActionContainer;
                       ActionContainerType=Reports }
       { 3       ;1   ;ActionGroup;
-                      CaptionML=ENU=General }
+                      CaptionML=[ENU=General;
+                                 FRB=G‚n‚ral;
+                                 NLB=Algemeen] }
       { 1905562606;2 ;Action    ;
-                      CaptionML=ENU=Customer List;
+                      CaptionML=[ENU=Customer List;
+                                 FRB=Liste des clients;
+                                 NLB=Klantenoverzicht];
                       RunObject=Report 101;
                       Image=Report }
       { 1901007206;2 ;Action    ;
-                      CaptionML=ENU=Customer Register;
+                      CaptionML=[ENU=Customer Register;
+                                 FRB=Historique des transactions client;
+                                 NLB=Klant - Journaal];
                       RunObject=Report 103;
                       Image=Report }
       { 1907152806;2 ;Action    ;
-                      CaptionML=ENU=Customer - Top 10 List;
+                      CaptionML=[ENU=Customer - Top 10 List;
+                                 FRB=Clients : PalmarŠs;
+                                 NLB=Klant - Top 10];
                       RunObject=Report 111;
                       Image=Report }
       { 5       ;1   ;ActionGroup;
-                      CaptionML=ENU=Sales;
+                      CaptionML=[ENU=Sales;
+                                 FRB=Ventes;
+                                 NLB=Verkoop];
                       Image=Sales }
       { 1905727106;2 ;Action    ;
-                      CaptionML=ENU=Customer - Order Summary;
+                      CaptionML=[ENU=Customer - Order Summary;
+                                 FRB=Clients : Liste des commandes;
+                                 NLB=Klant - Samenvatting orders];
                       RunObject=Report 107;
                       Promoted=Yes;
                       Image=Report;
                       PromotedCategory=Report }
       { 1900172506;2 ;Action    ;
-                      CaptionML=ENU=Customer - Order Detail;
+                      CaptionML=[ENU=Customer - Order Detail;
+                                 FRB=Clients : D‚tail des commandes;
+                                 NLB=Klant - Details orders];
                       RunObject=Report 108;
                       Image=Report }
       { 1906073506;2 ;Action    ;
-                      CaptionML=ENU=Customer - Sales List;
+                      CaptionML=[ENU=Customer - Sales List;
+                                 FRB=Clients : Liste des ventes;
+                                 NLB=Klant - Verkoopoverzicht];
                       RunObject=Report 119;
                       Promoted=Yes;
                       Image=Report;
                       PromotedCategory=Report }
       { 1904190506;2 ;Action    ;
-                      CaptionML=ENU=Sales Statistics;
+                      CaptionML=[ENU=Sales Statistics;
+                                 FRB=Statistiques vente;
+                                 NLB=Verkoopstatistiek];
                       RunObject=Report 112;
                       Image=Report }
       { 1900760706;2 ;Action    ;
-                      CaptionML=ENU=Customer/Item Sales;
+                      CaptionML=[ENU=Customer/Item Sales;
+                                 FRB=Ventes d'articles par client;
+                                 NLB=Verkoop klant/artikel];
                       RunObject=Report 113;
                       Image=Report }
       { 7       ;1   ;ActionGroup;
-                      CaptionML=ENU=Finance;
+                      CaptionML=[ENU=Finance;
+                                 FRB=Finance;
+                                 NLB=Financiering];
                       Image=Report }
       { 1906871306;2 ;Action    ;
-                      CaptionML=ENU=Customer - Detail Trial Bal.;
+                      CaptionML=[ENU=Customer - Detail Trial Bal.;
+                                 FRB=Clients : Grand livre client;
+                                 NLB=Klant - Historiek];
                       RunObject=Report 104;
                       Image=Report }
       { 1907944606;2 ;Action    ;
-                      CaptionML=ENU=Customer - Summary Aging;
+                      CaptionML=[ENU=Customer - Summary Aging;
+                                 FRB=Clients : ch‚ancier;
+                                 NLB=Klant - Open posten];
                       RunObject=Report 105;
                       Image=Report }
       { 1906813206;2 ;Action    ;
-                      CaptionML=ENU=Customer Detailed Aging;
+                      CaptionML=[ENU=Customer Detailed Aging;
+                                 FRB=critures client ouvertes;
+                                 NLB=Klant - Vervallen posten];
                       RunObject=Report 106;
                       Image=Report }
       { 1055    ;2   ;Action    ;
                       Name=Statement;
-                      CaptionML=ENU=Statement;
+                      CaptionML=[ENU=Statement;
+                                 FRB=Relev‚;
+                                 NLB=Rekeningoverzicht];
                       RunObject=Codeunit 8810;
                       Promoted=Yes;
                       Image=Report;
                       PromotedCategory=Report }
       { 1903839806;2 ;Action    ;
-                      CaptionML=ENU=Reminder;
+                      CaptionML=[ENU=Reminder;
+                                 FRB=Relance;
+                                 NLB=Aanmaning];
                       RunObject=Report 117;
                       Image=Reminder }
       { 1900711606;2 ;Action    ;
-                      CaptionML=ENU=Aged Accounts Receivable;
+                      CaptionML=[ENU=Aged Accounts Receivable;
+                                 FRB=Comptabilit‚ client ƒg‚e;
+                                 NLB=Vervallen vorderingen];
                       RunObject=Report 120;
                       Promoted=Yes;
                       Image=Report;
                       PromotedCategory=Report }
       { 1902299006;2 ;Action    ;
-                      CaptionML=ENU=Customer - Balance to Date;
+                      CaptionML=[ENU=Customer - Balance to Date;
+                                 FRB=Clients : critures ouvertes;
+                                 NLB=Klant - Saldo t/m datum];
                       RunObject=Report 121;
                       Promoted=Yes;
                       Image=Report;
                       PromotedCategory=Report }
       { 1906359306;2 ;Action    ;
-                      CaptionML=ENU=Customer - Trial Balance;
+                      CaptionML=[ENU=Customer - Trial Balance;
+                                 FRB=Clients : Balance;
+                                 NLB=Klant - Proefbalans];
                       RunObject=Report 129;
                       Image=Report }
       { 1904039606;2 ;Action    ;
-                      CaptionML=ENU=Customer - Payment Receipt;
+                      CaptionML=[ENU=Customer - Payment Receipt;
+                                 FRB=Re‡u paiement client;
+                                 NLB=Klant - Betalingsontvangst];
                       RunObject=Report 211;
                       Promoted=Yes;
                       Image=Report;
@@ -1800,174 +2227,236 @@ OBJECT Page 22 Customer List
                 GroupType=Repeater }
 
     { 2   ;2   ;Field     ;
-                ToolTipML=ENU=Specifies the number of the customer. The field is either filled automatically from a defined number series, or you enter the number manually because you have enabled manual number entry in the number-series setup.;
+                ToolTipML=[ENU=Specifies the number of the customer. The field is either filled automatically from a defined number series, or you enter the number manually because you have enabled manual number entry in the number-series setup.;
+                           FRB=Sp‚cifie le num‚ro du client. Le champ est renseign‚ automatiquement … partir d'une souche de num‚ros d‚finie, ou vous saisissez manuellement le num‚ro, car vous avez activ‚ la saisie manuelle de num‚ro dans le param‚trage de la souche de num‚ros.;
+                           NLB=Hiermee wordt het nummer van de klant opgegeven. Het veld wordt automatisch ingevuld op basis van een gedefinieerde nummerreeks of u voert het nummer handmatig in omdat u handmatig invoeren in de nummerreeksinstellingen hebt ingeschakeld.];
                 ApplicationArea=#All;
                 SourceExpr="No." }
 
     { 4   ;2   ;Field     ;
-                ToolTipML=ENU=Specifies the customer's name. This name will appear on all sales documents for the customer. You can enter a maximum of 50 characters, both numbers and letters.;
+                ToolTipML=[ENU=Specifies the customer's name. This name will appear on all sales documents for the customer. You can enter a maximum of 50 characters, both numbers and letters.;
+                           FRB=Sp‚cifie le nom du client. Ce nom apparaŒtra sur tous les documents vente destin‚s au client. Vous pouvez entrer au maximum 50ÿcaractŠres, des chiffres et des lettres.;
+                           NLB=Hiermee wordt de naam van de klant opgegeven. Deze naam wordt op alle verkoopdocumenten voor de klant weergegeven. U kunt maximaal 50 tekens (cijfers en letters) invoeren.];
                 ApplicationArea=#All;
                 SourceExpr=Name }
 
     { 40  ;2   ;Field     ;
-                ToolTipML=ENU=Specifies the code for the responsibility center that will administer this customer by default.;
+                ToolTipML=[ENU=Specifies the code for the responsibility center that will administer this customer by default.;
+                           FRB=Sp‚cifie le code du centre de gestion qui gŠre ce client par d‚faut.;
+                           NLB=Hiermee wordt de code opgegeven voor de divisie die deze klant standaard beheert.];
                 SourceExpr="Responsibility Center" }
 
     { 43  ;2   ;Field     ;
-                ToolTipML=ENU=Specifies from which location sales to this customer will be processed by default.;
+                ToolTipML=[ENU=Specifies from which location sales to this customer will be processed by default.;
+                           FRB=Sp‚cifie … partir de quel magasin les ventes … ce client seront trait‚es par d‚faut.;
+                           NLB=Hiermee wordt opgegeven vanaf welke locatie verkopen aan deze klant standaard worden verwerkt.];
                 SourceExpr="Location Code" }
 
     { 54  ;2   ;Field     ;
-                ToolTipML=ENU=Specifies the postal code.;
+                ToolTipML=[ENU=Specifies the postal code.;
+                           FRB=Sp‚cifie le code postal.;
+                           NLB=Hiermee wordt de postcode opgegeven.];
                 ApplicationArea=#Basic,#Suite;
                 SourceExpr="Post Code";
                 Visible=FALSE }
 
     { 30  ;2   ;Field     ;
-                ToolTipML=ENU=Specifies the country/region of the address.;
+                ToolTipML=[ENU=Specifies the country/region of the address.;
+                           FRB=Sp‚cifie le pays/la r‚gion de l'adresse.;
+                           NLB=Hiermee wordt het land of de regio van het adres opgegeven.];
                 ApplicationArea=#Basic,#Suite;
                 SourceExpr="Country/Region Code";
                 Visible=FALSE }
 
     { 6   ;2   ;Field     ;
-                ToolTipML=ENU=Specifies the customer's telephone number.;
+                ToolTipML=[ENU=Specifies the customer's telephone number.;
+                           FRB=Sp‚cifie le num‚ro de t‚l‚phone du client.;
+                           NLB=Hiermee wordt het telefoonnummer van de klant opgegeven.];
                 ApplicationArea=#Basic,#Suite;
                 SourceExpr="Phone No." }
 
     { 79  ;2   ;Field     ;
-                ToolTipML=ENU=Specifies the customer's IC partner code, if the customer is one of your intercompany partners.;
+                ToolTipML=[ENU=Specifies the customer's IC partner code, if the customer is one of your intercompany partners.;
+                           FRB=Sp‚cifie le code de partenaire IC du client si ce dernier est l'un de vos partenaires intersoci‚t‚s.;
+                           NLB=Hiermee wordt de IC-partnercode van de klant opgegeven als de klant een van uw IC-partners is.];
                 SourceExpr="IC Partner Code";
                 Visible=FALSE }
 
     { 34  ;2   ;Field     ;
-                ToolTipML=ENU=Specifies the name of the person you regularly contact when you do business with this customer.;
+                ToolTipML=[ENU=Specifies the name of the person you regularly contact when you do business with this customer.;
+                           FRB=Sp‚cifie le nom de la personne que vous contactez r‚guliŠrement lorsque vous traitez avec ce client.;
+                           NLB=Hiermee wordt de naam opgegeven van de persoon met wie u regelmatig contact opneemt wanneer u zaken met deze klant doet.];
                 ApplicationArea=#Basic,#Suite;
                 SourceExpr=Contact }
 
     { 36  ;2   ;Field     ;
-                ToolTipML=ENU=Specifies a code for the salesperson who normally handles this customer's account.;
+                ToolTipML=[ENU=Specifies a code for the salesperson who normally handles this customer's account.;
+                           FRB=Sp‚cifie un code pour le vendeur qui s'occupe habituellement du compte de ce client.;
+                           NLB=Hiermee wordt een code opgegeven voor de verkoper die de rekening van deze klant normaal gesproken behandelt.];
                 ApplicationArea=#Suite;
                 SourceExpr="Salesperson Code";
                 Visible=FALSE }
 
     { 38  ;2   ;Field     ;
-                ToolTipML=ENU=Specifies the customer's market type to link business transactions to.;
+                ToolTipML=[ENU=Specifies the customer's market type to link business transactions to.;
+                           FRB=Sp‚cifie le type de march‚ du client auquel associer des transactions commerciales.;
+                           NLB=Hiermee wordt het marktsoort van de klant opgegeven om bedrijfstransacties aan te koppelen.];
                 ApplicationArea=#Basic,#Suite;
                 SourceExpr="Customer Posting Group";
                 Visible=FALSE }
 
     { 56  ;2   ;Field     ;
-                ToolTipML=ENU=Specifies the customer's trade type to link transactions made for this customer with the appropriate general ledger account according to the general posting setup.;
+                ToolTipML=[ENU=Specifies the customer's trade type to link transactions made for this customer with the appropriate general ledger account according to the general posting setup.;
+                           FRB=Sp‚cifie le type commercial du client pour lier les transactions effectu‚es pour ce client au compte g‚n‚ral appropri‚ en fonction des paramŠtres de validation g‚n‚raux.;
+                           NLB=Hiermee wordt het handelstype van de klant opgegeven om transacties die voor deze klant zijn gemaakt, aan de juiste grootboekrekening te koppelen volgens de algemene boekingsinstelling.];
                 ApplicationArea=#Basic,#Suite;
                 SourceExpr="Gen. Bus. Posting Group";
                 Visible=FALSE }
 
     { 52  ;2   ;Field     ;
-                ToolTipML=ENU=Specifies the customer's VAT specification to link transactions made for this customer to.;
+                ToolTipML=[ENU=Specifies the customer's VAT specification to link transactions made for this customer to.;
+                           FRB=Sp‚cifie le d‚tail TVA du client auquel associer des transactions faites pour ce client.;
+                           NLB=Hiermee wordt de btw-specificatie van de klant opgegeven om voor deze klant uitgevoerde transacties aan te koppelen.];
                 ApplicationArea=#Basic,#Suite;
                 SourceExpr="VAT Bus. Posting Group";
                 Visible=FALSE }
 
     { 46  ;2   ;Field     ;
-                ToolTipML=ENU=Specifies the customer price group code, which you can use to set up special sales prices in the Sales Prices window.;
+                ToolTipML=[ENU=Specifies the customer price group code, which you can use to set up special sales prices in the Sales Prices window.;
+                           FRB=Sp‚cifie le code groupe prix client que vous pouvez utiliser pour configurer des prix sp‚cifiques dans la fenˆtre Prix vente.;
+                           NLB=Hiermee wordt de code opgegeven van de klantenprijsgroep die u kunt gebruiken om speciale verkoopprijzen in te stellen in het venster Verkoopprijzen.];
                 ApplicationArea=#Basic,#Suite;
                 SourceExpr="Customer Price Group";
                 Visible=FALSE }
 
     { 72  ;2   ;Field     ;
-                ToolTipML=ENU=Specifies the customer discount group code, which you can use as a criterion to set up special discounts in the Sales Line Discounts window.;
+                ToolTipML=[ENU=Specifies the customer discount group code, which you can use as a criterion to set up special discounts in the Sales Line Discounts window.;
+                           FRB=Sp‚cifie le code groupe remises client que vous pouvez utiliser comme critŠre pour configurer des remises sp‚cifiques dans la fenˆtre Remises ligne vente.;
+                           NLB=Hiermee wordt de code opgegeven van de klantenkortingsgroep die u kunt gebruiken als criterium om speciale kortingen in te stellen in het venster Verkoopregelkortingen.];
                 ApplicationArea=#Basic,#Suite;
                 SourceExpr="Customer Disc. Group";
                 Visible=FALSE }
 
     { 8   ;2   ;Field     ;
-                ToolTipML=ENU=Specifies a code that indicates the payment terms that you require of the customer.;
+                ToolTipML=[ENU=Specifies a code that indicates the payment terms that you require of the customer.;
+                           FRB=Sp‚cifie un code qui indique les conditions de paiement que vous exigez du client.;
+                           NLB=Hiermee wordt een code opgegeven die aangeeft welke betalingsvoorwaarden u van de klant vereist.];
                 ApplicationArea=#Basic,#Suite;
                 SourceExpr="Payment Terms Code";
                 Visible=FALSE }
 
     { 61  ;2   ;Field     ;
-                ToolTipML=ENU=Specifies how reminders about late payments are handled for this customer.;
+                ToolTipML=[ENU=Specifies how reminders about late payments are handled for this customer.;
+                           FRB=Sp‚cifie la maniŠre dont les relances concernant les retards de paiement sont trait‚es pour ce client.;
+                           NLB=Hiermee wordt opgegeven hoe aanmaningen voor te late betalingen voor deze klant worden verwerkt.];
                 SourceExpr="Reminder Terms Code";
                 Visible=FALSE }
 
     { 48  ;2   ;Field     ;
-                ToolTipML=ENU=Specifies finance charges are calculated for the customer.;
+                ToolTipML=[ENU=Specifies finance charges are calculated for the customer.;
+                           FRB=Sp‚cifie les int‚rˆts calcul‚s pour le client.;
+                           NLB=Hiermee worden rentefacturen opgegeven die voor de klant worden berekend.];
                 SourceExpr="Fin. Charge Terms Code";
                 Visible=FALSE }
 
     { 10  ;2   ;Field     ;
-                ToolTipML=ENU=Specifies the default currency for the customer.;
+                ToolTipML=[ENU=Specifies the default currency for the customer.;
+                           FRB=Sp‚cifie la devise par d‚faut pour le client.;
+                           NLB=Hiermee wordt de standaardvalutacode voor de klant opgegeven.];
                 ApplicationArea=#Suite;
                 SourceExpr="Currency Code";
                 Visible=FALSE }
 
     { 50  ;2   ;Field     ;
-                ToolTipML=ENU=Specifies the language to be used on printouts for this customer.;
+                ToolTipML=[ENU=Specifies the language to be used on printouts for this customer.;
+                           FRB=Sp‚cifie la langue … utiliser sur des impressions destin‚es … ce client.;
+                           NLB=Hiermee wordt de taal opgegeven die moet worden gebruikt op afdrukken voor deze klant.];
                 ApplicationArea=#Basic,#Suite;
                 SourceExpr="Language Code";
                 Visible=FALSE }
 
     { 12  ;2   ;Field     ;
-                ToolTipML=ENU=Specifies an alternate name that you can use to search for a customer when you cannot remember the value in the Name field.;
+                ToolTipML=[ENU=Specifies an alternate name that you can use to search for a customer when you cannot remember the value in the Name field.;
+                           FRB=Sp‚cifie un autre nom que vous pouvez utiliser pour rechercher un client lorsque vous ne vous souvenez plus de la valeur dans le champ Nom.;
+                           NLB=Hiermee wordt een alternatieve naam opgegeven die u kunt gebruiken om een klant te zoeken wanneer u zich de waarde in het veld Naam niet kunt herinneren.];
                 ApplicationArea=#Basic,#Suite;
                 SourceExpr="Search Name";
                 Visible=FALSE }
 
     { 1102601000;2;Field  ;
-                ToolTipML=ENU=Specifies the maximum amount you allow the customer to exceed the payment balance before warnings are issued.;
+                ToolTipML=[ENU=Specifies the maximum amount you allow the customer to exceed the payment balance before warnings are issued.;
+                           FRB=Sp‚cifie le montant maximal selon lequel vous autorisez au client … d‚passer le solde de paiement avant que des alertes ne soient ‚mises.;
+                           NLB=Hiermee wordt het maximale bedrag opgegeven waarmee de klant het betaalsaldo mag overschrijden voordat waarschuwingen worden verzonden.];
                 ApplicationArea=#Basic,#Suite;
                 SourceExpr="Credit Limit (LCY)";
                 Visible=FALSE }
 
     { 1102601002;2;Field  ;
-                ToolTipML=ENU=Specifies which transactions with the customer should be blocked, for example, because the customer is declared insolvent.;
+                ToolTipML=[ENU=Specifies which transactions with the customer should be blocked, for example, because the customer is declared insolvent.;
+                           FRB=Sp‚cifie les transactions avec le client qui doivent ˆtre bloqu‚es, par exemple, parce que le client est d‚clar‚ insolvable.;
+                           NLB=Hiermee wordt opgegeven welke transacties met de klant moeten worden geblokkeerd, bijvoorbeeld omdat de klant insolvent is verklaard.];
                 ApplicationArea=#Basic,#Suite;
                 SourceExpr=Blocked;
                 Visible=FALSE }
 
     { 1102601004;2;Field  ;
-                ToolTipML=ENU=Specifies when the customer card was last modified.;
+                ToolTipML=[ENU=Specifies when the customer card was last modified.;
+                           FRB=Indique la date … laquelle la fiche client a ‚t‚ modifi‚e pour la derniŠre fois.;
+                           NLB=Hiermee wordt opgegeven wanneer de klantenkaart het laatst is gewijzigd.];
                 ApplicationArea=#Basic,#Suite;
                 SourceExpr="Last Date Modified";
                 Visible=FALSE }
 
     { 1102601006;2;Field  ;
-                ToolTipML=ENU=Specifies how to apply payments to entries for this customer.;
+                ToolTipML=[ENU=Specifies how to apply payments to entries for this customer.;
+                           FRB=Sp‚cifie la maniŠre de lettrer des paiements avec des ‚critures pour ce client.;
+                           NLB=Hiermee wordt opgegeven hoe betalingen moeten worden vereffend met posten voor deze klant.];
                 ApplicationArea=#Basic,#Suite;
                 SourceExpr="Application Method";
                 Visible=FALSE }
 
     { 1102601008;2;Field  ;
-                ToolTipML=ENU=Specifies if several orders delivered to the customer can appear on the same sales invoice.;
+                ToolTipML=[ENU=Specifies if several orders delivered to the customer can appear on the same sales invoice.;
+                           FRB=Sp‚cifie si plusieurs commandes livr‚es au client peuvent se trouver sur la mˆme facture vente.;
+                           NLB=Hiermee wordt opgegeven of meerdere orders die aan de klant worden geleverd, in dezelfde verkoopfactuur kunnen worden opgenomen.];
                 SourceExpr="Combine Shipments";
                 Visible=FALSE }
 
     { 1102601010;2;Field  ;
-                ToolTipML=ENU=Specifies whether items will never, automatically (Always), or optionally be reserved for this customer. Optional means that you must manually reserve items for this customer.;
+                ToolTipML=[ENU=Specifies whether items will never, automatically (Always), or optionally be reserved for this customer. Optional means that you must manually reserve items for this customer.;
+                           FRB=Sp‚cifie si des articles ne seront jamais, automatiquement (toujours) ou ‚ventuellement r‚serv‚s pour ce client. En option signifie que vous devez r‚server manuellement des articles pour ce client.;
+                           NLB=Hiermee wordt opgegeven of artikelen nooit, automatisch (altijd) of optioneel voor deze klant worden gereserveerd. Optioneel betekent dat u handmatig artikelen voor deze klant moet reserveren.];
                 ApplicationArea=#Basic,#Suite;
                 SourceExpr=Reserve;
                 Visible=FALSE }
 
     { 1102601012;2;Field  ;
-                ToolTipML=ENU=Specifies if the customer accepts partial shipment of orders.;
+                ToolTipML=[ENU=Specifies if the customer accepts partial shipment of orders.;
+                           FRB=Sp‚cifie si le client accepte l'exp‚dition partielle des commandes.;
+                           NLB=Hiermee wordt opgegeven of de klant een gedeeltelijke verzending van orders accepteert.];
                 ApplicationArea=#Basic,#Suite;
                 SourceExpr="Shipping Advice";
                 Visible=FALSE }
 
     { 1102601014;2;Field  ;
-                ToolTipML=ENU=Specifies which shipping company is used when you ship items to the customer.;
+                ToolTipML=[ENU=Specifies which shipping company is used when you ship items to the customer.;
+                           FRB=Sp‚cifie le transporteur utilis‚ lorsque vous livrez des articles … ce client.;
+                           NLB=Hiermee wordt opgegeven welke expediteur wordt gebruikt wanneer u artikelen naar de klant verzendt.];
                 ApplicationArea=#Suite;
                 SourceExpr="Shipping Agent Code";
                 Visible=FALSE }
 
     { 1102601016;2;Field  ;
-                ToolTipML=ENU=Specifies a customizable calendar for shipment planning that includes the customer's working days and holidays.;
+                ToolTipML=[ENU=Specifies a customizable calendar for shipment planning that includes the customer's working days and holidays.;
+                           FRB=Sp‚cifie un calendrier personnalisable pour la planification d'exp‚dition qui inclut les vacances et jours ouvr‚s du client.;
+                           NLB=Hiermee wordt een aanpasbare agenda voor planning van verzending opgegeven die de werkdagen en vakantiedagen van de klant bevat.];
                 SourceExpr="Base Calendar Code";
                 Visible=FALSE }
 
     { 62  ;2   ;Field     ;
-                ToolTipML=ENU=Specifies the payment amount that the customer owes for completed sales. This value is also known as the customer's balance.;
+                ToolTipML=[ENU=Specifies the payment amount that the customer owes for completed sales. This value is also known as the customer's balance.;
+                           FRB=Sp‚cifie le montant rŠglement que le client doit r‚gler pour les ventes termin‚es. Cette valeur est ‚galement appel‚e le solde du client.;
+                           NLB=Hiermee wordt het betalingsbedrag opgegeven dat de klant voor afgesloten verkoop verschuldigd is. Deze waarde wordt ook het saldo van de klant genoemd.];
                 ApplicationArea=#Basic,#Suite;
                 SourceExpr="Balance (LCY)";
                 OnDrillDown=BEGIN
@@ -1976,7 +2465,9 @@ OBJECT Page 22 Customer List
                              }
 
     { 59  ;2   ;Field     ;
-                ToolTipML=ENU=Specifies payments from the customer that are overdue per today's date.;
+                ToolTipML=[ENU=Specifies payments from the customer that are overdue per today's date.;
+                           FRB=Sp‚cifie les paiements effectu‚s par le client ‚chus pour la date du jour.;
+                           NLB=Hiermee worden betalingen van de klant opgegeven die op de datum van vandaag achterstallig zijn.];
                 ApplicationArea=#Basic,#Suite;
                 SourceExpr="Balance Due (LCY)";
                 OnDrillDown=BEGIN
@@ -1985,7 +2476,9 @@ OBJECT Page 22 Customer List
                              }
 
     { 32  ;2   ;Field     ;
-                ToolTipML=ENU=Specifies the total net amount of sales to the customer in LCY.;
+                ToolTipML=[ENU=Specifies the total net amount of sales to the customer in LCY.;
+                           FRB=Sp‚cifie le montant net total des ventes … ce client en devise soci‚t‚.;
+                           NLB=Hiermee wordt in de lokale valuta het totale nettobedrag opgegeven van verkopen aan de klant.];
                 ApplicationArea=#Basic,#Suite;
                 SourceExpr="Sales (LCY)" }
 
@@ -2152,8 +2645,8 @@ OBJECT Page 56110 WNP Blobs
 {
   OBJECT-PROPERTIES
   {
-    Date=06/09/16;
-    Time=10:32:16;
+    Date=09/09/16;
+    Time=13:55:24;
     Modified=Yes;
     Version List=WaldoNAVPad;
   }
@@ -2194,8 +2687,8 @@ OBJECT Page 56111 WNP Texts
 {
   OBJECT-PROPERTIES
   {
-    Date=06/09/16;
-    Time=10:32:16;
+    Date=09/09/16;
+    Time=13:55:24;
     Modified=Yes;
     Version List=WaldoNAVPad;
   }
@@ -2242,8 +2735,8 @@ OBJECT Page 82100 WaldoNAVPad
 {
   OBJECT-PROPERTIES
   {
-    Date=06/09/16;
-    Time=10:32:16;
+    Date=09/09/16;
+    Time=13:55:24;
     Modified=Yes;
     Version List=WaldoNAVPad;
   }
@@ -2306,8 +2799,8 @@ OBJECT Page 82101 WaldoNAVPad HTML
 {
   OBJECT-PROPERTIES
   {
-    Date=08/09/16;
-    Time=10:03:42;
+    Date=15/09/16;
+    Time=16:40:04;
     Modified=Yes;
     Version List=WaldoNAVPad;
   }
@@ -2372,7 +2865,7 @@ OBJECT Page 82101 WaldoNAVPad HTML
 
     { 4   ;2   ;Field     ;
                 Name=WaldoNAVPad;
-                ControlAddIn=[Waldo TinyMCE Control for NAV;PublicKeyToken=0693cb47ed6631b6] }
+                ControlAddIn=[Waldo.NAV.TinyMCEControl;PublicKeyToken=0693cb47ed6631b6] }
 
   }
   CODE
@@ -2462,7 +2955,7 @@ OBJECT Page 82101 WaldoNAVPad HTML
       InitializeContent;
     END;
 
-    EVENT WaldoNAVPad@-4::GetHTMLReady@4(value@1000 : Text);
+    EVENT WaldoNAVPad@-4::GetHTMLReady@4(value@1100084000 : Text);
     BEGIN
       FullHTML := value;
       //TextHasChanged := FALSE;
@@ -2471,7 +2964,7 @@ OBJECT Page 82101 WaldoNAVPad HTML
       CloseIfAllSaved;
     END;
 
-    EVENT WaldoNAVPad@-4::GetTextReady@5(value@1000 : Text);
+    EVENT WaldoNAVPad@-4::GetTextReady@5(value@1100084000 : Text);
     BEGIN
       FullText := value;
       //TextHasChanged := FALSE;

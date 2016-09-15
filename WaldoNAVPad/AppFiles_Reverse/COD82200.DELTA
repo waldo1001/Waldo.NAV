@@ -1,0 +1,21 @@
+OBJECT Modification "Cust. Open WNP Action"(Codeunit 82200)
+{
+  OBJECT-PROPERTIES
+  {
+    Date=;
+    Time=;
+    Version List=;
+  }
+  PROPERTIES
+  {
+    Target="Cust. Open WNP Action"(Codeunit 82200);
+    ChangeType=Deletion;
+  }
+  CODE
+  {
+
+    BEGIN
+    END.
+  }
+}
+

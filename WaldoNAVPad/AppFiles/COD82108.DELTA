@@ -1,0 +1,73 @@
+OBJECT Codeunit 82108 WaldoNAVPad Upgrade Mgt.
+{
+  OBJECT-PROPERTIES
+  {
+    Date=19/01/16;
+    Time=23:10:40;
+    Modified=Yes;
+    Version List=RA1.00;
+  }
+  PROPERTIES
+  {
+    OnRun=BEGIN
+          END;
+
+  }
+  CODE
+  {
+
+    PROCEDURE OnNavAppUpgradePerDatabase@1100084000();
+    BEGIN
+    END;
+
+    PROCEDURE OnNavAppUpgradePerCompany@1100084001();
+    BEGIN
+      RestoreFieldsInModifiedTables(50000,99999);
+      RestoreAppTables(50000,99999);
+    END;
+
+    LOCAL PROCEDURE RestoreFieldsInModifiedTables@1100084005(FromField@1100084004 : Integer;ToField@1100084005 : Integer);
+    VAR
+      Field@1100084001 : Record 2000000041;
+      AllObj@1100084000 : Record 2000000038;
+      SourceRecRef@1100084002 : RecordRef;
+      DestinationRecRef@1100084003 : RecordRef;
+      KeyRef@1100084006 : KeyRef;
+    BEGIN
+      WITH AllObj DO BEGIN
+        SETRANGE("Object Type","Object Type"::Table);
+
+        IF FINDSET THEN
+          REPEAT
+              Field.SETRANGE(TableNo, "Object ID");
+              Field.SETRANGE("No.", FromField, ToField);
+              IF NOT Field.ISEMPTY THEN BEGIN
+                NAVAPP.RESTOREARCHIVEDATA("Object ID");
+              END;
+          UNTIL NEXT < 1;
+      END;
+    END;
+
+    LOCAL PROCEDURE RestoreAppTables@1100084006(FromTableID@1100084003 : Integer;ToTableID@1100084004 : Integer);
+    VAR
+      SourceRecRef@1100084002 : RecordRef;
+      DestinationRecRef@1100084001 : RecordRef;
+      Field@1100084000 : Record 2000000041;
+      AllObj@1100084005 : Record 2000000038;
+    BEGIN
+      WITH AllObj DO BEGIN
+        SETRANGE("Object Type", "Object Type"::Table);
+        SETRANGE("Object ID", FromTableID,ToTableID);
+
+        IF FINDSET THEN
+          REPEAT
+            NAVAPP.RESTOREARCHIVEDATA("Object ID");
+          UNTIL NEXT < 1;
+      END;
+    END;
+
+    BEGIN
+    END.
+  }
+}
+

@@ -2,8 +2,8 @@ OBJECT Codeunit 82101 WaldoNAVPad ShowTexts Meth
 {
   OBJECT-PROPERTIES
   {
-    Date=06/09/16;
-    Time=14:48:02;
+    Date=09/09/16;
+    Time=13:55:24;
     Modified=Yes;
     Version List=WaldoNAVPad;
   }

@@ -13,7 +13,7 @@ $AppPackage = Create-NAVXFromDB `
                     -AppDescription $AppDescription `
                     -AppPublisher $AppPublisher `
                     -PermissionSetId $AppName `                    -BackupPath $BackupPath `
-                    -ErrorAction Stop 
+                    -ErrorAction Stop `                    -IncludeFilesInNavApp $IncludeFilesInNavApp
 
 # Install NAV Package
 Write-Host 'Installing NavX Package.. ' -ForegroundColor Green

@@ -2,10 +2,10 @@ OBJECT Modification "Customer List"(Page 22)
 {
   OBJECT-PROPERTIES
   {
-    Date=06/09/16;
-    Time=11:35:45;
+    Date=13/09/16;
+    Time=15:20:16;
     Modified=Yes;
-    Version List=NAVW110.0,WaldoNAVPad;
+    Version List=NAVW110.00,WaldoNAVPad;
   }
   PROPERTIES
   {
@@ -19,37 +19,25 @@ OBJECT Modification "Customer List"(Page 22)
                            { 1100084001;1 ;Action    ;
                                            Name=OpenWNPText;
                                            CaptionML=ENU=Open WaldoNAVPad Text;
+                                           RunObject=Codeunit 82200;
+                                           RunPageOnRec=Yes;
                                            Promoted=Yes;
                                            PromotedIsBig=Yes;
-                                           Image=Text;
-                                           OnAction=VAR
-                                                      WaldoNAVPadClass@1000 : Codeunit 82100;
-                                                    BEGIN
-                                                      //Example code to implement the WaldoNAVPad on a Record, using the generic Text tables
-                                                      WaldoNAVPadClass.Initialize(Rec);
-                                                      WaldoNAVPadClass.ShowAndSaveTexts(TRUE,FALSE);
-                                                    END;
-                                                     }
+                                           Image=Text }
                            { 1100084000;1 ;Action    ;
                                            Name=OpenWNPTextHTML;
                                            CaptionML=ENU=Open WaldoNAVPad HTML;
+                                           RunObject=Codeunit 82201;
+                                           RunPageOnRec=Yes;
                                            Promoted=Yes;
                                            PromotedIsBig=Yes;
-                                           Image=Text;
-                                           OnAction=VAR
-                                                      WaldoNAVPadClass@1000 : Codeunit 82100;
-                                                    BEGIN
-                                                      //Example code to implement the WaldoNAVPad on a Record, using the generic Text tables
-                                                      WaldoNAVPadClass.Initialize(Rec);
-                                                      WaldoNAVPadClass.ShowAndSaveTexts(TRUE,TRUE);
-                                                    END;
-                                                     }
+                                           Image=Text }
                          }
                           }
     { PropertyModification;
                          Property=Version List;
-                         OriginalValue=NAVW110.0;
-                         ModifiedValue=NAVW110.0,WaldoNAVPad }
+                         OriginalValue=NAVW110.00;
+                         ModifiedValue=NAVW110.00,WaldoNAVPad }
   }
   CODE
   {
