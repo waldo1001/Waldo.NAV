@@ -7,7 +7,7 @@ using Microsoft.Dynamics.Framework.UI.Extensibility;
 
 namespace Waldo.NAV.TinyMCEControl
 {
-    [ControlAddInExport("Waldo TinyMCE Control for NAV")]
+    [ControlAddInExport("Waldo.NAV.TinyMCEControl")]
     public interface INAVTinyMCEControl
     {
         [ApplicationVisible]

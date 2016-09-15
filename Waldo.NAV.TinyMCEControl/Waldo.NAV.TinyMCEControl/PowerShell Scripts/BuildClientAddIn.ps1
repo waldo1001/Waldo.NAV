@@ -18,7 +18,7 @@ $MyAddIn =
     Get-NAVAddIn `        -ServerInstance $ServerInstance `        -AddInName $AddInName `        -ErrorAction SilentlyContinue
 
 if (!($MyAddIn)){
-    New-NAVAddIn `        -AddInName $AddInName `        -PublicKeyToken '0693cb47ed6631b6' `        -Category JavaScriptControlAddIn `        -ServerInstance $ServerInstance
+    New-NAVAddIn `        -AddInName $AddInName `        -PublicKeyToken $PublicKeyToken `        -Category JavaScriptControlAddIn `        -ServerInstance $ServerInstance
 
     $MyAddIn = 
         Get-NAVAddIn `            -ServerInstance $ServerInstance `            -AddInName $AddInName
