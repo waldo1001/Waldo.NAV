@@ -2,8 +2,8 @@ OBJECT Codeunit 82201 Cust. Open WNP HTML Action
 {
   OBJECT-PROPERTIES
   {
-    Date=13/09/16;
-    Time=15:20:41;
+    Date=16/09/16;
+    Time=10:37:50;
     Modified=Yes;
     Version List=WaldoNAVPad;
   }

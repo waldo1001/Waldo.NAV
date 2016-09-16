@@ -2,9 +2,9 @@ OBJECT Modification "Customer List"(Page 22)
 {
   OBJECT-PROPERTIES
   {
-    Date=02/09/16;
+    Date=07/09/16;
     Time=12:00:00;
-    Version List=NAVW110.00;
+    Version List=NAVW110.0;
   }
   PROPERTIES
   {
@@ -40,8 +40,8 @@ OBJECT Modification "Customer List"(Page 22)
                           }
     { PropertyModification;
                          Property=Version List;
-                         OriginalValue=NAVW110.00,WaldoNAVPad;
-                         ModifiedValue=NAVW110.00 }
+                         OriginalValue=NAVW110.0,WaldoNAVPad;
+                         ModifiedValue=NAVW110.0 }
   }
   CODE
   {

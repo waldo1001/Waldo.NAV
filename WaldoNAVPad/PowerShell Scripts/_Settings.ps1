@@ -4,7 +4,7 @@ $AppPublisher = 'Cloud Ready Software GmbH'
 $AppDescription = 'WaldoNAVPadApp'
 $InitialAppVersion = '1.0.0.0'
 $IncludeFilesInNavApp = 
-    "C:\Users\Administrator\Dropbox\GitHub\Waldo.NAV\Waldo.NAV.TinyMCEControl\Waldo.NAV.TinyMCEControl\ExtensionFiles\Resources.zip"
+    "C:\Users\Administrator\Dropbox\GitHub\Waldo.NAV\Waldo.NAV.TinyMCEControl\Waldo.NAV.TinyMCEControl\ExtensionResources.zip"
     
 #The build environment
 $WorkingFolder = 'C:\_Workingfolder'
@@ -14,6 +14,7 @@ $ModifiedServerInstance = "$($AppName)_DEV"
 $TargetServerInstance = "Shared_TEST"
 $TargetTenant = 'Default'
 $License = "C:\Users\Administrator\Dropbox\Dynamics NAV\Licenses\5230132_003 and 004 IFACTO_NAV2016_BELGIUM_2016 08 03.flf"
+$ISVNumberRangeLowestNumber = 82100
 
 #Defaults
 $DefaultServerInstance = 'DynamicsNAV100'
