@@ -18,9 +18,7 @@ if (-not(get-navserverinstance $TargetServerInstance)){
 
 #MODIFIED (DEV)
 New-NAVEnvironment -ServerInstance $ModifiedServerInstance -BackupFile $Backupfile -ErrorAction Stop -EnablePortSharing -LicenseFile $License
-
-#ConvertTo-NAVMultiTenantEnvironment -ServerInstance $TargetServerInstance -MainTenantId $TargetTenant
-
+#Set UIDOffSet for ControlIDsSet-NAVUidOffset `    -ServerInstance $ModifiedServerInstance `    -UidOffSet $ISVNumberRangeLowestNumber
 $Backupfile | Remove-Item -Force
 
 Get-NAVServerInstanceDetails | where serverinstance -match $AppName | select ServerInstance, DatabaseName, ClientServicesPort, State | ft -AutoSize
