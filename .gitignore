@@ -67,3 +67,14 @@ Version.cs
 Version.h
 Version.cpp
 .vs/
+
+# ======================================
+# NAV stuff - added by waldo
+# ======================================
+*.navx
+*.zip
+*.fob
+.zip
+.fob
+ExtensionResources.zip
+WaldoNAVPad_OnlyModified.fob
