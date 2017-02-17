@@ -1,5 +1,5 @@
 <Package xmlns="http://schemas.microsoft.com/navx/2015/manifest">
-  <App Id="4cf8e39f-606d-4be8-8723-783b6b08c173" Name="WaldoNAVPad" Publisher="Cloud Ready Software GmbH" Brief="" Description="WaldoNAVPadApp" Version="1.0.0.26" CompatibilityId="1.0.0.0" PrivacyStatement="http://www.waldo.Be" EULA="http://www.waldo.Be" Help="http://www.waldo.Be" Url="http://www.waldo.Be" Logo="" />
+  <App Id="4cf8e39f-606d-4be8-8723-783b6b08c173" Name="WaldoNAVPad" Publisher="Cloud Ready Software GmbH" Brief="" Description="WaldoNAVPadApp" Version="1.0.0.44" CompatibilityId="1.0.0.0" PrivacyStatement="http://www.waldo.Be" EULA="http://www.waldo.Be" Help="http://www.waldo.Be" Url="http://www.waldo.Be" Logo="" />
   <Capabilities />
   <Prerequisites>
     <Objects />

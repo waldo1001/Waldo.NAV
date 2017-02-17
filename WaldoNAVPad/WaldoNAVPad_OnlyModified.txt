@@ -1083,7 +1083,7 @@ OBJECT Page 22 Customer List
     SourceTable=Table18;
     PageType=List;
     CardPageID=Customer Card;
-    PromotedActionCategoriesML=ENU=New,Process,Report,Approve,New Document,Request Approval;
+    PromotedActionCategoriesML=ENU=New,Process,Report,Approve,New Document,Request Approval,Customer;
     OnInit=BEGIN
              SetCustomerNoVisibilityOnFactBoxes;
            END;
@@ -1132,7 +1132,6 @@ OBJECT Page 22 Customer List
                       ShortCutKey=Shift+Ctrl+D;
                       CaptionML=ENU=Dimensions-Single;
                       ToolTipML=ENU=View or edit the single set of dimensions that are set up for the selected record.;
-                      ApplicationArea=#Suite;
                       RunObject=Page 540;
                       RunPageLink=Table ID=CONST(18),
                                   No.=FIELD(No.);
@@ -1141,7 +1140,6 @@ OBJECT Page 22 Customer List
                       AccessByPermission=TableData 348=R;
                       CaptionML=ENU=Dimensions-&Multiple;
                       ToolTipML=ENU=View or edit dimensions for a group of records. You can assign dimension codes to transactions to distribute costs and analyze historical information.;
-                      ApplicationArea=#Suite;
                       Image=DimensionSets;
                       OnAction=VAR
                                  Cust@1001 : Record 18;
@@ -1155,14 +1153,12 @@ OBJECT Page 22 Customer List
       { 58      ;2   ;Action    ;
                       CaptionML=ENU=Bank Accounts;
                       ToolTipML=ENU=View or set up the customer's bank accounts. You can set up any number of bank accounts for each customer.;
-                      ApplicationArea=#Basic,#Suite;
                       RunObject=Page 424;
                       RunPageLink=Customer No.=FIELD(No.);
                       Image=BankAccount }
       { 29      ;2   ;Action    ;
                       CaptionML=ENU=Direct Debit Mandates;
                       ToolTipML=ENU=View the direct-debit mandates that reflect agreements with customers to collect invoice payments from their bank account.;
-                      ApplicationArea=#Suite;
                       RunObject=Page 1230;
                       RunPageLink=Customer No.=FIELD(No.);
                       Image=MakeAgreement }
@@ -1170,7 +1166,6 @@ OBJECT Page 22 Customer List
                       Name=ShipToAddresses;
                       CaptionML=ENU=Ship-&to Addresses;
                       ToolTipML=ENU=View or edit alternate shipping addresses where the customer wants items delivered if different from the regular address.;
-                      ApplicationArea=#Basic,#Suite;
                       RunObject=Page 301;
                       RunPageLink=Customer No.=FIELD(No.);
                       Image=ShipAddress }
@@ -1179,7 +1174,10 @@ OBJECT Page 22 Customer List
                       CaptionML=ENU=C&ontact;
                       ToolTipML=ENU=View or edit detailed information about the contact person at the customer.;
                       ApplicationArea=#Basic,#Suite;
+                      Promoted=Yes;
                       Image=ContactPerson;
+                      PromotedCategory=Category7;
+                      PromotedOnly=Yes;
                       OnAction=BEGIN
                                  ShowContact;
                                END;
@@ -1187,7 +1185,6 @@ OBJECT Page 22 Customer List
       { 45      ;2   ;Action    ;
                       CaptionML=ENU=Cross Re&ferences;
                       ToolTipML=ENU=Set up the customer's own identification of items that you sell to the customer. Cross-references to the customer's item number means that the item number is automatically shown on sales documents instead of the number that you use.;
-                      ApplicationArea=#Basic,#Suite;
                       RunObject=Page 5723;
                       RunPageView=SORTING(Cross-Reference Type,Cross-Reference Type No.);
                       RunPageLink=Cross-Reference Type=CONST(Customer),
@@ -1214,7 +1211,10 @@ OBJECT Page 22 Customer List
                       CaptionML=ENU=Approvals;
                       ToolTipML=ENU=View a list of the records that are waiting to be approved. For example, you can see who requested the record to be approved, when it was sent, and when it is due to be approved.;
                       ApplicationArea=#Suite;
+                      Promoted=Yes;
                       Image=Approvals;
+                      PromotedCategory=Category7;
+                      PromotedOnly=Yes;
                       OnAction=BEGIN
                                  ApprovalsMgmt.OpenApprovalEntriesPage(RECORDID);
                                END;
@@ -1350,7 +1350,6 @@ OBJECT Page 22 Customer List
                       ShortCutKey=Ctrl+F7;
                       CaptionML=ENU=Ledger E&ntries;
                       ToolTipML=ENU=View the history of transactions that have been posted for the selected record.;
-                      ApplicationArea=#Basic,#Suite;
                       RunObject=Page 25;
                       RunPageView=SORTING(Customer No.)
                                   ORDER(Descending);
@@ -1406,7 +1405,6 @@ OBJECT Page 22 Customer List
                       Name=Sales_InvoiceDiscounts;
                       CaptionML=ENU=Invoice &Discounts;
                       ToolTipML=ENU=Set up different discounts that are applied to invoices for the customer. An invoice discount is automatically granted to the customer when the total on a sales invoice exceeds a certain amount.;
-                      ApplicationArea=#Basic,#Suite;
                       RunObject=Page 23;
                       RunPageLink=Code=FIELD(Invoice Disc. Code);
                       Image=CalculateInvoiceDiscount }
@@ -1414,7 +1412,6 @@ OBJECT Page 22 Customer List
                       Name=Sales_Prices;
                       CaptionML=ENU=Prices;
                       ToolTipML=ENU=View or set up different prices for items that you sell to the customer. An item price is automatically granted on invoice lines when the specified criteria are met, such as customer, quantity, or ending date.;
-                      ApplicationArea=#Basic,#Suite;
                       RunObject=Page 7002;
                       RunPageView=SORTING(Sales Type,Sales Code);
                       RunPageLink=Sales Type=CONST(Customer),
@@ -1424,7 +1421,6 @@ OBJECT Page 22 Customer List
                       Name=Sales_LineDiscounts;
                       CaptionML=ENU=Line Discounts;
                       ToolTipML=ENU=Set up different discounts for items that you sell to the customer. An item discount is automatically granted on invoice lines when the specified criteria are met, such as customer, quantity, or ending date.;
-                      ApplicationArea=#Basic,#Suite;
                       RunObject=Page 7004;
                       RunPageView=SORTING(Sales Type,Sales Code);
                       RunPageLink=Sales Type=CONST(Customer),
@@ -1524,6 +1520,7 @@ OBJECT Page 22 Customer List
                       Promoted=Yes;
                       Image=NewSalesQuote;
                       PromotedCategory=Category5;
+                      PromotedOnly=Yes;
                       RunPageMode=Create }
       { 1906384905;1 ;Action    ;
                       Name=NewSalesInvoice;
@@ -1535,6 +1532,7 @@ OBJECT Page 22 Customer List
                       Promoted=Yes;
                       Image=NewSalesInvoice;
                       PromotedCategory=Category5;
+                      PromotedOnly=Yes;
                       RunPageMode=Create }
       { 1904747105;1 ;Action    ;
                       Name=NewSalesOrder;
@@ -1546,6 +1544,7 @@ OBJECT Page 22 Customer List
                       Promoted=Yes;
                       Image=Document;
                       PromotedCategory=Category5;
+                      PromotedOnly=Yes;
                       RunPageMode=Create }
       { 1902583505;1 ;Action    ;
                       Name=NewSalesCrMemo;
@@ -1557,6 +1556,7 @@ OBJECT Page 22 Customer List
                       Promoted=Yes;
                       Image=CreditMemo;
                       PromotedCategory=Category5;
+                      PromotedOnly=Yes;
                       RunPageMode=Create }
       { 1905163705;1 ;Action    ;
                       Name=NewSalesReturnOrder;
@@ -1619,7 +1619,6 @@ OBJECT Page 22 Customer List
                       ShortCutKey=Ctrl+F7;
                       CaptionML=ENU=Ledger E&ntries;
                       ToolTipML=ENU=View the history of transactions that have been posted for the selected record.;
-                      ApplicationArea=#Basic,#Suite;
                       RunObject=Page 25;
                       RunPageView=SORTING(Customer No.);
                       RunPageLink=Customer No.=FIELD(No.);
@@ -1632,7 +1631,6 @@ OBJECT Page 22 Customer List
                       Name=Prices_InvoiceDiscounts;
                       CaptionML=ENU=Invoice &Discounts;
                       ToolTipML=ENU=Set up different discounts applied to invoices for the selected customer. An invoice discount is automatically granted to the customer when the total on a sales invoice exceeds a certain amount.;
-                      ApplicationArea=#Basic,#Suite;
                       RunObject=Page 23;
                       RunPageLink=Code=FIELD(Invoice Disc. Code);
                       Image=CalculateInvoiceDiscount;
@@ -1641,7 +1639,6 @@ OBJECT Page 22 Customer List
                       Name=Prices_Prices;
                       CaptionML=ENU=Prices;
                       ToolTipML=ENU=View or set up different prices for items that you sell to the selected customer. An item price is automatically granted on invoice lines when the specified criteria are met, such as customer, quantity, or ending date.;
-                      ApplicationArea=#Basic,#Suite;
                       RunObject=Page 7002;
                       RunPageView=SORTING(Sales Type,Sales Code);
                       RunPageLink=Sales Type=CONST(Customer),
@@ -1652,13 +1649,98 @@ OBJECT Page 22 Customer List
                       Name=Prices_LineDiscounts;
                       CaptionML=ENU=Line Discounts;
                       ToolTipML=ENU=Set up different discounts for items that you sell to the selected customer. An item discount is automatically granted on invoice lines when the specified criteria are met, such as customer, quantity, or ending date.;
-                      ApplicationArea=#Basic,#Suite;
                       RunObject=Page 7004;
                       RunPageView=SORTING(Sales Type,Sales Code);
                       RunPageLink=Sales Type=CONST(Customer),
                                   Sales Code=FIELD(No.);
                       Image=LineDiscount;
                       Scope=Repeater }
+      { 55      ;1   ;ActionGroup;
+                      CaptionML=ENU=Request Approval;
+                      Image=SendApprovalRequest }
+      { 51      ;2   ;Action    ;
+                      Name=SendApprovalRequest;
+                      CaptionML=ENU=Send A&pproval Request;
+                      ToolTipML=ENU=Send an approval request.;
+                      Enabled=(NOT OpenApprovalEntriesExist) AND EnabledApprovalWorkflowsExist;
+                      Image=SendApprovalRequest;
+                      OnAction=VAR
+                                 ApprovalsMgmt@1001 : Codeunit 1535;
+                               BEGIN
+                                 IF ApprovalsMgmt.CheckCustomerApprovalsWorkflowEnabled(Rec) THEN
+                                   ApprovalsMgmt.OnSendCustomerForApproval(Rec);
+                               END;
+                                }
+      { 39      ;2   ;Action    ;
+                      Name=CancelApprovalRequest;
+                      CaptionML=ENU=Cancel Approval Re&quest;
+                      ToolTipML=ENU=Cancel the approval request.;
+                      Enabled=CanCancelApprovalForRecord;
+                      Image=CancelApprovalRequest;
+                      OnAction=VAR
+                                 ApprovalsMgmt@1001 : Codeunit 1535;
+                               BEGIN
+                                 ApprovalsMgmt.OnCancelCustomerApprovalRequest(Rec);
+                               END;
+                                }
+      { 85      ;1   ;ActionGroup;
+                      CaptionML=ENU=Workflow }
+      { 15      ;2   ;Action    ;
+                      Name=CreateApprovalWorkflow;
+                      CaptionML=ENU=Create Approval Workflow;
+                      ToolTipML=ENU=Set up an approval workflow for creating or changing customers, by going through a few pages that will guide you.;
+                      ApplicationArea=#Suite;
+                      Enabled=NOT EnabledApprovalWorkflowsExist;
+                      Image=CreateWorkflow;
+                      OnAction=BEGIN
+                                 PAGE.RUNMODAL(PAGE::"Cust. Approval WF Setup Wizard");
+                                 SetWorkflowManagementEnabledState;
+                               END;
+                                }
+      { 13      ;2   ;Action    ;
+                      Name=ManageApprovalWorkflows;
+                      CaptionML=ENU=Manage Approval Workflows;
+                      ToolTipML=ENU=View or edit existing approval workflows for creating or changing customers.;
+                      ApplicationArea=#Suite;
+                      Enabled=EnabledApprovalWorkflowsExist;
+                      Image=WorkflowSetup;
+                      OnAction=VAR
+                                 WorkflowManagement@1000 : Codeunit 1501;
+                               BEGIN
+                                 WorkflowManagement.NavigateToWorkflows(DATABASE::Customer,EventFilter);
+                                 SetWorkflowManagementEnabledState;
+                               END;
+                                }
+      { 1900839804;1 ;Action    ;
+                      CaptionML=ENU=Cash Receipt Journal;
+                      RunObject=Page 255;
+                      Promoted=Yes;
+                      Image=CashReceiptJournal;
+                      PromotedCategory=Process }
+      { 1905171704;1 ;Action    ;
+                      CaptionML=ENU=Sales Journal;
+                      RunObject=Page 253;
+                      Promoted=Yes;
+                      Image=Journals;
+                      PromotedCategory=Process }
+      { 1100084001;1 ;Action    ;
+                      Name=OpenWNPText;
+                      CaptionML=ENU=Open WaldoNAVPad Text;
+                      RunObject=Codeunit 82200;
+                      RunPageOnRec=Yes;
+                      Promoted=Yes;
+                      PromotedIsBig=Yes;
+                      Image=Text }
+      { 1100084000;1 ;Action    ;
+                      Name=OpenWNPTextHTML;
+                      CaptionML=ENU=Open WaldoNAVPad HTML;
+                      RunObject=Codeunit 82201;
+                      RunPageOnRec=Yes;
+                      Promoted=Yes;
+                      PromotedIsBig=Yes;
+                      Image=Text }
+      { 1900000006;0 ;ActionContainer;
+                      ActionContainerType=Reports }
       { 96      ;1   ;ActionGroup;
                       Name=Reports;
                       CaptionML=ENU=Reports }
@@ -1733,94 +1815,6 @@ OBJECT Page 22 Customer List
                       ApplicationArea=#Suite;
                       RunObject=Report 211;
                       Image=Report }
-      { 55      ;1   ;ActionGroup;
-                      CaptionML=ENU=Request Approval;
-                      Image=SendApprovalRequest }
-      { 51      ;2   ;Action    ;
-                      Name=SendApprovalRequest;
-                      CaptionML=ENU=Send A&pproval Request;
-                      ToolTipML=ENU=Send an approval request.;
-                      ApplicationArea=#Suite;
-                      Enabled=(NOT OpenApprovalEntriesExist) AND EnabledApprovalWorkflowsExist;
-                      Image=SendApprovalRequest;
-                      OnAction=VAR
-                                 ApprovalsMgmt@1001 : Codeunit 1535;
-                               BEGIN
-                                 IF ApprovalsMgmt.CheckCustomerApprovalsWorkflowEnabled(Rec) THEN
-                                   ApprovalsMgmt.OnSendCustomerForApproval(Rec);
-                               END;
-                                }
-      { 39      ;2   ;Action    ;
-                      Name=CancelApprovalRequest;
-                      CaptionML=ENU=Cancel Approval Re&quest;
-                      ToolTipML=ENU=Cancel the approval request.;
-                      ApplicationArea=#Suite;
-                      Enabled=CanCancelApprovalForRecord;
-                      Image=CancelApprovalRequest;
-                      OnAction=VAR
-                                 ApprovalsMgmt@1001 : Codeunit 1535;
-                               BEGIN
-                                 ApprovalsMgmt.OnCancelCustomerApprovalRequest(Rec);
-                               END;
-                                }
-      { 85      ;1   ;ActionGroup;
-                      CaptionML=ENU=Workflow }
-      { 15      ;2   ;Action    ;
-                      Name=CreateApprovalWorkflow;
-                      CaptionML=ENU=Create Approval Workflow;
-                      ToolTipML=ENU=Set up an approval workflow for creating or changing customers, by going through a few pages that will guide you.;
-                      ApplicationArea=#Suite;
-                      Enabled=NOT EnabledApprovalWorkflowsExist;
-                      Image=CreateWorkflow;
-                      OnAction=BEGIN
-                                 PAGE.RUNMODAL(PAGE::"Cust. Approval WF Setup Wizard");
-                                 SetWorkflowManagementEnabledState;
-                               END;
-                                }
-      { 13      ;2   ;Action    ;
-                      Name=ManageApprovalWorkflows;
-                      CaptionML=ENU=Manage Approval Workflows;
-                      ToolTipML=ENU=View or edit existing approval workflows for creating or changing customers.;
-                      ApplicationArea=#Suite;
-                      Enabled=EnabledApprovalWorkflowsExist;
-                      Image=WorkflowSetup;
-                      OnAction=VAR
-                                 WorkflowManagement@1000 : Codeunit 1501;
-                               BEGIN
-                                 WorkflowManagement.NavigateToWorkflows(DATABASE::Customer,EventFilter);
-                                 SetWorkflowManagementEnabledState;
-                               END;
-                                }
-      { 1900839804;1 ;Action    ;
-                      CaptionML=ENU=Cash Receipt Journal;
-                      RunObject=Page 255;
-                      Promoted=Yes;
-                      Image=CashReceiptJournal;
-                      PromotedCategory=Process }
-      { 1905171704;1 ;Action    ;
-                      CaptionML=ENU=Sales Journal;
-                      RunObject=Page 253;
-                      Promoted=Yes;
-                      Image=Journals;
-                      PromotedCategory=Process }
-      { 1100084001;1 ;Action    ;
-                      Name=OpenWNPText;
-                      CaptionML=ENU=Open WaldoNAVPad Text;
-                      RunObject=Codeunit 82200;
-                      RunPageOnRec=Yes;
-                      Promoted=Yes;
-                      PromotedIsBig=Yes;
-                      Image=Text }
-      { 1100084000;1 ;Action    ;
-                      Name=OpenWNPTextHTML;
-                      CaptionML=ENU=Open WaldoNAVPad HTML;
-                      RunObject=Codeunit 82201;
-                      RunPageOnRec=Yes;
-                      Promoted=Yes;
-                      PromotedIsBig=Yes;
-                      Image=Text }
-      { 1900000006;0 ;ActionContainer;
-                      ActionContainerType=Reports }
       { 3       ;1   ;ActionGroup;
                       CaptionML=ENU=General }
       { 1905562606;2 ;Action    ;

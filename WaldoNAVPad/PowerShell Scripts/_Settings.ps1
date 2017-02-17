@@ -13,7 +13,7 @@ $OriginalServerInstance = "Shared_ORIG"
 $ModifiedServerInstance = "$($AppName)_DEV"
 $TargetServerInstance = "Shared_TEST"
 $TargetTenant = 'Default'
-$License = "C:\Users\Administrator\Dropbox\Dynamics NAV\Licenses\5230132_003 and 004 IFACTO_NAV2016_BELGIUM_2016 08 03.flf"
+$License = "C:\Users\Administrator\Dropbox\Dynamics NAV\Licenses\5230132_003 and 004 IFACTO_NAV2017_BELGIUM_2016 10 24.flf"
 $ISVNumberRangeLowestNumber = 82100
 
 #Defaults

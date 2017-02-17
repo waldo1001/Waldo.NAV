@@ -1,4 +1,7 @@
-﻿$PermissionSets = @()
+﻿# Import settings
+. (Join-Path $PSScriptRoot '_Settings.ps1') -ErrorAction Stop
+
+$PermissionSets = @()
 
 New-NAVAppPermissionSet `
     -ServerInstance $ModifiedServerInstance `    -AppName $AppName `    -PermissionType Read `    -OnTableIDs 82100, 82101, 82110
